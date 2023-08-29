@@ -1,0 +1,2 @@
+# arise
+shopline theme arise
