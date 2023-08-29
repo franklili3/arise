@@ -1,0 +1,303 @@
+{
+  "name": "index.html",
+  "sections": {
+    "video": {
+      "type": "video",
+      "disabled": true,
+      "settings": {
+        "title": "Video",
+        "background_position": "center",
+        "color_scheme": "",
+        "full_width": false,
+        "loop": false,
+        "cover": {
+          "url": ""
+        }
+      },
+      "blocks": {},
+      "block_order": []
+    },
+    "16928518284114162dd3": {
+      "type": "blog",
+      "disabled": false,
+      "settings": {
+        "title": "增加投资收益",
+        "blog_collection_id": "64e6dda8cb3e943f58a4c005",
+        "limit": 3,
+        "layout": "grid",
+        "is_show_date": true,
+        "is_show_author": true,
+        "is_show_cover": true,
+        "image_ratio": "0.75",
+        "is_show_desc": true,
+        "btn_text": "查看更多",
+        "color_scheme": "none"
+      },
+      "blocks": {},
+      "block_order": []
+    },
+    "1692851897019c8f4874": {
+      "type": "blog",
+      "disabled": false,
+      "settings": {
+        "title": "降低投资风险",
+        "blog_collection_id": "64e6ddca3adee66ba98b7508",
+        "limit": 3,
+        "layout": "grid",
+        "is_show_date": true,
+        "is_show_author": true,
+        "is_show_cover": true,
+        "image_ratio": "0.75",
+        "is_show_desc": true,
+        "btn_text": "查看更多",
+        "color_scheme": "none"
+      },
+      "blocks": {},
+      "block_order": []
+    },
+    "16928486616659435417": {
+      "type": "blog",
+      "disabled": false,
+      "settings": {
+        "title": "投资机会",
+        "blog_collection_id": "64e5d56bc3ccfa08517cede8",
+        "limit": 3,
+        "layout": "grid",
+        "is_show_date": true,
+        "is_show_author": true,
+        "is_show_cover": true,
+        "image_ratio": "0.75",
+        "is_show_desc": true,
+        "btn_text": "查看更多",
+        "color_scheme": "none"
+      },
+      "blocks": {},
+      "block_order": []
+    },
+    "featured-collection": {
+      "disabled": false,
+      "type": "featured-collection",
+      "settings": {
+        "title": "精选服务",
+        "full_width": true,
+        "product_categories": "12260821750452068216333218",
+        "products_num": 4,
+        "pc_cols": 4,
+        "md_cols": "2",
+        "slice_in_pc": false,
+        "slice_in_mobile": false,
+        "button_text": "",
+        "product_image_ratio": "0",
+        "product_fill_type": "contain",
+        "product_hover_show_next": false
+      },
+      "blocks": {},
+      "block_order": []
+    },
+    "app-block-instagram": {
+      "type": "apps",
+      "disabled": false,
+      "settings": {
+        "include_margins": {
+          "value": true
+        }
+      },
+      "blocks": {
+        "block1": {
+          "type": "shopline://apps/Instagram照片墙/blocks/app-block/7c8cf6f0-6f59-46db-97f0-a2ee9686ab4b",
+          "settings": {},
+          "is_recommendation": true
+        }
+      },
+      "block_order": [
+        "block1"
+      ]
+    },
+    "image-banner": {
+      "type": "image-banner",
+      "disabled": false,
+      "settings": {
+        "banner1": {},
+        "banner2": {},
+        "banner_height_size": "middle",
+        "override_banner_height": false,
+        "pc_text_position": "center",
+        "pc_show_textarea": false,
+        "alpha_range": "30",
+        "color_scheme": "none",
+        "mobile_banner_flatten": true,
+        "m_show_textarea": true
+      },
+      "blocks": {
+        "banner-title": {
+          "type": "title",
+          "settings": {
+            "title": "中风险\n高收益",
+            "title_size": "medium"
+          }
+        },
+        "banner-desc": {
+          "type": "desc",
+          "settings": {
+            "description": "预测就是准，投资不亏损"
+          }
+        },
+        "banner-button": {
+          "type": "button",
+          "settings": {
+            "button_text": "",
+            "link": "",
+            "outline_button": true,
+            "link_text_2": "",
+            "link_2": "",
+            "outline_button_2": true
+          }
+        }
+      },
+      "block_order": [
+        "banner-title",
+        "banner-desc",
+        "banner-button"
+      ]
+    },
+    "rich-text": {
+      "type": "rich-text",
+      "disabled": true,
+      "settings": {
+        "color_scheme": "",
+        "normal_width": true
+      },
+      "blocks": {
+        "heading": {
+          "type": "heading",
+          "settings": {
+            "heading": "",
+            "heading_size": "middle"
+          }
+        },
+        "text": {
+          "type": "text",
+          "settings": {
+            "text": "<p>A sentence or two introducing your brand, what you sell, and what makes your brand compelling to customers.</p>"
+          }
+        },
+        "button": {
+          "type": "button",
+          "settings": {
+            "button_text": "",
+            "outline_button": false
+          }
+        }
+      },
+      "block_order": [
+        "heading",
+        "text",
+        "button"
+      ]
+    },
+    "text-columns-with-images": {
+      "type": "text-columns-with-images",
+      "disabled": false,
+      "settings": {
+        "title": "博客分类",
+        "image_width": "50%",
+        "image_ratio": "auto",
+        "pc_cols": 3,
+        "text_align": "left",
+        "show_block_bg": false,
+        "button_text": "",
+        "jump_link": "",
+        "md_cols": 1,
+        "show_touch": false,
+        "color_scheme": "none"
+      },
+      "blocks": {
+        "columns-image-1": {
+          "type": "item",
+          "settings": {
+            "image": {},
+            "title": "增加投资收益",
+            "description": "通过选择高收益的投资品加入组合将增加投资收益。",
+            "button_text": "查看更多",
+            "jump_link": "{\"value\":\"64e6dda8cb3e943f58a4c005\",\"label\":\"增加投资收益\",\"pageType\":11,\"linkType\":\"select\"}"
+          }
+        },
+        "columns-image-2": {
+          "type": "item",
+          "settings": {
+            "image": {},
+            "title": "降低投资风险",
+            "description": "通过选择低相关性的投资品加入组合将降低投资风险。",
+            "button_text": "查看更多",
+            "jump_link": "{\"value\":\"64e6ddca3adee66ba98b7508\",\"label\":\"降低投资风险\",\"pageType\":11,\"linkType\":\"select\"}"
+          }
+        },
+        "columns-image-3": {
+          "type": "item",
+          "settings": {
+            "image": {},
+            "title": "投资机会",
+            "description": "<div class=\"rte\">\n<p>市场价格远低于内在价值的投资品将成为投资机会。</p>\n</div>",
+            "button_text": "查看更多",
+            "jump_link": "{\"value\":\"64e5d56bc3ccfa08517cede8\",\"label\":\"投资机会\",\"pageType\":11,\"linkType\":\"select\"}"
+          }
+        }
+      },
+      "block_order": [
+        "columns-image-1",
+        "columns-image-2",
+        "columns-image-3"
+      ]
+    },
+    "multi-media-splicing": {
+      "type": "multi-media-splicing",
+      "disabled": true,
+      "settings": {
+        "desktop_layout": "left",
+        "mobile_layout": "splicing",
+        "color_scheme": ""
+      },
+      "blocks": {
+        "video-item": {
+          "type": "video",
+          "settings": {
+            "video_alt": "Describe the video",
+            "image_padding": "cover"
+          }
+        },
+        "product": {
+          "type": "product",
+          "settings": {
+            "product_hover_show_next": false,
+            "image_padding": "cover",
+            "product_id": ""
+          }
+        },
+        "collection": {
+          "type": "collection",
+          "settings": {
+            "image_padding": "cover",
+            "category_id": ""
+          }
+        }
+      },
+      "block_order": [
+        "video-item",
+        "product",
+        "collection"
+      ]
+    }
+  },
+  "order": [
+    "image-banner",
+    "rich-text",
+    "featured-collection",
+    "multi-media-splicing",
+    "video",
+    "text-columns-with-images",
+    "16928518284114162dd3",
+    "1692851897019c8f4874",
+    "16928486616659435417",
+    "app-block-instagram"
+  ]
+}
