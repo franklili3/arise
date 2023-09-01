@@ -1,0 +1,45 @@
+与主题编辑器集成​
+当商家通过主题编辑器定制 section 时，这些 section 的 HTML 被动态地添加、删除或直接重新渲染到现有的DOM上，而无需重新加载整个页面。然而，任何在页面加载时运行的相关JavaScript都不会再次运行。
+
+此外，你必须确保当一个 section 或 block 被选中时，该 section 或 block 在被选中时成为并保持可见。例如，一个幻灯片 section 应该在该 section 被选中时滚动到视图中，并在该 section 被选中时滑动到一个被选中的 block（幻灯片）并暂停。
+
+为了帮助识别主题编辑器操作，如部分和块选择或重新排序，您可以使用主题编辑器发出的 JavaScript 事件。
+
+您可能还想阻止特定代码在主题编辑器中运行。为此，您可以使用 Handlebars 和 JavaScript 变量来检测主题编辑器。
+
+Javascript 事件​
+主题编辑器发出部分和阻止冒泡且不可取消的 JavaScript 事件。每个事件都有一个目标 ( event.target)，它是关联的部分或块元素。section 元素是 layout-engine 生成的 section 包装器。
+
+除了部分和块事件之外，主题编辑器还会在主题编辑器预览检查器被激活或停用时发出事件。
+
+下表概述了主题编辑器发出的事件：
+
+type	target	detail	bubbles	cancelable	动作	期望的
+shopline:section:load	section	{sectionId}	true	false	已添加或重新渲染了一个 section。	重新执行该 section 所需的任何 JavaScript 才能正常工作和显示（就像页面刚刚加载一样）。
+shopline:section:unload	section	{sectionId}	true	false	section 已被删除或正在重新呈现。	清理相关事件监听器、变量等，以便在与页面交互时不会中断并且不会发生内存泄漏。
+shopline:section:select	section	{sectionId, selected}	true	false	用户已选择侧栏中的 section。	确保该 section 在视图中并在选择时保持在视图中（自动滚动）。
+shopline:section:deselect	section	{sectionId}	true	false	用户已取消选择侧栏中的 section。	
+shopline:section:reorder	section	{sectionId}	true	false	section 已重新排序。	
+shopline:block:select	block	{sectionId, blockId}	true	false	用户已选择侧栏中的 block。	确保该 block 在视图中并在选择时保持在视图中（自动滚动）。
+
+
+shopline:block:deselect	block	{sectionId, blockId}	true	false	用户已取消侧栏中的 block。	
+在上表中，blockId代表块 ID，sectionId代表部分 ID，并load指示事件是由部分重新渲染还是由用户选择触发的。的 load 值为true或false。
+
+检测主题编辑器​
+您可以在 Handlebars 和 JavaScript 中检测您是否在主题编辑器中.
+
+Handlebars​
+Handlebars request 对象有一个属性，如果您在主题编辑器中，则该 design_mode 属性将返回true，否则false。例如：
+
+{{#if request.design_mode }}
+	<!-- 这只会在主题编辑器中渲染  -->
+{{/if}}
+
+JavaScript​
+在 JavaScript 中，如果您在主题编辑器中，则全局变量 Shopline.designMode 将返回，true 否则将返回 undefined。例如：
+
+if (Shopline.designMode) {
+	// 这里只会在主题编辑器中执行
+}
+

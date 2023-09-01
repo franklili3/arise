@@ -1,0 +1,23 @@
+last​
+返回一个数组中的最后一个项目。
+
+参数​
+array {Array} 数组，必填。
+result {Any} 数组最后一项。
+用法​
+{{last array}}
+
+例子​
+Code
+Data
+1
+2
+3
+4
+{{ assign "last_product" (last collection.products) }}
+
+{{ last_product.title }}
+
+Output
+1
+Crocodile tears

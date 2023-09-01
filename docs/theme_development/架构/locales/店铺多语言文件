@@ -1,0 +1,78 @@
+店铺多语言文件​
+店面语言环境文件是带有.json文件扩展名的 JSON 文件。它们托管整个主题中店面上显示的内容的翻译字符串。商家可以通过 Shopline 语言编辑器访问这些翻译。
+
+主题 layout、template、snippets 和 sections 可以使用 Handlebars 翻译 helper (t) 引用这些翻译，而不是硬编码的文本字符串
+
+读取的文件根据当前店铺的设置的默认语言
+
+位置​
+店面语言环境文件位于locales主题目录中：
+
+└── theme
+    ...
+    ├── config
+    └── locales
+      ├── en.json
+      ...
+
+架构​
+店面区域设置文件需要遵循特定的命名结构。他们还遵循基本的组织结构：
+
+类别：翻译的顶级类别。
+组：类别内的第二级翻译分组。
+描述：第三层，代表个别翻译。
+{
+  "my_category": {
+    "my_group": {
+      "my_description": "translation text",
+      ...
+    },
+    ...
+  },
+  ...
+}
+
+提示 在命名翻译描述时，尽量描述性足以给出翻译上下文。例如，blogs.article_comment.submit_button_text提供比 更多的上下文blogs.article_comment.submit。
+
+您可以使用 2 个字母的小写语言表示。
+例如：
+
+语言	格式
+Finnish - All regions	fi.json
+用法​
+通常，翻译键的形式为 JSON 格式的嵌套
+
+{
+  "general": {
+    "404": {
+      "title": "Page not found",
+    }
+  }
+}
+
+使用 Handlebars t helper 引用：
+
+<h1>{{ t 'general.404.title' }}</h1>
+
+输出：
+
+<h1>Page not found</h1>
+
+插值​
+// locales/en.json
+{
+  "general": {
+    "404": {
+      "title": "Page not found {{ message }}",
+    }
+  }
+}
+
+使用 Handlebars t helper 引用：
+
+<h1>{{ t 'general.404.title' message='hello' }}</h1>
+
+输出：
+
+<h1>Page not found hello</h1>
+

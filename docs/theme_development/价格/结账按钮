@@ -1,0 +1,54 @@
+加速结账​
+商家可以启用提供异地结账功能的支付服务提供商，例如 Apple Pay 或 Google Pay，这可以使客户的结账过程更快、更轻松。加速结账按钮可以显示在店面或结账的第一步，以允许客户使用这些异地结账之一。
+
+默认情况下，结帐中支持加速结帐按钮。但是，您也可以选择在店面中包含按钮。
+
+在本教程中，您将学习如何支持店面的加速结账按钮。
+
+资源​
+要在您的主题中显示额外的结帐按钮，您将使用以下 Handlebars 对象：
+
+additional_checkout_buttons - 如果商店的任何已启用的付款提供商提供场外结账，则返回true，如果不是，则返回false。
+content_for_additional_checkout_buttons - 输出父容器的 HTML，该父容器为每个提供异地结账的支付提供商托管一个按钮。
+在您的主题中实施加速结帐按钮​
+您可以在主题中的任何位置添加快捷结帐按钮。您可能希望将快捷结账按钮添加到您的购物车模板、模板内的一个部分或购物车抽屉中。
+
+考虑在购物车表单的结账输入附近添加加速结账按钮，以便客户可以在常规结账和加速结账选项之间进行选择。
+
+您的代码应执行以下操作：
+
+检查商店是否启用了任何使用该对象提供异地结账的支付提供商additional_checkout_buttons。
+如果additional_checkout_buttons为真，则使用该对象在购物车页面上显示支付提供商按钮content_for_additional_checkout_buttons。
+{{#if additional_checkout_buttons}}
+  {{{content_for_additional_checkout_buttons}}}
+{{/if}}
+
+提示 您不能通过 AJAX 请求呈现加速结帐按钮，包括通过 Section Rendering API 的请求。content_for_header这些按钮由 shopline 通过对象包含的 JavaScript 添加，该对象仅在初始页面加载时运行。
+
+结帐时的加速结帐按钮​
+可以在您的店面和结账处向客户展示加速结账按钮。
+
+对齐结帐按钮​
+默认情况下，加速结账按钮在其容器范围内水平显示，并左对齐。但是，您可以使用 CSS 更改这两种对齐方式。
+
+水平对齐​
+按钮容器具有 的属性 data-shopline-buttoncontainer 和 display: flex 应用的样式。您可以将具有数据属性的容器作为选择器。要控制按钮的对齐方式，您可以将以下选项之一应用于样式justify-content：
+
+flex-start：将按钮向左对齐。
+center：将按钮居中对齐。
+flex-end：将按钮右对齐。
+example
+
+[data-shopline-buttoncontainer] {
+  justify-content: flex-end;
+}
+
+垂直对齐​
+要默认垂直显示按钮，您可以将类添加additional-checkout-buttons--vertical到放置对象的容器content_for_additional_checkout_buttons中。
+
+{{#if additional_checkout_buttons}}
+  <div class="additional-checkout-buttons additional-checkout-buttons--vertical">
+  {{{content_for_additional_checkout_buttons}}}
+  </div>
+{{/if}}
+

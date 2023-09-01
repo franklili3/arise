@@ -1,0 +1,20 @@
+概述​
+构建 SHOPLINE 主题​
+主题塑造了商家及其客户的在线商店体验。使用 SHOPLINE 的主题模板语言 Handlebars 以及 HTML、CSS、JavaScript 和 JSON 大规模构建快速、灵活的主题。
+
+主题开发场景​
+当前 SHOPLINE 主题开发的场景主要有以下两个：
+
+部分定制
+全案定制
+主题代码架构​
+SHOPLINE 主题代码是由模板文件，静态资产根据一定规则构建而成的。
+了解主题代码架构
+
+Handlebars​
+Handlebars 模板语言是 SHOPLINE 主题的基础，用于在店面加载动态内容。使用元字段扩展 Handlebars 对象以存储和呈现自定义数据。
+了解 Handlebars
+
+CLI 工具​
+SHOPLINE 提供了 cli 工具帮助您快速地开发主题。
+了解CLI工具

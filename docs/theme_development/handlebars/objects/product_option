@@ -1,0 +1,19 @@
+product_option​
+商品选项，例如尺寸或颜色。
+
+属性​
+
+name
+string
+
+position
+number
+
+selected_value
+string
+
+values
+array of string
+从Object获取
+product.options_with_values
+product_option

@@ -1,0 +1,42 @@
+核心命令​
+此章节列出了您可以与 Shopline CLI 一起使用的核心命令。
+
+帮助​
+列出所有可用命令并描述它们的作用
+
+shopline help
+shopline -h
+shopline --help
+
+您也可以使用help命令获取特定命令的帮助：
+
+shopline [command] -h
+shopline [command] --help
+
+登录​
+登录 CLI 到指定店铺。
+
+shopline login --store `<STORE_DOMAIN>`
+
+可选参数​
+参数	描述
+--store <STORE_DOMAIN>	您要登录的商店。
+--store参数接受以下输入
+
+类型	例子
+myshopline.com 网址	example.myshopline.com
+https://example.myshopline.com
+店铺管理员地址	example.myshopline.com/admin
+https://example.myshopline.com/admin
+⚠️ 暂不支持自定义域名
+
+登出​
+清除登录凭证，下次连接商店时，您需要重新登录。
+
+shopline logout
+
+whoami​
+查看当前登录店铺
+
+shopline whoami
+

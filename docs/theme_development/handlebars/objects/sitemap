@@ -1,0 +1,25 @@
+sitemap​
+特定群组在robots.txt文件中的站点地图。
+
+站点地图提供了关于站点上的页面和内容的信息，以及它们之间的关系，这有助于爬虫更有效地爬取站点。
+
+提示
+想了解更多关于站点地图的信息，请参阅Google的文档。
+
+站点地图对象由一个Sitemap指令和一个站点地图托管的URL的值组成。例如：
+
+Sitemap: https://your-store.myshopline.com/sitemap.xml
+
+提示
+您可以在Shopline Admin中自定义robots.txt。
+
+属性​
+
+directive
+string
+
+value
+string
+从Object获取
+group.sitemap
+sitemap

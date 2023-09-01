@@ -1,0 +1,17 @@
+customer_logout_link​
+生成指向客户登出页面的 HTML 链接
+
+参数​
+str {String} 字符串，必填
+returns {String} HTML 字符串
+例子​
+{{ customer_logout_link str }}
+
+Code
+1
+2
+{{{ customer_logout_link 'Logout' }}}
+
+Output
+1
+<a href="/user/signOut" id="customer_logout_link">Logout</a>

@@ -1,0 +1,19 @@
+升级和卸载​
+本章节包含有关升级 Shopline CLI 以及卸载 Shopline CLI 的信息。
+
+升级 Shopline CLI​
+您可以使用适用于您平台的包管理器来管理升级 Shopline CLI 的升级。
+
+npm​
+npm -g install @shoplinedev/cli
+
+yarn​
+yarn global add @shoplinedev/cli
+
+卸载 Shopline CLI​
+npm​
+npm -g uninstall @shoplinedev/cli
+
+yarn​
+yarn global remove @shoplinedev/cli
+

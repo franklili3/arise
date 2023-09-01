@@ -1,0 +1,133 @@
+电子邮件同意​
+客户可以通过两种方式同意通过主题进行电子邮件营销：
+
+简易注册表单
+客户登记表中的复选框输入
+时事通讯注册表单​
+您可以使用 Handlebars 表单标签和随附的参数将简易注册表添加到您的模板中。在表单中，您需要包含具有以下属性的输入：'customer'
+
+属性	值
+type	email
+name	contact[email]
+{{#form 'customer' }}
+  <div class="email">
+    <label for="email">Email</label>
+    <input type="email" name="contact[email]" />
+  </div>
+  <div class="submit">
+    <input type="submit" value="Sign up" />
+  </div>
+{{/form }}
+
+当客户通过此表单注册时，将使用输入的电子邮件创建客户，并将accepts_marketing关联customer对象的属性设置为true。
+
+提示 另一个通讯注册表单的例子，可以参考Seed的实现。
+
+客户注册表复选框​
+在客户注册表单中，您可以包含一个复选框以允许客户同意电子邮件营销。这需要在表单中放置以下输入：
+
+输入	类型	name
+接受营销	checkbox	customer[acceptsEmailMarketing]
+{{#form 'create_customer'}}
+  <div class="account">
+    <label for="email">{{ t 'user.username' }}</label>
+    <input type="text" name="customer[email]" placeholder="{{ t 'user.username' }}" />
+  </div>
+  <div class="password">
+    <label for="password">{{ t 'user.password' }}</label>
+    <input type="password" name="customer[password]" placeholder="{{ t 'user.password' }}" />
+  </div>
+  {{#if form.registerConfig.checkTag}}
+    <div class="verifycode">
+      <input type="text" name="customer[verifycode]" placeholder="{{ t 'user.code' }}" />
+      <button class="verifycode-button">{{ t 'user.send' }}</button>
+    </div>
+  {{/if}}
+  {{#if form.registerConfig.firstNameCheck}}
+    <div class="first-name">
+      <label for="first-name">{{ t 'user.firstName' }}</label>
+      <input type="text" name="customer[firstName]" placeholder="{{ t 'user.firstName' }}" />
+    </div>
+  {{/if}}
+  {{#if form.registerConfig.lastNameCheck}}
+    <div class="last-name">
+      <label for="last-name">{{ t 'user.lastName' }}</label>
+      <input type="text" name="customer[lastName]" placeholder="{{ t 'user.lastName' }}" />
+    </div>
+  {{/if}}
+  {{#if form.registerConfig.birthdayCheck}}
+    <div class="birthday">
+      <label for="birthday">{{ t 'user.birthday' }}</label>
+      <input type="date" name="customer[birthday]" placeholder="{{ t 'user.birthday' }}" />
+    </div>
+  {{/if}}
+  <div class="age">
+    <label for="age">{{ t 'user.age' }}</label>
+    <input type="text" name="attribute[age]" placeholder="{{ t 'user.age' }}" />
+  </div>
+  <div class="accepts-marketing">
+    <input type="checkbox" name="customer[acceptsEmailMarketing]" value="true">
+    <label for="accepts-marketing">Subscribe to email marketing</label>
+  </div>
+  <div class="submit">
+    <input class="submit-button" type="submit" value="{{ t 'user.signUp' }}">
+  </div>
+{{/form}}
+ <script>
+    class Register {
+      constructor() {
+        this.form = document.querySelector('#create-customer-form');
+        this.form.addEventListener('submit', this.onSubmitHandler.bind(this));
+        this.verifyCodeButton = this.form.querySelector('.verifycode-button');
+        this.verifyCodeButton.addEventListener(
+          'click', this.onSendVerifyCodeHandler.bind(this)
+        );
+        this.register = new window.Shopline.customerAccount.Register(this.form)
+      }
+      // 发送邮箱或短信验证码逻辑
+      onSendVerifyCodeHandler(e) {
+        e.preventDefault();
+        if (this.verifyCodeButton.getAttribute('aria-disabled') === 'true') return;
+        this.verifyCodeButton.setAttribute('aria-disabled', true);
+        this.register.sendVerifyCode()
+          .then(response => {
+            if (response.errorMessage) {
+              this.verifyCodeError = true;
+              // 处理发送失败异常场景
+            }
+          })
+          .finally(() => {
+            if (!this.verifyCodeError) {
+              this.verifyCodeButton.removeAttribute('aria-disabled');
+            }
+          })
+      }
+      // 注册逻辑
+      onSubmitHandler(e) {
+        e.preventDefault();
+        this.register.submit()
+          .then(response => {
+            window.location.href = '/user/center';
+          })
+          .catch(error => {
+            // 处理注册失败异常场景
+          })
+      }
+    }
+    // 初始化用户登录注册 JS SDK
+    window.Shopline.loadFeatures(
+      [
+        {
+          name: 'customer-account-api',
+          version: '0.2'
+        }
+      ],
+      function(error) {
+        if (error) {
+          throw error;
+        }
+        new Register();
+      }
+    );
+  </script>
+

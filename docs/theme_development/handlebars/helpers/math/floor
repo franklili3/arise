@@ -1,0 +1,18 @@
+floor​
+将数字向下取整为最接近的整数。
+
+参数​
+number {Number} 输入一个数字，必填
+returns {Number} 返回一个数字
+用法​
+{{ floor number }}
+
+示例​
+Code
+1
+2
+{{ floor 1.2 }}
+
+Output
+1
+1

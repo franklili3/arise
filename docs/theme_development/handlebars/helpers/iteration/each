@@ -1,0 +1,102 @@
+each​
+你可以使用 each helper代码遍历列表。在块内，你可以使用 this 来引用被迭代的元素。
+
+参数​
+list {Array} - The list to iterate over
+用法​
+{{#each list}}
+  {{this}}
+{{/each}}
+
+例子​
+Code
+Data
+1
+2
+3
+4
+{{#each collection.products as |product|}}
+  {{ product.title }}
+{{/each}}
+
+Output
+1
+2
+3
+4
+  Draught of Immortality
+  Glacier ice
+  Crocodile tears
+  Dandelion milk
+else​
+您可以选择提供一个 else 部分，该部分仅在列表为空时显示。
+
+Code
+Data
+1
+2
+3
+4
+5
+6
+{{#each collection.products as |product|}}
+  {{ product.title }}
+{{else}}
+  No products
+{{/each}}
+
+Output
+1
+  No products
+@index​
+当遍历 each 中的项目时，你可以选择通过 {{@index}} 引用当前循环的索引。
+
+Code
+Data
+1
+2
+3
+4
+{{#each collection.products as |product|}}
+  {{ @index }} - {{ product.title }}
+{{/each}}
+
+Output
+1
+2
+3
+4
+5
+  0 - Draught of Immortality
+  1 - Glacier ice
+  2 - Crocodile tears
+  3 - Dandelion milk
+  4 - Draught of Immortality
+@first / @last​
+在数组上进行迭代时，通过 @first 和 @last 变量记录迭代的第一项和最后一项。
+
+Code
+Data
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+{{#each collection.products as |product|}}
+  {{#if @first}}
+    {{ product.title }}
+  {{/if}}
+
+  {{#if @last}}
+    {{ product.title }}
+  {{/if}}
+{{/each}}
+
+Output
+1
+

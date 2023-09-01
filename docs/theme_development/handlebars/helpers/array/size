@@ -1,0 +1,25 @@
+size​
+返回字符串或数组的大小。
+
+字符串的大小是字符串包含的字符数。数组的大小是数组中的项数。
+
+参数​
+array {Array|String} 字符串或者数组，必填。
+returns {Number} 长度。
+用法​
+{{size array}}
+
+Example​
+Code
+Data
+1
+2
+3
+{{ size collection.title }}
+{{ size collection.products }}
+
+Output
+1
+2
+8
+4

@@ -1,0 +1,27 @@
+file_img_url​
+从 Shopline 后台的文件页面返回图像的CDN URL 。
+
+参数​
+filename {String} 必填
+size {String} 选填, 尺寸, 格式为: 100x、210x
+用法​
+{{ file_img_url filename [size] }}
+
+例子​
+Code
+1
+2
+{{ file_img_url 'filename.png' }}
+
+Output
+1
+https://cdn.myshopline.com/filename.png
+size​
+Code
+1
+2
+{{ file_img_url 'filename.png' '100x' }}
+
+Output
+1
+https://cdn.myshopline.com/filename_100x.png

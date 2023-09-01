@@ -1,0 +1,148 @@
+vscode 主题开发插件​
+简介​
+shopline-theme-plugin Vscode插件是为我们主题提供更便捷的开发工具，主题语法校验，语法高亮，代码折叠，section,theme,helper变量联想提示，代码块补全，文件路径跳转等功能。为我们开发者提高开发效率和代码质量。
+
+安装​
+vscode 应用市场搜索shopline-theme-plugin 点击安装。
+(注意
+版本必须要大于 1.61.0)
+
+卸载​
+vscode 应用市场搜索shopline-theme-plugin 点击卸载即可。
+
+启动插件​
+在打开项目文件根目录如果存在src/config/settings_data.json 文件，自动触发shopline-theme-plugin插件，并且打开后缀为html的文件，自动会识别Handlebars 语言。
+
+vscode插件功能​
+代码联想提示​
+section组件属性联想提示​
+在开发section组件时，当开发者输入 section. 时就会联想 section属性 settings,blocks并可以选择。当开发者输入settings.时会联想该组件schema里面配置settings的id 如下图属性：
+image.png
+
+全局配置theme属性联想提示​
+在开发任何的 *.html 文件，当开发者输入theme.settings.就会联想全局配置theme里面的属性并可以选择，如下图 settings_data.json theme配置:
+image.png
+
+helper联想提示​
+在开发任何的*.html 文件，当开发者输入的代码 当前行出现 {{，后面输入的字符都会去匹配相应的 helper提示并可以选择。如 开发者输入 {{a 就会匹配 assign,and,append,...等helper.
+注：{{ 加空格 提示的是helper代码块，{{ 提示的是helper
+image.png
+
+helper 文档提示​
+在开发任何的*.html 文件, 鼠标悬浮在helper 上面会出现helper使用文档
+image.png
+
+schema type提示​
+在开发section组件，当开发者在schema的settings片段里面填写type属性值时 会提示所有B端控件类型，如下图
+image.png
+
+代码块补全​
+helper代码块补全​
+在开发任何的*.html 文件，当开发者输入代码{{ 后面输入的字符都会去匹配相应的 helper代码块提示并可以选择按下enter键代码补全 。
+注：{{ 提示的是helper代码块，{{ 加空格 提示的是helper
+如 {{if 敲下enter健代码补全如下
+
+{{#if 光标位置}}
+{{else}}
+{{/if}}
+
+如 {each 敲下enter健代码补全如下
+
+{{#each 光标位置}}
+{{/each}}
+
+schema代码块补全​
+开发section组件，当开发者在schema的settings片段里面输入{ 加空格后面输入type名称并匹配提示所有B端控件类型
+如 switch,range,products_num,product_picker,image_picker,select,...
+并可以选择按下enter键可以补全相关的代码块。
+如 输入{ sw 并选择了 switch 控件，补全的代码块如下
+image.png
+
+{
+  "type": "switch",
+  "id": "show_background",
+  "label": {
+    "zh-hans-cn": "光标位置"
+  },
+  "default": false
+}
+
+文件路径代码跳转​
+section/snippet 文件路径跳转​
+如下文件路径 按 command 键（mac系统）/ ctr 键 （win系统）点击文件，会打开相关文件
+image.png
+
+语法校验​
+基础语法校验​
+在使用模板变量，如 {{data}} 如果少了 结尾 }} 就会标红提示文件报错。
+image.png
+
+helper 语法校验​
+使用不存在的 helper 或参数不正确， 就会标红提示文件报错。
+image.png
+
+object 语法校验​
+使用不存在的 Object 对象， 就会标红提示文件报错。
+image.png
+
+schema 语法校验​
+schema 配置必须包含如下结构，不然就会标红提示文件报错
+
+{
+  name:{},
+  settings:[{}],
+  blocks:[{}],
+  max_blocks:1,
+  presets:[]
+}
+
+settings 配置必须包含如下结构，不然就会标红提示文件报错
+
+{
+  "type": "text",
+  "id": "title",
+  "label": "title"
+}
+
+templates json文件 语法校验​
+基础json语法报错
+image.png
+order 的属性key必须是在当前项目的section文件夹里面的组件名，不然就会标红提示组件不存在
+image.png
+
+语法高亮​
+handlebars语法高亮​
+后缀为html的文件自动识别handlebars语法并且高亮提示，颜色风格根据各自编辑器设置主题有关。
+image.png
+
+schema语法高亮​
+image.png
+
+多语言翻译​
+schema多语言提示​
+image.png
+
+page 页面多语言提示​
+image.png
+
+配置翻译语言​
+主题插件默认翻译成英文，可以自定义配置翻译语言操作如下：Settings>>Workspace>>Extensions>>Shopline Theme Pluginimage.png
+
+手动修改配置项 .vscode/settings.json
+
+image.png
+
+代码折叠​
+handlebars代码块折叠​
+image.png
+
+代码格式化​
+默认代码格式化插件​
+主题会内置默认使用shopline-theme-plugin插件进行格式化，如需改动请手动修改目录.vscode/settings.json文件默认格式化插件shopline-theme.shopline-theme-pluginimage.png
+
+格式化文档快捷键​
+快捷键shfit + option + f格式化整个文档，选中代码区域格式化等各种快捷键和保存自动格式化，可以根据开发习惯配置主题目录.vscode/settings.json文件image.png
+
+配置格式化风格​
+修改主题根目录.prettierrc.js文件配置代码格式化风格image.png
+

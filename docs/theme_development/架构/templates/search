@@ -1,0 +1,23 @@
+search​
+search 模板呈现搜索页面，该页面显示搜索的结果
+
+image.png
+
+位置​
+products/search模板位于主题的模板目录中：
+
+└── theme
+    ├── layout
+    ├── templates
+    |   ...
+    |   ├── search.json
+    |   ...
+    ...
+
+内容​
+您可以在search模板或模板内的部分中包含以下内容：
+
+search 对象
+search 对象​
+您可以访问 Handlebars search 对象以显示页面的详细信息
+

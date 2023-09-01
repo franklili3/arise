@@ -1,0 +1,132 @@
+JSON templates​
+JSON templates 允许你使用 sections 来控制在线店铺不同页面的展示。
+JSON templates 是一份存储了包含要渲染的 sections 列表及相关的配置在内的数据文件。商家可以在主题编辑器内添加、移除、排序这些 sections。
+当使用 JSON templates 渲染页面时，sections 将按照 order 属性指定的顺序呈现，sections 之间没有使用 HTML。
+
+尽管 JSON 模板在内容上与 HTML 模板不同，但它们仍然是支持以下 Shopline 主题功能的模板文件：
+
+所有模板类型， gift_card除外。
+备用模板。
+Schema​
+JSON templates 必须是一个有效的 JSON 文件。此文件根对象包含如下的属性列表：
+
+属性名称	类型	是否必填	描述
+name	String	是	页面的文件名称，例如：index.html
+layout	String or false	否	使用 layout 目录下的文件渲染模板。例如，指定 "full-width"渲染 layout/full-width.html
+默认使用 layout/theme.html
+使用 false会直接使用 layout/theme.html
+wrapper	String	否	包裹 sections 的 HTML 标签定义，具体见 wrapper 属性
+sections	Object	否	一个包含了以 section ID、section 数据为 key-value 形式的对象
+不允许使用相同的 section ID
+总之，此配置和 config/settings_data.json 下的 sections配置规则相同，具体见 sections 属性
+order	Array	否	一个包含了按顺序需要呈现在页面上的 section ID 数组。section ID 必须是上面 sections配置的 key，不能出现重复的 section ID
+提示 Section 文件必须在其 schema 中定义预设，以支持使用主题编辑器将其添加到JSON模板中。 没有预设的部分文件应手动包含在JSON文件中，并且不能使用主题编辑器删除。
+
+命名 JSON 模板​
+文件名必须是有效的主题模板类型，并带有可选后缀作为备用模板。例如，集合模板可以命名为 collection.json或 collection.alternate.json。
+模板只能作为 JSON 或 Html 模板存在，可以同时存在，当二者同时存在时，则优先使用 JSON 模板
+
+wrapper 属性​
+wrapper 属性可以在 JSON templates 中的所有 sections 包裹一层 HTML 标签。
+例如，一个 JSON 文件使用了 wrapper 属性会产生如下的输出结果：
+
+{
+  "name": "index.html",
+  "wrapper": "div#div_id.div_class[attribute-one=value]",
+  "sections": {
+    "video": {
+      "type": "video",
+      "disabled": false,
+      "settings": {
+        "title": "Video",
+        "autoplay": false,
+        "ratio": "16:9",
+        "background_position": "center",
+        "overlay": false,
+        "overlay_color": "#000000",
+        "overlay_transparent": 50,
+        "cover": {
+          "url": ""
+        },
+        "caption": "A short description of the video."
+      }
+    }
+  },
+  "order": [
+    "video"
+  ]
+}
+
+<div id="div_id" class="div_class" attribute-one="value">
+  <!-- index.json sections -->
+</div>
+
+sections 属性​
+JSON templates 里的 sections 属性保存了由模板渲染 section 的数据，它由 section ID 和 section 一些配置项组成。JSON templates 最多只能渲染 25 个 sections。
+你可以通过代码、主题编辑器添加 sections。以下是 sections 的配置项及说明：
+
+值	类型	是否必填	描述
+<SectionID>	String	-	section 的唯一 ID，只接受字母、数字字符组合
+<SectionType>	String	是	sections 文件夹下的文件路径及名称，不包含文件拓展名
+<SectionDisabled>	Boolean	否	当设置为 true时，此 section 不会被渲染，但仍可以在主题编辑器定制，默认为 false
+<BlockID>	String	-	block 的唯一 ID，只接受字母、数字字符组合
+<BlockType>	String	是	block 类型，在 section 文件的 schema 定义中可以找到
+<BlockOrder>	Array	否	由 block ID 组成的数组，按照它们呈现的顺序排列，block ID 必须在 blocks 对象中被定义，而且不允许重复
+<SettingID>	String	-	在 block 或 section schema 中定义的 setting ID
+<SettingValue>	(multiple)	-	对应配置的有效值
+例如：
+
+sections: {
+  <SectionID>: {
+    "type": <SectionType>,
+    "disabled": <SectionDisabled>,
+    "settings": {
+      <SettingID>: <SettingValue>
+    },
+    "blocks": {
+      <BlockID>: {
+        "type": <BlockType>,
+        "settings": {
+          <SettingID>: <SettingValue>
+        }
+      }
+    },
+    "block_order": <BlockOrder>
+  }
+}
+
+例如：以下模板在产品页面上呈现product-preview.html和 recently-viewed.htmlsection 文件：
+
+{
+  "name": "products/detail.html",
+  "wrapper": "div#page-product-detail",
+  "sections": {
+    "product-preview": {
+      "type": "product/detail/product-preview",
+      "disabled": false,
+      "settings": {
+        "default_selected_sku": true
+      },
+      "blocks": {
+        "block-1": {
+          "type": "title",
+          "settings": {}
+        },
+        "block-2": {
+          "type": "abstract",
+          "settings": {}
+        }
+      },
+      "block_order":["block-1","block-2"]
+    },
+    "recently-viewed":{
+      "type": "product/recently-viewed",
+      "settings": {
+        "show_product_number": 6,
+        "product_image_ratio": "0"
+      }
+    }
+  },
+  "order": ["product-preview", "recently-viewed"]
+}
+

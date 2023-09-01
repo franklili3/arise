@@ -1,0 +1,17 @@
+customer_login_link​
+生成指向客户登录页面的 HTML 链接
+
+参数​
+str {String} 字符串，必填
+returns {String} HTML 字符串
+例子​
+{{ customer_login_link str }}
+
+Code
+1
+2
+{{{ customer_login_link 'Log in' }}}
+
+Output
+1
+<a href="/user/signIn" id="customer_login_link">Log in</a>

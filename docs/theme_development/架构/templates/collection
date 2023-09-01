@@ -1,0 +1,46 @@
+collection​
+collection 模板渲染商品系列页面，其中列出了商品系列中的所有商品。
+
+image.png​
+位置​
+collection模板位于主题的模板目录中：
+
+└── theme
+    ├── layout
+    ├── templates
+    |   ...
+    |   ├── collection.json
+    |   ...
+    ...
+
+Content​
+您可以在collection模板或模板内的部分中包含以下内容
+
+products 对象
+product_tags 对象
+tags 对象
+sortationProductsCount 对象
+sortationUniquekey 对象
+sortation 对象
+sortationId 对象
+products 对象​
+您可以访问 Handlebars product 对象以显示当前集合的商品列表。
+
+product_tags 对象​
+您可以访问 Handlebars product_tags 对象以显示当前集合的商品标签。
+
+tags 对象​
+您可以访问 Handlebars tags 对象以显示当前 URL 参数上的 tags query 参数。
+
+sortationProductsCount 对象​
+您可以访问 Handlebars sortationProductsCount 对象以显示当前集合的商品数量。
+
+sortationUniquekey 对象​
+您可以访问 Handlebars sortationUniquekey 对象以显示当前集合的 handle。
+
+sortation 对象​
+您可以访问 Handlebars sortation 对象以显示当前集合的信息。
+
+sortationId 对象​
+您可以访问 Handlebars sortationId 对象以显示当前集合的 id。
+

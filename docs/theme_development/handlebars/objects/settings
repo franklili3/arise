@@ -1,0 +1,23 @@
+settings​
+您可以根据settings_schema.json文件访问主题的所有设置。
+
+TIP
+要了解可用设置类型，请访问Input settings。
+
+settings 参考使用​
+Code
+Data
+1
+2
+3
+4
+{{#if settings.title }}
+  <h2>{{settings.title}}</he>
+{{/if}}
+
+Output
+1
+  <h2>title</he>
+从模板获取
+Global
+settings

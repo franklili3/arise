@@ -1,0 +1,267 @@
+框架​
+主题应用拓展是由 app block、app embed block、assets 和 snippets 一起构成的。
+
+文件结构​
+当您创建主题应用拓展时，SHOPLINE 会将以下 theme-app-extension目录和子目录添加到您的应用中：
+
+├── theme-app-extension
+  ├── assets
+  │   ├── app-block.css
+  │   ├── app-block.js
+  │   ├── app-embed-block.css
+  │   ├── app-embed-block.js
+  │   ├── logo.png
+  │   └── sheep.jpg
+  ├── blocks
+  │   ├── app-block.html
+  │   └── app-embed-block.html
+  ├── locales
+  │   ├── en.schema.json
+  │   ├── zh-hans-cn.schema.json
+  │   └── zh-hant-tw.schema.json
+  ├── snippets
+  │   └── logo-icon.html
+  ├── .gitignore
+  ├── .shopline-cli.yml
+
+子目录	描述
+assets	包含 CSS、JavaScript 和其他注入主题的静态应用程序内容。
+应用程序可以使用和 schema 属性 或从 Handlebars helper 加载 assets。javascript``stylesheet assets_url
+blocks	包含 app block 和 app embed block Html 文件。
+snippets	包含主题应用拓展的 Html snippet 文件，这些是您可以在其他 app block 和 app embed block 中引用的代码片段
+locales	包含 JSON 语言环境文件以托管面向商家和面向客户的翻译。这些文件的模式和用法类似于主题语言环境文件。您可以包含以下文件类型：
+- Schema 本地化文件：包含面向商家的翻译。使用这些文件来翻译主题编辑器中显示的设置。
+- 店铺本地化文件：包含面向客户的翻译。在呈现 app block 或 app embed block 时，使用这些文件翻译店面中显示的文本。
+注意：商家无法编辑主题应用扩展店面语言环境文件中的字符串。
+App blocks​
+在页面上注入内联内容的应用程序使用 app block 拓展主题。商家可以将 app block 添加到主题的 section，或者作为 section 级别添加到页面的区域中。通过target指向 section来创建 app block。
+默认情况下，主题在安装应用程序后不包含 app block。商家需要从主题编辑器的添加组件将 app block 添加到主题中。
+将 app block 用于以下类型的应用：
+
+您希望自动指向动态源的应用，例如产品评论、产品星级。
+商家可能希望在页面上重新定位的应用
+应用跨域页面的整个宽度的应用
+示例​
+下面的示例创建一个 span具有 style属性的元素。style值（color: {{ block.settings.color }}）在内部搜索键 schema, settings然后搜索 color包含该 "default": "#000000"值的键。然后该值使用默认颜色 #000000填充样式属性，从而将文本呈现为黑色, 并渲染App blocks let you build powerful integrations with online store themes! 黑色文本.
+
+<span style="color: {{ block.settings.color }}">
+App blocks let you build powerful integrations with online store themes!
+</span>
+<img src="{{ assets_url 'logo.png' }}" />
+{{ snippet 'app_snippet' }}
+{{#schema}}
+  {
+    "name": "App Block",
+    "target": "section",
+    "stylesheet": ["app.css"],
+    "javascript": ["app.js"],
+    "settings": [
+        {
+          "label": "Color",
+          "id": "color",
+          "type": "color",
+          "default": "#000000"
+        }
+    ]
+  }
+{{/schema}}
+
+主题中的 app block 示例​
+以下是添加到 section 的 app block 示例：
+显示可插入位置block.png
+以下是包装的 app block 的示例：
+显示可插入位置section.png
+
+app block 的好处​
+app block 很灵活。商家可以使用主题编辑器在部分级别添加、删除和重新排序 app block，以便于自定义。
+
+App embed blocks​
+没有 UI 组件或添加浮动或覆盖元素的应用使用 app embed block 拓展主题。 SHOPLINE 在 HTML 的 </head> 和 </body>结束标记之前呈现和注入 app embed block。 通过将 schema 中的 target 设置为 head或 body来创建 app embed block。
+默认情况下，安装应用后会默认关闭 app embed block。商家需要在主题编辑器中激活 app embed block，从主题设置 > 应用嵌入。
+将 app embed block 用于以下类型的应用：
+
+为页面提供浮动或覆盖组件的应用程序，例如聊天气泡应用程序和产品图像徽章应用程序。
+添加 SEO 元标记、分析或跟踪像素的应用程序。
+示例​
+<div style="position: fixed; bottom: 0; right: 0">
+  <img src="{{ assets_url 'kitten.jpg' }}" />
+</div>
+{{#schema}}
+  {
+    "name": "App Embed Block",
+    "target": "body",
+    "settings": []
+  }
+{{/schema}}
+
+主题中的 app embed block 示例​
+显示可插入位置embed block.png
+
+app embed block 的好处​
+SHOPLINE 在线商店 1.0 主题和 2.0 主题都支持 app embed block。这意味着任何商家都可以使用您的应用程序，而无需维护两种安装路径：一种用于 1.0 主题，另一种用于 2.0 主题。
+安装后，商家可以使用主题编辑器配置 app embed block 设置，以获得更加个性化的体验。
+
+Conditional app blocks​
+你可以根据自定义条件控制 app block 或 app embed block 的可见性。例如，您可能希望根据计划或地理位置限制内容。
+这个条件包含在 block 里的 schema 中，通过 available_if属性控制，并且该值的状态存储在应用拥有的元字段中。元字段可以通过 Handlebars apps 对象访问。
+
+⚠️ 注意
+应用元字段的值必须是一个 boolean类型。
+格式必须满足：{{ apps.metafields.<namespace>.<key>.value }}，其中 resource对应的是 apps、owner_id对应的是 App ID。
+
+例如，如果你有一个命名空间为 conditional和键为 block1的应用程序元字段，那么你可以使用以下 schema:
+
+{{#schema}}
+{
+   "name": "Conditional App block",
+   "target": "section",
+   "stylesheet": ["app.css"],
+   "javascript": ["app.js"],
+   "available_if": "{{ apps.metafields.conditional.block1.value }}",
+   "settings": [
+      {
+        "label": "Colour",
+        "id": "colour",
+        "type": "color",
+        "default": "#000000"
+      }
+   ]
+ }
+{{/schema}}
+
+Schema​
+app block 和 app embed block 的 schema 类似于主题 section schema。它支持以下属性，其中一些是 app block 和 app embed block 所独有的：
+
+字段名	类型	描述	是否必填
+name	String	app block 或 app embed block 在主题编辑器中的标题。
+将 app block 和 app embed block 名称保持在 25 个字符以下，以便它们适合在主题编辑器侧边栏中展示。	是
+target	String	block 所在的位置。可能的值为 section、head和 body。
+app block 的值为 section。
+app embed block 的值为 head和 body。	是
+stylesheet	Array	要从 assets子目录加载的 CSS 文件。
+如果页面上存在该 block，则您可以通过在页面部分添加 <link rel="stylesheet">标签来自动加载此文件。	否
+javascript	Array	要从 assets子目录加载的 JavaScript 文件。
+如果页面上存在该 block，则您可以通过在页面部分添加 <script async>标签来自动加载此文件。	否
+templates	Array	可以在其中呈现 block 的模板。如果未设置，则默认为所有页面。可以支持如下的页面：
+- index - 首页
+- collections_all - 分类页
+- collection - 商品列表页
+- products/detail - 商品详情页
+- cart - 购物车页
+- blogs/list - 博客集合页
+- blogs/detail - 博客页
+- 404 - 404页
+- products/search - 搜索页
+- page - 自定义页面
+- customers/login - 登录页
+- customers/register - 注册页
+- customers/account - 用户中心页
+- customers/reset_password - 重置密码页
+- customers/addresses - 用户地址
+- customers/order/list - 个人中心订单列表页
+- customers/order/detail - 个人中心订单详情页
+- password - 密码页（app block 不生效）
+app block 和 app embed block 无法在结账页面上呈现	否
+class	String	包装 block 最外层元素需要包含的额外 CSS 类，类似于主题 section class
+主题应用拓展将总是包含 shopline-block类。	否
+tag	String	如果设置该值，那么该标签将包装 block 的输出，默认输出被包装在一个 div中。
+可选值有：
+- article
+- aside
+- div (默认)
+- footer
+- header
+- section
+否
+locales	Object	渲染 block 所使用到的翻译文本配置。例如：locales 配置	否
+settings	Array	您向商家提供的用于自定义 app block 或 app embed block 的settings。选择 block 时，这些设置会出现在主题编辑器中。可以使用 Handlebar settings 对象访问设置值。
+
+如果希望配置支持动态取值，可以使用应用元字段。例如，如果你有一个命名空间为 select和键为 options的应用程序元字段，那么你可以使用 options schema。支持配置动态取值的控件类型：
+- select
+- radio
+- checkbox
+否
+default	Array	block 的默认设置配置。有关示例，请参阅 section schema	否
+available_if	String	用于确定是否会呈现在店铺上并在主题编辑器中可见。
+该值必须是一个应用拥有的元字段值的引用。如果应用程序拥有的元字段返回 true, 那么该块就会被渲染并在主题编辑器中可用。	否
+⚠️ 注意
+应用元字段的值必须是一个 array json类型，参考 select 控件配置。
+
+locales 配置​
+{{#schema}}
+{
+  "locales": {
+    "en": {
+      "title": "Title"
+    },
+    "zh-hans-cn": {
+      "title": "标题"
+    },
+    "zh-hant-tw": {
+      "title": "標題"
+    }
+  }
+}
+{{/schema}}
+
+options schema​
+{{#schema}}
+{
+   "name": "App block",
+   "target": "section",
+   "stylesheet": ["app.css"],
+   "javascript": ["app.js"],
+   "settings": [
+      {
+        "label": "Select",
+        "id": "select",
+        "type": "select",
+      	"options": "{{ apps.metafields.select.options.value }}"
+      }
+   ]
+ }
+{{/schema}}
+
+通过深度链接简化安装流程​
+安装后，您的应用程序可以通过深度链接提示商家。单击时，深度链接会激活主题编辑器中的 app embed block，供商家在保存和发布之前进行预览和调整。深度链接简化了应用程序的安装流程，因为商家不需要导航到主题编辑器、找到 block，然后对其进行操作。相反，您的应用程序会为他们完成工作。因为商家可以预览区块，所以您可以让他们控制店面中包含的内容。
+
+示例网址​
+您的应用需要将商家重定向到以下 URL，并填充 URL 查询参数：
+
+https://<myshoplineDomain>/admin/theme/editor/editing/${templateAlias}?themeId=${themeID}&templateName=${templateName}&activateAppId=${uuid}/${handle}
+
+参考以下例子:
+
+https://test.myshopline.com/admin/theme/editor/editing/Home?themeId=63abc8fcf8a25d2d8854de5a&templateName=templates%2Findex.json&activateAppId=ac5292dd-7a66-41a4-b69f-5a163da0a421%2Fback-to-top
+
+涉及到的插值有（以下所有插值，需要 URL encode):
+
+插值	描述
+myshoplineDomain	安装 app 时商家的店铺域名，可以在 app 服务获取到
+templateAlias	编辑器选择的页面, 枚举值是: Home, Products, AllCollections...
+themeID	主题ID, 用于定位编辑的主题
+templateName	编辑器渲染的页面模板, 如: template/index.json
+uuid	主题应用拓展的 uuid 值，可以在 .env 读取 EXTENSION_UUID 值
+handle	需要激活的 app embed block 文件名，例如，文件位于 theme-app-extension/blocks/app-embed.html，{handle} 则为 app-embed
+文件和内容大小限制​
+当您推送到草稿扩展版本时，SHOPLINE 会验证主题应用扩展。如果应用程序的内容超出强制限制，则主题应用程序扩展将无法通过验证并且不会更新。
+下表提供了对主题应用扩展的强制限制：
+
+应用内容	限制
+主题应用拓展中的所有文件	10 MB
+block 数量	25
+所有 block 的 Handlebars 文件大小	100 KB
+assets 目录下的资源类型	.jpg、.js、.css、.png、.svg
+限制​
+以下页面和对象不能与主题应用扩展一起使用。
+
+页面​
+主题 app block 和 app embed block 无法在结帐页面上呈现。这包括客户发起结账时呈现的所有页面，例如联系信息、运输方式、付款方式和订单状态。
+
+Handlebar 对象​
+主题应用拓展无权访问以下 Handlebar 对象：
+
+content_for_header
+content_for_layout
+content_for_footer
+section

@@ -1,0 +1,100 @@
+主题命令​
+此章节列出了您可以与 Shopline CLI 一起使用的的主题命令。该组的命令使用语法是 shopline theme [command]。
+要从命令行访问任何这些命令的帮助，请使用 shopline [command] -h。
+
+init​
+在 Git 仓库中克隆到本地计算机，并用作构建主题的起点。
+
+shopline theme init <THEME_NAME>
+
+可选参数​
+参数	描述
+THEME_NAME	您要为主题指定名称。克隆文件存储在具有此名称的文件夹中。
+<THEME_NAME>可以为以下形式：
+- demo-theme
+- 将会在当前文件夹中新建文件夹存储新主题文件，主题名作为文件夹名。
+- 也可以是相对路径形式../shopline/demo-theme
+- 将会根据输入的路径和当前运行路径，新建文件夹存储新主题文件，主题名为路径的 basename。
+serve​
+将当前主题作为指定主题或开发主题上传到您连接的店铺。
+此命令还返回以下信息：
+
+在 http://127.0.0.1:8282 中指向您的开发主题的链接。此 URL 可以热重新加载对本地文件的更改，或在文件更改时刷新整个页面，允许您使用店铺的数据实时预览更改。
+您可以使用--port <port> 标记指定启动服务器端口，默认 8282
+
+SHOPLINE 后台中主题编辑器的链接
+您可以与其他开发人员共享的预览链接
+如果您已经有当前环境的开发主题，那么此命令会将开发主题替换为您的本地主题。您可以使用--theme-editor-sync标志覆盖它。
+
+Tip 您无法使用 预览结帐自定义http://127.0.0.1:8282。
+
+当运行shopline logout命令时会删除开发中主题。
+您只能在与默认 Shopline 主题文件夹结构匹配的目录中运行此命令。
+
+shopline theme serve
+
+可选参数​
+参数	描述
+--port <PORT>	指定主题预览的本地端口
+--live-reload <MODE>	对主题进行更改时重新加载内容的级别。
+接受以下值：
+- full-page - 修改文件时刷新整个页面（默认）
+- off - 停用实时刷新，任何文件的改动都将不刷新整个页面
+--theme-editor-sync	为主题 JSON 文件启用双向同步。启用此选项后，在 SHOPLINE 后台的模版编辑器中所做的更改将应用于模版的本地副本。
+携带此参数运行 serve 命令时，将对比本地开发主题和线上开发主题的差异并列出差异文件，系统提供两个选项：
+- 本地覆盖线上（默认）
+- 线上覆盖本地
+开发者可选择一项执行。	
+pull​
+从 Shopline 检索主题文件
+如果未指定主题，则会提示您选择要从店铺中的主题列表中提取主题。
+若当前目录非空时，CLI 将提供两个选项给开发者选择：
+
+覆盖同名文件（默认）
+清空当前目录后，拉取主题文件
+shopline theme pull --themeId <THEME_ID>
+
+可选参数​
+参数	缩写	描述
+--themeId		店铺主题 id
+--live	-l	拉取实时（已发布）主题
+--development	-d	下载远程开发主题代码到本地副本。可以使用此命令同步通过线上主题编辑器执行的更改到本地副本。
+--only	-o	仅拉取指定的文件，可在单个命令中使用多次 --only指定多个文件，支持以下格式：
+- 简单的文件名：templates/collection.temp.json
+- 通配符：config/*_secret.json,*.jpg
+--ignore	-x	跳过指定的文件拉取，可在单个命令中使用多次 --ignore指定多个文件，支持以下格式：
+- 简单的文件名：templates/product.temp.json
+- 通配符：config/*_secret.json,*.jpg
+push​
+将您的本地主题文件上传到 Shopline，如果指定主题，则覆盖远程主题。
+如果未指定主题，则会提示您从店铺中的主题列表中选择要覆盖的主题。
+您只能在与默认 Shopline 主题文件夹结构匹配的目录中运行此命令。
+此命令返回以下信息：
+
+Shopline 后台中主题编辑器的链接。
+您可以与他人共享的预览链接。
+shopline theme push --themeId <THEME_ID>
+
+可选参数​
+参数	缩写	描述
+--themeId		店铺主题 id
+--live	-l	推送到线上（已发布）主题。
+--development	-d	推送到开发主题。如果您没有开发主题，则创建一个。
+--only	-o	仅推送指定的文件，可在单个命令中使用多次 “--only”指定多个文件，支持以下格式：
+- 简单的文件名：templates/product.temp.json
+- 通配符：config/*_secret.json,*.jpg
+--ignore	-x	跳过指定的文件推送，可在单个命令中使用多次 “--ignore”指定多个文件，支持以下格式：
+- 简单的文件名：templates/product.temp.json
+- 通配符：config/*_secret.json,*.jpg
+package​
+将您的本地主题文件打包成可以上传到 Shopline 的 ZIP 文件。
+ZIP 文件中仅包含与默认 Shopline 主题文件夹结构匹配的文件夹。
+ZIP 文件名使用theme_name-theme_version.zip根据 settings_schema.json 文件中使用的参数生成。
+
+shopline theme package
+
+list​
+列出当前登录店铺的所有主题，包括 ID、名称、状态。
+
+shopline theme list
+

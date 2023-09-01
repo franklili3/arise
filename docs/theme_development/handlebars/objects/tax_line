@@ -1,0 +1,17 @@
+tax_line​
+关于结账或订单的税费行的信息。
+
+属性​
+
+price
+number
+
+rate
+number
+
+title
+string
+从Object获取
+checkout.tax_lines
+order.tax_lines
+tax_line

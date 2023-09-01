@@ -1,0 +1,179 @@
+主题事件​
+模板事件主要用于在模板页面特定的时机与插件的 JavaScript 进行通信
+在官方模板中，已经内置。
+对于第三方模板开发者，最佳实践是在模板开发的时候根据以下指引进行内置，以便于兼容所有插件。
+
+注意
+主题事件在OS2.1不适用，需要标注：主题事件在OS2.1主题不适用
+
+使用方式​
+在 window.Shopline 对象中会注入一个事件总线，通过 window.Shopline.event获取
+
+// 在模板中发送事件
+window.Shopline.event.emit('eventName', 'foo')
+
+在插件中监听
+
+window.Shopline.event.on('eventName', function (payload) {
+  ...
+})
+
+例子：在sku切换的时候发送当前选择的sku信息
+
+class Sku {
+  ...
+	change(currentSku) {
+  	window.Shopline.event.emit('Product::SkuChange', currentSku)
+  }
+  ...
+}
+
+事件​
+标准化事件​
+Product::SkuChanged​
+触发时机：
+切换SKU & SKU发生变化时
+
+window.Shopline.event.on('Product::SkuChanged', function (payload) {
+  const { data } = payload;
+  //do something
+})
+
+data	描述
+type: 'init'|'change'	触发该事件的时机，init:初始化，change:用户切换sku
+quantity: number	商品选中数量（默认为1）
+spuSeq: string	序列号
+discount: number	优惠折扣：10表示为10%
+skuSeq: string	sku序列号
+price: number	销售价（约束：销售价不能小于0）
+originPrice: number	原价（划线价）（约束：划线价不能小于0）
+stock: number	库存
+weight: number | null	重量
+weightUnit: string | null	重量单位：G-克, KG-千克, LB-磅, OZ-盎司： 克，千克，磅，盎司，公斤 ->g,kg,lb,oz,zh_kg
+available: boolean	sku是否可用
+shelves: boolean	sku是否上架
+skuAttributeIds: object[]	SKU属性ID列表
+imageList: stirng[] | null	图片链接
+soldOut: boolean	是否售罄
+allowOversold: boolean	是否允许超卖
+imageBeanList: object[]	SKU图片
+id: string	使用sku的位置的描述 例如： productDetail | ${modalPrefix}${spuSeq}(弹窗前缀+商品)
+instances: object	sku选择器实例
+instances.productImages	商品主题实例
+instances.buttonGroup	按钮组实例
+instances.skuDataPool	sku实例
+instances.quantityStepper	数量选择器实例
+DataReport 上报类事件​
+DataReport::ViewContent​
+触发时机：
+在进入商品详情页或快速查看 & 快捷加购时触发
+
+window.Shopline.event.on('DataReport::ViewContent', function (payload) {
+    const { data } = payload;
+    //do something
+})
+
+data	描述
+content_spu_id: string	spu id
+content_sku_id: string	sku id
+content_category: string	目前为空
+currency: string	货币符号
+value: string	价格（按照实际精度展示的价格）
+quantity: number	数量 默认为：1
+price: string	价格（按照实际精度展示的价格）
+DataReport::AddToCart​
+触发时机：
+点击加购（add to cart）按钮
+
+window.Shopline.event.on('DataReport::AddToCart', function (payload) {
+   const { data } = payload;
+   //do something
+})
+
+data	描述
+content_spu_id: string	商品spu id
+content_sku_id: string	商品sku id
+content_category: string	商品类目
+content_name	商品名称
+currency: string	货币符号
+value: string	价格（按照实际精度展示的价格）
+quantity: number	商品购买数量
+price: string	价格（按照实际精度展示的价格）
+DataReport::InitiateCheckout​
+触发时机：
+进入结算页后
+
+window.Shopline.event.on('DataReport::InitiateCheckout', function (payload)  {
+   const { data } = payload;
+   //do something
+})
+
+data	描述
+contents: {}[]	商品内容数组
+currency: string	货币符号
+value: string	商品总价
+quantity: number	商品总数量
+contents​
+const contents: {
+	content_spu_id: string;
+  content_sku_id: string;
+  content_name: string;
+  quantity: number;
+  price: string;
+}[]
+
+DataReport::CompleteOrder​
+触发时机：
+点击完成订单按钮（包含 smart PayPal button 信用卡按钮）
+
+data	描述
+contents: {}[]	商品内容数组
+currency: string	货币符号
+value: string	商品总价
+quantity: number	商品总数量
+contents​
+const contents: {
+	content_spu_id: string;
+  content_sku_id: string;
+  content_name: string;
+  quantity: number;
+  price: string;
+}[]
+
+DataReport::Purchase​
+触发时机：
+下单完成并且支付成功时触发
+
+data	描述
+contents: {}[]	商品内容数组, 示例
+content_category: string	""（目前是空）
+currency: string	"TWD" 货币符号
+value: string	"10.00"商品总价（quantity * price）
+quantity: number	2商品总数量（quantity * length）
+contents​
+const contents: {
+	content_spu_id: string;
+  content_sku_id: string;
+  content_name: string;
+  quantity: number;
+  price: string;
+}[]
+
+示例​
+[
+  {
+    "content_spu_id":"16047822502925650484150374",
+    "content_sku_id":"18047822502926992661010374",
+    "content_name":"⛄⛄North-Pole-Village-Musical-Ornament-With-Light-And-Motion1",
+    "quantity":1,
+    "price":29.99
+	},
+  {
+    "content_spu_id":"16047822502925650484150375",
+    "content_sku_id":"18047822502926992661010375",
+    "content_name":"⛄⛄North-Pole-Village-Musical-Ornament-With-Light-And-Motion2",
+    "quantity":1,
+    "price":29.99
+	}
+]
+

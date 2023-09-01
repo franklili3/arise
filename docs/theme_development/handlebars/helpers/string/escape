@@ -1,0 +1,18 @@
+escape​
+转义HTML中的特殊字符，如 <>，'，和 &，并将字符转换为转义序列。此过滤器不会影响字符串内没有对应转义序列的字符。
+
+参数​
+str {String} 输入所需的字符串，必填。
+returns {String} 返回字符串。
+用法​
+{{ escape str }}
+
+例子​
+Code
+1
+2
+{{ escape '<p>hello</p>' }}
+
+Output
+1
+&amp;lt;p&amp;gt;hello&amp;lt;/p&amp;gt;

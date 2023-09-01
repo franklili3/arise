@@ -1,0 +1,76 @@
+if​
+如果一个特定的条件是真，则渲染一个表达式。
+
+{{#if condition }}
+  expression
+{{/if}}
+
+condition
+
+可评估的表达式
+
+表达式
+
+满足条件时要呈现的表达式。
+
+Code
+Data
+1
+2
+3
+4
+{{#if product.compare_at_price '>' product.price }}
+  This product is on sale!
+{{/if}}
+
+Output
+1
+  This product is on sale!
+else if
+
+您可以使用else if标记来检查多个条件。
+
+{{#if condition }}
+  expression
+{{else}}
+  expression
+{{/if}}
+
+Code
+Data
+1
+2
+3
+4
+5
+6
+{{#if product.type '==' 'Love' }}
+  This is a love option!
+{{else if product.type '==' 'Health' }}
+  This is a health option!
+{{/if}}
+
+Output
+1
+  This is a health option!
+else
+
+允许您指定在不满足其他条件时执行的默认表达式。
+
+Code
+Data
+1
+2
+3
+4
+5
+6
+{{#if product.available }}
+  This product is available!
+{{else}}
+  This product is sold out!
+{{/if}}
+
+Output
+1
+  This product is available!

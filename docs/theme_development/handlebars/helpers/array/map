@@ -1,0 +1,24 @@
+map​
+根据数组中项目的特定属性创建值数组。
+
+参数​
+array {Array} 数组，必填。
+key {String} 数组元素的属性名，必填。
+returns {Array} 数组。
+用法​
+{{ map objArr "name" }}
+
+例子​
+Code
+Data
+1
+2
+3
+4
+{{ assign 'product_titles' (map collection.products 'title') }}
+
+{{ join product_titles ', ' }}
+
+Output
+1
+Draught of Immortality, Glacier ice, Crocodile tears, Dandelion milk

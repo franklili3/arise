@@ -1,0 +1,15 @@
+powered_by_link​
+根据商店的地区设置，创建一个HTML链接元素，链接到shopline.com的本地化版本。
+
+Code
+Data
+1
+2
+  {{{powered_by_link}}}
+
+Output
+1
+  <a target="_blank" rel="nofollow" href="https://www.shopline.com/?utm_source=onlinestore&utm_medium=shopline&utm_campaign=powerbyshopline">Powered by SHOPLINE</a>
+从模板获取
+Global
+policy

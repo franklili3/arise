@@ -1,0 +1,32 @@
+concat​
+连接（组合）两个数组。
+
+参数​
+arr1 {Array} 数组对象，必填
+arr2 {Array} 数组对象，必填
+returns {Array} 数组对象
+用法​
+{{concat arr1 arr2}}
+
+例子​
+Code
+Data
+1
+2
+3
+4
+5
+6
+7
+8
+{{ assign 'types_and_vendors' (concat collection.all_types collection.all_vendors) }}
+
+Types and vendors:
+
+{{#each types_and_vendors as |item|}}
+  {{ item }}
+{{/each}}
+
+Output
+1
+

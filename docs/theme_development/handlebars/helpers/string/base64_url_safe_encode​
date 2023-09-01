@@ -1,0 +1,20 @@
+base64_url_safe_encode​
+Encodes a string in URL-safe Base64 format.
+
+为生成URL安全的Base64，此helper使用-和_替代+和/。
+
+Params​
+str {String} Enter the required string.
+returns {String} Return string.
+Usage​
+{{ base64_url_safe_encode str }}
+
+Example​
+Code
+1
+2
+{{{ base64_url_safe_encode '<p>ok?</p>' }}}
+
+Output
+1
+PHA-b2s_PC9wPg==

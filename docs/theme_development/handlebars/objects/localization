@@ -1,0 +1,27 @@
+localization​
+店铺的国家/地区和语言信息
+
+localization 对象可以在 localization formhelpers 中使用.
+
+了解如何在你的主题中使用 localization对象请参考支持多种货币和语言
+
+属性​
+
+available_countries
+array of country
+
+
+available_languages
+array of shop_locale
+
+
+country
+country
+
+
+language
+shop_locale
+
+从模板获取
+Global
+localization

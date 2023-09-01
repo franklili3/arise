@@ -1,0 +1,19 @@
+remove_first​
+从给定的字符串中移除首次出现的子字符串。
+
+参数​
+str1 {String} 输入字符串，必需
+str2 {String} 输入字符串，必需
+returns {String} 返回字符串
+用法​
+{{ remove_first str1 str2 }}
+
+例子​
+Code
+1
+2
+{{ remove_first 'hello' 'l' }}
+
+Output
+1
+helo

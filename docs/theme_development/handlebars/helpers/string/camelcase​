@@ -1,0 +1,18 @@
+camelcase​
+将字符串转换为驼峰式命名。
+
+参数​
+str {String} 输入字符串，必填
+returns {String} 返回字符串
+用法​
+{{ camelcase str }}
+
+例子​
+Code
+1
+2
+{{ camelcase 'variable-name' }}
+
+Output
+1
+variableName

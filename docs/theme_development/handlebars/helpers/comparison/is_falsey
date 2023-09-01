@@ -1,0 +1,19 @@
+is_falsey​
+如果给定的值是falsey，返回true。使用falsey库进行比较
+
+参数​
+val {any}
+returns {Boolean}
+例子​
+Code
+1
+2
+3
+4
+{{#if (is_falsey false)}}
+  This will be rendered
+{{/if}}
+
+Output
+1
+  This will be rendered

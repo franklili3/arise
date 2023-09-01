@@ -1,0 +1,32 @@
+highlight​
+在一个给定的字符串中，用一个HTML <strong>标签包裹一个特定字符串的所有实例，标签的类属性为高亮。
+
+参数​
+str {String} 输入，必填
+search {String} 搜索值，必填
+returns {String} html 字符串
+用法​
+{{{highlight str search}}}
+
+例子​
+Code
+Data
+1
+2
+3
+4
+5
+6
+7
+8
+{{#each search.results as |item|}}
+  {{#if item.object_type '==' 'product'}}
+    {{{ highlight item.description ../search.terms }}}
+  {{else}}
+    {{{ highlight item.content ../search.terms }}}
+  {{/if}}
+{{/each}}
+
+Output
+1
+    This is a <strong class="highlight">love</strong> potion.

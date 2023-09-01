@@ -1,0 +1,27 @@
+product​
+product 模板渲染商品详情页面，其中包含媒体和内容。
+
+image.png
+
+位置​
+products/detail模板位于主题的模板目录中：
+
+└── theme
+    ├── layout
+    ├── templates
+    |   ...
+    |   ├── product.json
+    |   ...
+    ...
+
+内容​
+您可以在product模板或模板内的部分中包含以下内容：
+
+product 对象
+variant 对象
+product 对象​
+您可以访问 Handlebars product 对象以显示当前商品折的详细信息。
+
+variant 对象​
+您可以访问 Handlebars variant 对象以显示当前商品的多款式详细信息。
+

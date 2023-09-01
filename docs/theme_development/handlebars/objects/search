@@ -1,0 +1,32 @@
+search​
+有关店面搜索查询的信息。
+
+要了解店面搜索以及如何将其包含在您的主题中，请参阅 店面搜索。
+
+属性​
+
+filters
+array of filter
+
+
+performed
+boolean
+
+results
+
+results_count
+number
+
+sort_by
+
+sort_options
+string
+
+terms
+string
+
+types
+string
+从模板获取
+search
+search

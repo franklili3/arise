@@ -1,0 +1,136 @@
+customer_address​
+生成用于在客户帐户上创建新地址、编辑或删除现有地址的表单。
+
+表单输入​
+输入项	输入类型	字段名	是否必填	备注
+姓氏	text	address[firstName]	选填	
+名字	text	address[lastName]	选填	
+详细地址	text	address[addr]	选填	
+详细地址2	text	address[addrTwo]	选填	
+城市	text	address[city]	选填	
+城市编码	text	address[cityCode]	选填	
+公司	text	address[company]	选填	
+国家/地区	text	address[country]	选填	
+国家/地区编码	text	address[countryCodeStr]	选填	
+区	text	address[district]	选填	
+区编码	text	address[districtCode]	选填	
+手机号	text	address[mobilePhone]	选填	
+省份	text	address[province]	选填	
+省份编码	text	address[provinceCode]	选填	
+邮政编码	text	address[zipCode]	选填	
+是否默认地址	boolean	address[def]	选填	
+例子​
+创建​
+Code
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+{{#form "customer_address" id="customer_address" class="customer-form"}}
+  <div class="addr">
+    <label for="addr">address</label>
+    <input type="text" name="addr" placeholder="address" />
+  </div>
+
+  <div class="submit">
+    <input class="submit-button" type="submit" value="submit">
+  </div>
+{{/form}}
+
+Output
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+⌄
+⌄
+⌄
+<form method="post" action="/api/user/front/address/form/v2/add" id="customer_address" class="customer-form">
+
+  <input type="hidden" name="form_type" value="customer_address">
+  <div class="addr">
+    <label for="addr">address</label>
+    <input type="text" name="addr" placeholder="address" />
+  </div>
+
+  <div class="submit">
+    <input class="submit-button" type="submit" value="submit">
+  </div>
+
+</form>
+编辑​
+支持 address 参数，用于表单显示对应字段, 如传入的 address 为：
+
+Code
+Data
+1
+2
+3
+4
+5
+6
+7
+{{#form "customer_address" id="customer_address" address=address class="customer-form" return_to="/"}}
+  <div class="field">
+    <label for="addr">addr</label>
+    <input type="text" id="addr" name="address[addr]" title="addr" placeholder="addr" value="{{address.addr}}">
+  </div>
+{{/form}}
+
+Output
+1
+2
+3
+4
+5
+6
+7
+8
+9
+⌄
+⌄
+<form method="post" action="/api/user/front/address/form/v2/edit/SL20230104" id="customer_address" class="customer-form">
+  <input type="hidden" name="returnTo" value="/">
+  <input type="hidden" name="form_type" value="customer_address">
+  <div class="field">
+    <label for="addr">addr</label>
+    <input type="text" id="addr" name="address[addr]" title="addr" placeholder="addr" value="address">
+  </div>
+
+</form>
+删除​
+支持 address_seq 参数，对应 address 的 id 字段，用于处理要删除的地址：
+
+Code
+1
+2
+{{#form "customer_address" id="customer_address" address_seq="SL20230104" class="customer-form" return_to="/"}}{{/form}}
+
+Output
+1
+2
+3
+4
+5
+⌄
+<form method="post" action="/api/user/front/address/form/delete/SL20230104" id="customer_address" class="customer-form">
+  <input type="hidden" name="returnTo" value="/">
+  <input type="hidden" name="form_type" value="customer_address">
+
+</form>

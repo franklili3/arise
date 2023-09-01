@@ -1,0 +1,22 @@
+unique​
+返回一个删除了所有重复值的数组的块 helper 。最好与eachhelper一起使用。
+
+参数​
+array {Array}
+returns {Array}
+用法​
+{{unique array}}
+
+例子​
+Code
+1
+2
+3
+4
+{{ assign 'potion_array' (split 'invisibility, health, love, health, invisibility' ', ') }}
+
+{{ join (unique potion_array) ', ' }}
+
+Output
+1
+invisibility, health, love

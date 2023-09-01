@@ -1,0 +1,25 @@
+blogs​
+商店中的所有博客。
+
+您可以使用handle来访问博客。
+
+Code
+Data
+1
+2
+3
+4
+  {{#each blogs.potion-notions.articles as |article|}}
+    {{{article.title}}}
+  {{/each}}
+
+Output
+1
+2
+3
+    Homebrew: start making potions at home
+    New potions for spring
+    How to tell if you're out of invisibility potion
+从模板获取
+Global
+blogs

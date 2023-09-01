@@ -1,0 +1,15 @@
+json​
+字符串化一个对象。
+
+参数​
+obj {Object}: 要字符串化的对象
+例子​
+Code
+Data
+1
+2
+{{{ json object }}}
+
+Output
+1
+{"foo":"bar"}

@@ -1,0 +1,101 @@
+侧边栏配置​
+侧边栏设置不能保存值且不可配置。它们是信息元素，可用于提供有关输入设置的详细信息并对其进行组织。
+
+侧边栏设置根据标准属性分为以下类型：
+
+group_header / 分组标题
+header / 标题
+标准属性​
+以下是侧边栏配置的标准属性：
+
+属性	描述	是否必需
+type	侧边栏配置类型。	是
+label	配置的文本内容	是
+group_header / 标题​
+type 设置为 group_header 会新增一个标题元素并将之后的配置项编为一组，以帮助您更好地组织配置项。例如，以下配置生成如下效果：
+
+{
+  "type": "group_header",
+  "label": {
+    "en": "Products",
+    "zh-hans-cn": "商品"
+  }
+},
+{
+  "id": "superscript_decimals",
+  "type": "switch",
+  "label": {
+    "en": "Zoom out display for decimals of the selling price",
+    "zh-hans-cn": "售价小数位缩小展示"
+  },
+  "default": true
+},
+{
+  "type": "group_header",
+  "label": {
+    "en": "Collections",
+    "zh-hans-cn": "商品分类"
+  }
+},
+{
+  "id": "collection_grid_shape",
+  "type": "select",
+  "label": {
+    "en": "Shape of collection image",
+    "zh-hans-cn": "分类图片形状"
+  },
+  "options": [
+    {
+      "value": "square",
+      "label": {
+        "en": "Square",
+        "zh-hans-cn": "方形"
+      }
+    }
+  ],
+  "default": "square"
+}
+
+在主题编辑器内的效果：
+image.png
+
+group_header 的分组逻辑：按顺序渲染，当 type 为 group_header 时，则接下来的配置项都会在此分组下，直到遇到下一个 group_header 配置
+
+header / 标题​
+type 设置为 header 与 group_header 的区别在于只会新增一个标题元素，并不会对配置项进行分组。
+例如，以下配置生成如下效果：
+
+{
+  "type": "header",
+  "label": {
+    "zh-hans-cn": "标题",
+    "en": "Title"
+  },
+  "info": {
+    "zh-hans-cn": "文字内容",
+    "en": "Text content"
+  }
+}
+
+在主题编辑器内的效果：
+image.png
+
+在文本中使用链接​
+您可以在每个具有 info 属性的配置里面添加超链接。
+示例代码：
+
+{
+  "type": "group_header",
+  "label": {
+    "zh-hans-cn": "子分类",
+    "en": "Subcollection"
+  },
+  "info": {
+    "zh-hans-cn": "菜单导航中配置的子分类菜单将在此处展示。[了解更多](https://shoplineapphelp.zendesk.com/hc/zh-cn/articles/4404860397977)",
+    "en": "The collection menu configured in the navigation menu will be displayed here. [Know more](https://shoplineapphelp.zendesk.com/hc/zh-cn/articles/4404860397977)"
+  }
+}
+
+在主题编辑器内的效果：
+image.png
+

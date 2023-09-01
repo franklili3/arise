@@ -1,0 +1,12 @@
+content_for_additional_checkout_buttons​
+返回任何启用的具有离站结账功能的支付提供商的结账按钮。
+
+使用 additional_checkout_buttons 来检查这些支付提供商是否存在，使用 content_for_additional_checkout_buttons 来显示关联的结账按钮。要了解如何使用这些对象的更多信息，请参考快速结账。
+
+{{#if additional_checkout_buttons}}
+  {{{content_for_additional_checkout_buttons}}}
+{{/if}}
+
+从模板获取
+Global
+content_for_additional_checkout_buttons

@@ -1,0 +1,22 @@
+payment_type_img_url​
+返回给定支付类型的SVG图片的URL。
+
+参数​
+type {String} 支付类型，必填
+用法​
+{{payment_type_img_url type }}
+
+例子​
+Code
+Data
+1
+2
+3
+4
+{{#each shop.enabled_payment_types as |type| }}
+  <img src="{{ payment_type_img_url type }}" />
+{{/each}}
+
+Output
+1
+  <img src="https://img.myshopline.com/pay/brand/default.svg" />

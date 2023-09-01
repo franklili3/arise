@@ -1,0 +1,59 @@
+time_tag​
+将一个时间戳转换为HTML<time>标签。
+
+输出格式可以参考 Ruby documentation
+
+参数​
+time {String} 时间，必填
+format {String} 格式，可选
+hash.datetime {String} datetime 属性时间格式，可选，默认为 YYYY-MM-DDThh:mm
+hash.format {String} 格式，可选
+returns {String} html 字符串
+用法​
+{{time_tag time format }}
+
+例子​
+Code
+Data
+1
+2
+{{ time_tag article.created_at '%B %d, %Y' }}
+
+Output
+1
+<time datetime="2022-04-15T04:56:02Z">April 15, 2022</time>
+format​
+{{time_tag time string }}
+{{time_tag time format=string }}
+
+指定可识别区域设置的日期格式。您可以使用以下格式：
+
+abbreviated_date
+basic
+date
+date_at_time
+default
+on_date
+Code
+Data
+1
+2
+{{ time_tag article.created_at 'abbreviated_date' }}
+
+Output
+1
+<time datetime="2022-04-15T04:56:02Z">15 Apr 2022</time>
+datetime​
+默认情况下，<time>标签的日期时间属性的值被格式化为YYYY-MM-DDThh:mm:ssTZD。然而，你可以用strftime速记格式指定一个自定义格式。
+
+{{time_tag time format datetime=format2 }}
+
+Code
+Data
+1
+2
+{{ time_tag article.created_at 'abbreviated_date' datetime='%Y-%m-%d' }}
+
+Output
+1
+<time datetime="2022-04-15">15 Apr 2022</time>

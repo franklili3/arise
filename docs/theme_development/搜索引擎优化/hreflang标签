@@ -1,0 +1,17 @@
+在主题中使用 hreflang 标签​
+当搜索引擎抓取网站时，它们会查找 hreflang 标签以确定网站的目标语言和区域，然后使用它来根据用户的语言和位置提供正确的 URL。
+
+例如，如果一家商店的默认 URL 为 your-store.myshopline.com，西班牙语版本为 es.your-store.myshopline.com，那么在您的主题中包含 hreflang 标签将确保位于西班牙或具有西班牙语设置的客户将获得西班牙语 URL。
+
+hreflang 标签​
+hreflang 标签是link标识网站本地化 URL 的元素。您应该为存在的每种语言或区域 URL 添加一个唯一的 hreflang 标记，并且它应该包含在 theme.html 中的 <head>.
+
+例如：
+
+<head>
+  <link rel="alternate" hreflang="en" href="your-store.myshopline.com" />
+  <link rel="alternate" hreflang="es" href="es.your-store.myshopline.com" />
+</head>
+
+提示 要了解有关 hreflang 标签以及如何使用它们的更多信息，请参阅Google 的文档。
+

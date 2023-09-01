@@ -1,0 +1,39 @@
+link_to_tag​
+生成一个HTML<a>标签，带有href属性，链接到当前集合，过滤后只显示有指定标签的产品。
+
+当前 url 如果存在 tag 标签，会在该基础上追加,目前该 helper 仅支持分类列表页使用。 其他页面不支持。
+
+参数​
+tag {String} 商品类型, 必填
+hash.text {String} text 用于生成 a 标签显示内容文本，若传入非字符串将默认转为空字符串
+[attribute] {Object} 表单html属性，可选，格式：class="_class"
+returns {String} html
+用法​
+{{ link_to_tag tag [attribute] }}
+
+例子​
+Code
+Data
+1
+2
+3
+4
+5
+6
+7
+8
+{{#each collection.all_tags as |tag|}}
+  {{#if (contains ../current_tags tag) }}
+    {{ tag }}
+  {{else}}
+    {{ link_to_tag tag class="link-class" title=tag text=tag }}
+  {{/if}}
+{{/each}}
+
+Output
+1
+2
+3
+    red
+    <a href="/collections/handle/block" class="link-class" title="block">block</a>
+    <a href="/collections/handle/yellow" class="link-class" title="yellow">yellow</a>

@@ -1,0 +1,252 @@
+customer_login​
+Generates a form for logging into a customer account.
+
+表单输入​
+输入项	输入类型	字段名	是否必填	备注
+邮箱	email	customer[email]	商家开启邮箱注册时必填	
+手机号	phone	customer[phone]	商家开启手机号注册时必填	手机号格式为: 国际封闭电话号码, 例如大陆手机号码：15600000000
+区号	text	customer[code]	商家开启手机号注册时必填	区号为国际电话区号，例如大陆手机区号：86
+密码	password	customer[password]	必填	
+例子​
+Code
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+{{#form 'customer_login' id="customer-login-form"}}
+  <div class="account">
+    <label for="email">{{ t 'user.username' }}</label>
+    <input type="text" name="customer[email]" placeholder="{{ t 'user.username' }}" />
+  </div>
+
+  <div class="password">
+    <label for="password">{{ t 'user.password' }}</label>
+    <input type="password" name="customer[password]" placeholder="{{ t 'user.password' }}" />
+  </div>
+
+  <div class="submit">
+    <input class="submit-button" type="submit" value="{{ t 'user.signIn' }}">
+  </div>
+{{/form}}
+
+Output
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+⌄
+⌄
+⌄
+⌄
+<form method="get" id="customer-login-form">
+
+  <div class="account">
+    <label for="email">user.username</label>
+    <input type="text" name="customer[email]" placeholder="user.username" />
+  </div>
+
+  <div class="password">
+    <label for="password">user.password</label>
+    <input type="password" name="customer[password]" placeholder="user.password" />
+  </div>
+
+  <div class="submit">
+    <input class="submit-button" type="submit" value="user.signIn">
+  </div>
+
+
+</form>
+配合使用​
+以上代码需要结合下面的脚本一起使用
+
+class Login {
+  constructor() {
+    this.form = document.querySelector('#customer-login-form');
+    this.form.addEventListener('submit', this.onSubmitHandler.bind(this));
+    this.login = new window.Shopline.customerAccount.Login(this.form)
+  }
+  // 登录逻辑
+  onSubmitHandler(e) {
+    e.preventDefault();
+    this.login.submit()
+      .then(response => {
+        window.location.href = '/user/center';
+      })
+      .catch(error => {
+        // 处理登录失败异常场景
+      })
+  }
+}
+// 初始化用户登录 JS SDK
+window.Shopline.loadFeatures(
+  [
+    {
+      name: 'customer-account-api',
+      version: '0.1'
+    }
+  ],
+  function(error) {
+    if (error) {
+      throw error;
+    }
+    new Login();
+  }
+);
+
+Third Party Login​
+Code
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+{{#form 'customer_login' id="customer-login-form"}}
+  <div class="account">
+    <label for="email">{{ t 'user.username' }}</label>
+    <input type="text" name="customer[email]" placeholder="{{ t 'user.username' }}" />
+  </div>
+
+  <div class="password">
+    <label for="password">{{ t 'user.password' }}</label>
+    <input type="password" name="customer[password]" placeholder="{{ t 'user.password' }}" />
+  </div>
+
+  <div class="submit">
+    <input class="submit-button" type="submit" value="{{ t 'user.signIn' }}">
+  </div>
+
+  <div id="third-login-container"></div>
+{{/form}}
+
+Output
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+⌄
+⌄
+⌄
+⌄
+<form method="get" id="customer-login-form">
+
+  <div class="account">
+    <label for="email">user.username</label>
+    <input type="text" name="customer[email]" placeholder="user.username" />
+  </div>
+
+  <div class="password">
+    <label for="password">user.password</label>
+    <input type="password" name="customer[password]" placeholder="user.password" />
+  </div>
+
+  <div class="submit">
+    <input class="submit-button" type="submit" value="user.signIn">
+  </div>
+
+  <div id="third-login-container"></div>
+
+
+</form>
+配合使用​
+以上代码需要结合下面的脚本一起使用
+
+class Login {
+  constructor() {
+    this.form = document.querySelector('#customer-login-form');
+    this.form.addEventListener('submit', this.onSubmitHandler.bind(this));
+    this.login = new window.Shopline.customerAccount.Login(this.form, {
+      thirdLogin: {
+        container: this.form.querySelector('#third-login-container'), // 第三方登录按钮容器
+        handleSuccess: () => { // 第三方登录成功，可以自定义跳转地址
+          window.location.href = '/user/center';
+        },
+        handleError: (error) => { // 第三方登录失败，返回错误信息
+          console.log(error)
+        }
+      }
+    })
+  }
+  // 登录逻辑
+  onSubmitHandler(e) {
+    e.preventDefault();
+    this.login.submit()
+      .then(response => {
+        window.location.href = '/user/center';
+      })
+      .catch(error => {
+        // 处理登录失败异常场景
+        console.log(error)
+      })
+  }
+}
+// 初始化用户登录 JS SDK
+window.Shopline.loadFeatures(
+  [
+    {
+      name: 'customer-account-api',
+      version: '0.2'
+    }
+  ],
+  function(error) {
+    if (error) {
+      throw error;
+    }
+    new Login();
+  }
+);
+

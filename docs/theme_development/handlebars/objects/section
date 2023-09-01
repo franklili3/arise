@@ -1,0 +1,16 @@
+section​
+sections的属性和设置。
+
+TIP
+要了解section并在主题中使用它们，请访问 Sections.
+
+Properties​
+
+blocks
+array of block
+
+
+id
+string
+
+settings

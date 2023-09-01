@@ -1,0 +1,22 @@
+cart​
+cart 模板呈现购物车页面，该页面提供客户购物车内容的概览。概览通常以表格格式显示，每个行项目都有一行。
+
+image.png​
+位置​
+cart模板位于主题的模板目录中：
+
+└── theme
+    ├── layout
+    ├── templates
+    |   ...
+    |   ├── cart.json
+    |   ...
+    ...
+
+内容​
+您可以在cart模板或模板内的部分中包含以下内容：
+
+cart object
+page object​
+您可以访问 Handlebars cart object 对象以显示页面的详细信息
+

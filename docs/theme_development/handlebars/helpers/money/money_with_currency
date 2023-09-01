@@ -1,0 +1,20 @@
+money_with_currency​
+根据商店的HTML与货币设置，形成一个给定的价格。
+
+参数​
+value {Number} 金额，必填
+[hash.code] {Number} 币种，非必填，默认值为市场币种
+returns {String} 格式化后的金额
+用法​
+{{ money_with_currency number [code='CNY'] }}
+
+例子​
+Code
+Data
+1
+2
+{{ money_with_currency product.price }}
+
+Output
+1
+¥0.10 CNY

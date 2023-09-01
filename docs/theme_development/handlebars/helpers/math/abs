@@ -1,0 +1,22 @@
+abs​
+返回一个数的绝对值。
+
+参数​
+number {Number} 输入数字，必填
+returns {Number} 返回数字
+用法​
+{{abs number }}
+
+例子​
+Code
+1
+2
+3
+{{ abs -1 }}
+{{ abs 1 }}
+
+Output
+1
+2
+1
+1

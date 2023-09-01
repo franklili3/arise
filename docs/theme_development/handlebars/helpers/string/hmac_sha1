@@ -1,0 +1,21 @@
+hmac_sha1​
+将字符串通过哈希消息验证代码（HMAC）转化为SHA-1哈希。
+
+消息的秘钥作为helper的参数提供。
+
+参数​
+str {String} 输入所需的字符串，必填。
+secret {String} secret，必填，不传入时，返回空字符串
+returns {String} 返回字符串。
+用法​
+{{ hmac_sha1 str secret }}
+
+例子​
+Code
+1
+2
+{{ hmac_sha1 'ShoplineIsAwesome!' 'secret_key' }}
+
+Output
+1
+73ea6d5eb7b56faaeed05f3b4088e32c62ffd93c

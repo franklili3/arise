@@ -1,0 +1,49 @@
+filter​
+店面过滤器。
+
+要了解在您的主题中支持过滤器，请参阅支持店面过滤。
+
+属性​
+
+active_values
+array of filter_value
+
+
+false_value
+filter_value
+
+inactive_values
+array of filter_value
+
+
+label
+string
+
+max_value
+filter_value
+
+min_value
+filter_value
+
+param_name
+string
+
+range_max
+number
+
+true_value
+filter_value
+
+type
+string from a set of values
+
+url_to_remove
+string
+
+values
+array of filter_value
+
+从Object获取
+collection.filters
+search.filters
+filter

@@ -1,0 +1,183 @@
+metafield​
+附加到父对象的元字段。
+
+要了解如何访问特定对象上的元字段，请浏览元字段。
+
+元字段支持多种数据类型，这决定了存储在元字段中的信息类型。您还可以使用元字段过滤器以特定于类型的格式输出元字段内容 。
+
+您不能在 handlebars 中创建元字段。元字段只能通过以下方式创建：
+
+NOTE
+在Shopline后台
+通过 open api
+
+参数​
+
+list?
+boolean
+
+type
+string
+
+value
+从Object获取
+article.metafields
+blog.metafields
+collection.metafields
+customer.metafields
+order.metafields
+page.metafields
+product.metafields
+shop.metafields
+variant.metafields
+metafields
+
+
+访问元字段
+元字段的访问路径由两层组成：
+
+命名空间 - 一组元字段以防止冲突。
+key - 元字段名称。
+鉴于此，您可以使用以下语法访问元字段对象：
+
+{{ resource.metafields.namespace.key }}
+
+Code
+Data
+1
+2
+3
+Type: {{ product.metafields.information.directions.type }}
+Value: {{ product.metafields.information.directions.value }}
+
+Output
+1
+2
+Type: single_line_text_field
+Value: Take with a meal.
+在元字段表达式中使用变量
+Code
+Data
+1
+2
+3
+4
+5
+6
+{{ assign 'key' 'directions' }}
+{{ assign 'directionsMetafield' (get key product.metafields.information) }}
+
+Type: {{ directionsMetafield.type }}
+Value: {{ directionsMetafield.value }}
+
+Output
+1
+2
+Type: single_line_text_field
+Value: Take with a meal.
+访问 json 类型的元字段
+json 类型元字段的 value 属性会返回一个JSON对象。
+
+Code
+Data
+1
+2
+3
+4
+5
+6
+Temperature: {{ product.metafields.information.burn_temperature.value.temperature }}
+
+{{#each product.metafields.information.burn_temperature.value as |property|}}
+  {{capitalize @key}}: {{property}}
+{{/each}}
+
+Output
+1
+2
+3
+4
+5
+Temperature: 700
+
+Temperature: 700
+Unit: degrees
+Scale: Fahrenheit
+访问 list 类型的元字段
+list 类型元字段的 value 属性会返回一个数组。您可以遍历数组以访问值。
+
+Code
+Data
+1
+2
+3
+4
+5
+6
+Type: {{ product.metafields.information.combine_with.type }}
+
+{{#each product.metafields.information.combine_with.value as |item|}}
+  {{ item.product.title }}
+{{/each}}
+
+Output
+1
+
+如果 list 是 single_line_text_field 类型，您也可以通过索引直接访问数组中的项目。
+
+Code
+Data
+1
+2
+3
+4
+5
+Type: {{ product.metafields.information.pickup_locations.type }}
+
+First item in list: {{ product.metafields.information.pickup_locations.value.[0] }}
+Last item in list: {{ last product.metafields.information.pickup_locations.value }}
+
+Output
+1
+
+OS2.0及以下版本主题注意事项：
+由于实现机制的不同，在OS2.0及以下主题使用元字段会有以下限制：
+
+仅支持单个值类型的元字段，暂不支持 list 多个值类型
+
+暂不支持参考类型的元字段
+
+metafields 前的资源对象必须为固定的字段名，不可自定义
+
+资源	字段
+商品	product.metafields
+商品分类	collection.metafields
+商品款式	variant.metafields
+页面	page.metafields
+客户	customer.metafields
+博客	article.metafields
+博客集合	blog.metafields
+订单	order.metafields
+{{!-- 正确 --}}
+{{ product.metafields.information.pickup_locations.value }}
+{{!-- 错误 --}}
+{{ assign 'p' product }}
+{{ p.metafields.information.pickup_locations.value }}
+{{!-- 正确 --}}
+{{#each collection.products as |product|}}
+  {{ product.metafields.information.pickup_locations.value }}
+{{/each}}
+{{!-- 错误 --}}
+{{#each collection.products as |p|}}
+  {{ p.metafields.information.pickup_locations.value }}
+{{/each}}
+
+取值表达式的格式必须满足 ${ownerResource}.metafields.${namespace}.${key}.(value|type)
+
+{{!-- 错误 --}}
+{{ assign 'mf' product.metafields }}
+{{ mf.information.pickup_locations.value }}
+{{!-- 错误 --}}
+{{ assign 'ns' product.metafields.information }}
+{{ ns.pickup_locations.value }}
+

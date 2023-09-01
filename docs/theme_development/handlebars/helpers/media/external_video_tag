@@ -1,0 +1,22 @@
+external_video_tag​
+生成一个包含给定外部视频播放器的HTML <iframe> 标签。external_video_tag helper的输入可以是 media object 或 external_video_url。
+
+如果在视频上设置了替代文本，则它将包含在 <iframe> 的标题属性中。
+
+参数​
+media {Object} 媒体对象，必需。
+external_video_url {String} 外部视频网址，必需。
+[HTML attributes] {Object} 你可以通过添加与属性名匹配的参数并给出所需值来指定 HTML 属性。
+returns {String} <iframe> 标签
+用法​
+{{external_video_tag (external_video_url media)}}
+
+Code
+Data
+1
+2
+{{ external_video_tag (external_video_url media color="white") class="youtube-video" }}
+
+Output
+1
+<iframe allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="allowfullscreen" class="youtube-video" src="https://www.youtube.com/embed/xcVZdRSiVhU?controls=1&enablejsapi=1&modestbranding=1&playsinline=1&rel=0&color=white&origin=https%3A%2F%2Fpolinas-potent-potions.myshopline.com"></iframe>

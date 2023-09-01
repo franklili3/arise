@@ -1,0 +1,144 @@
+概述​
+为了让商家更轻松地自定义您的主题，您可以使用 JSON 来创建商家可以通过主题编辑器访问的设置。
+
+您可以在 theme、section 或 block 级别提供设置。设置可以是固定的（例如提示信息）或交互式的（例如下拉菜单）。设置值可以是静态的，也可以使用动态数据来呈现适合上下文的值。
+
+暴露设置使您的主题更具可定制性，从而可以更好地表达商家的品牌。它还可以使您的主题更加灵活，这样您就可以为商家处理各种用例。
+
+配置项类型​
+配置项主要有两种类型的配置项：
+
+输入设置 - 可以保存一个值，并且可由商家配置。
+侧边栏设置 - 不能保存值，并且不可配置。它们是信息元素，可为配置项展示提示信息和分组信息。
+位置​
+您可以在以下位置创建 settings:
+
+config> settings_schema.json
+Section 文件，使用 section的 {{#schema}} 标记
+└── theme
+    ├── config
+    |   ├── settings_schema.json
+    |   ...
+    ├── sections
+    |   ├── main_product.html
+    |   ├── another_section_file.html
+    |   ...
+    ...
+
+settings_schema.json​
+settings_schema.json 文件控制主题编辑器的主题设置区域的内容。该文件中的 settings 转换为全局主题 settings，可以通过 Handlebars settings 对象访问全局主题 settings。
+
+Section schema​
+section 中的{{#schema}} helper 是你可以创建 section 设置和 block 设置的地方。这些设置可以分别通过 section 对象和 block 对象的 settings 属性来访问。
+
+Schema​
+Settings 在 Section Schema 内可以通过 settings属性来定义一系列配置项，它是由一些配置项组成的数组。
+
+{
+  ...
+  "settings": [
+    {
+      "type": "header",
+      "content": "My settings"
+    },
+    {
+      "type": "text",
+      "id": "my_id",
+      "label": "My setting label",
+      "default": "Enter text here"
+    },
+    {
+      "type": "textarea",
+      "id": "my_second_id",
+      "label": "Welcome message",
+      "default": "Welcome to my shop!"
+    }
+  ],
+  ...
+}
+
+使用​
+在使用 Settings 时，您需要熟悉以下内容：
+
+翻译设置
+访问配置项的值
+检查配置项值的格式
+基于资源的设置
+翻译设置​
+您可以根据在线商店的活动语言来翻译配置项的各种属性。这些翻译信息存储在 schema 本地化文件中。
+
+访问配置项的值​
+您可以通过三个不同的 Handlebars 对象访问设置，具体取决于它们创建的位置。
+
+全局配置对象
+section 对象
+block 对象
+若要访问特定设置，请将相关设置的 id 属性附加到要访问的对象。
+例如，如果您在每个 Handlebars 对象中实现了以下设置:
+
+{
+  "type": "text",
+  "id": "message",
+  "label": "Message",
+  "default": "Hello!"
+}
+
+然后下面的 Handlebars 将生成以下输出:
+
+// Settings
+Message: {{ settings.message }}
+// Section
+Message: {{ section.settings.message }}
+// Block
+Message: {{ block.settings.message }}
+
+输出结果：
+
+// Settings
+Message: Hello!
+// Section
+Message: Hello!
+// Block
+Message: Hello!
+
+检查配置项值的格式​
+在引用 settings 时，应该始终检查该值的格式是否符合预期。任何没有自动默认值的设置最终都可能没有值，这将转换为空字符串。
+例如，如果您有一个 id 为 message 的设置，那么下面的 Handlebars 将根据该值生成以下输出:
+
+// No value
+Setting: {{ settings.message }}
+// With value
+Setting: {{ settings.message }}
+
+输出结果：
+
+// No value
+Setting:
+// With value
+Setting: Message value
+
+您可以使用空白操作符检查值是否为空字符串。例如：
+
+{{#if settings.message}}
+  {{settings.message}}
+{{/if}}
+
+基于资源的设置​
+要避免出现空字符串，请检查该值的格式是否符合预期。可能是没有选择资源、选择的资源不再存在或选择的资源已被隐藏。
+例如，如果您有以下 page 类型设置：
+
+{
+  "type": "page",
+  "id": "page",
+  "label": "Page"
+}
+
+然后你可以像下面这样检查是否空:
+
+{{#if settings.page}}
+  {{ settings.page.title }}
+  {{ settings.page.content }}
+{{else}}
+  No page, or invalid page, selected.
+{{/if}
+

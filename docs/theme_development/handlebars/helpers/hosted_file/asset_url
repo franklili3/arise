@@ -1,0 +1,18 @@
+asset_url​
+返回主题 assets 目录中的文件 CDN 地址
+
+参数​
+filename {String} 必填
+returns {String} 文件的 CDN 地址
+用法​
+{{ asset_url filename }}
+
+例子​
+Code
+1
+2
+{{ asset_url 'filename.png' }}
+
+Output
+1
+https://cdn.myshopline.com/filename.png

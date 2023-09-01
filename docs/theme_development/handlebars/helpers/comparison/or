@@ -1,0 +1,31 @@
+or​
+如果给定的任何一个值是真实的，则渲染一个块。如果指定了一个相反的块，它将在falsy时被渲染。
+
+Params​
+arguments {...any}: 可变的参数数量
+returns {String}: 块，如果指定且为假，则为反向块。
+Example​
+Code
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+{{ assign 'a' true }}
+{{ assign 'b' false }}
+{{ assign 'c' false }}
+
+{{#or a b c}}
+  All of the above are truthy.
+{{else}}
+  One or more of the above is falsey.
+{{/or}}
+
+Output
+1
+All of the above are truthy.

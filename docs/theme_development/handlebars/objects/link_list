@@ -1,0 +1,22 @@
+linklist​
+菜单导航的链接。
+
+要了解如何在主题中实现菜单导航，请参考添加菜单导航。
+
+属性​
+
+handle
+string
+
+levels
+number
+
+links
+array of link
+
+
+title
+string
+从Object获取
+linklists
+linklist

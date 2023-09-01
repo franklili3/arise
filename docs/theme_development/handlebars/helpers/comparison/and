@@ -1,0 +1,30 @@
+and​
+如果两个给定值都为真，则渲染块的 helper 。如果指定了反向块，它将在 falsy 时渲染。用作块helper、内联helper或子表达式。
+
+参数​
+a {any}
+b {any}
+returns {String}
+例子​
+Code
+1
+2
+3
+4
+5
+6
+7
+8
+9
+{{ assign 'a' true }}
+{{ assign 'b' true }}
+
+{{#and a b}}
+  Both a and b are truthy
+{{else}}
+  a or b is falsy
+{{/and}}
+
+Output
+1
+Both a and b are truthy

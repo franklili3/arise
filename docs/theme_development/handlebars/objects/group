@@ -1,0 +1,22 @@
+group​
+一组针对 robots.txt 文件的规则。
+
+提示
+您可以在 Shopline Admin 中自定义 robots.txt。
+
+属性​
+
+rules
+规则 rule 的数组
+
+
+sitemap
+sitemap 的数组
+
+
+user_agent
+user_agent 的数组
+
+从Object获取
+robots.default_groups
+group

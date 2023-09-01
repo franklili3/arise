@@ -1,0 +1,26 @@
+collections​
+商店的全部商品分类。
+迭代访问 collections​
+您可以迭代collections以构建分类的列表。
+Code
+Data
+1
+2
+3
+4
+{{#each collections as |collection|}}
+{{{ link_to collection.title collection.url }}}
+{{/each}}
+
+Output
+1
+2
+3
+4
+<a href="/collections/empty">Empty</a>
+<a href="/collections/featured-potions">Featured potions</a>
+<a href="/collections/freebies">Freebies</a>
+<a href="/collections/frontpage">Home page</a>
+从模板获取
+collections_all
+collections

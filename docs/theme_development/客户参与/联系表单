@@ -1,0 +1,93 @@
+将联系表添加到您的主题​
+您可以将联系表添加到您的主题中，以允许客户与商家取得联系。
+
+您可以使用 Handlebars form helper 和随附 'contact' 参数添加此表单。在表单中，您可以包含两种不同的输入类型：
+
+必填输入
+可选输入
+以下是具有上述两种输入类型的表单示例：
+
+{{#form 'contact' id="ContactForm" class="contact-form"}}
+  {{#if form.posted_successfully}}
+    <div>提交成功</div>
+  {{/if}}
+  {{#if form.errors}}
+    <div>{{ form.errors.messages }}</div>
+  {{/if}}
+  <div class="contact__fields">
+    <div class="field">
+      <label for="ContactForm-email">{{ t 'templates.contact.form.email.value' }}</label>
+      <input type="email" id="ContactForm-email" name="contact[email]" title="{{ t 'templates.contact.form.email.value' }}" placeholder="{{ t 'templates.contact.form.email.placeholder' }}">
+    </div>
+    <div class="field">
+      <label for="ContactForm-birthday">{{ t 'templates.contact.form.birthday.value' }}</label>
+      <input type="date" id="ContactForm-birthday" name="attribute[birthday]" title="{{ t 'templates.contact.form.birthday.value' }}" placeholder="{{ t 'templates.contact.form.birthday.placeholder' }}">
+    </div>
+    <div>
+      <input class="contact__button" type="submit" value="{{ t 'templates.contact.form.submit' }}">
+    </div>
+  </div>
+{{/form}}
+
+本地化翻译字段需要输出到 title 属性，配合 JavaScript 函数提交表单
+
+JavaScript 函数​
+document.querySelector('.contact__button').addEventListener('click', (e) => {
+  const form = document.querySelector('#ContactForm')
+  const inputs = form.querySelectorAll('input')
+  const translateInput = form.querySelector('input[name=_translate]')
+  const translate = {}
+  for (let i = 0; i < inputs.length; i++) {
+    const input = inputs[i]
+    const title = input.getAttribute('title')
+    const name = input.getAttribute('name')
+    if (/contact|attribute\[[\w]+\]/.test(name)) {
+      translate[name] = title
+    }
+  }
+  translateInput.setAttribute('value', JSON.stringify(translate))
+})
+
+另外一个联系表单的例子，可以参考Seed的实现。
+
+必填输入​
+成功提交表单需要以下输入：
+
+输入	类型	字段名
+email	email	contact[email]
+可选输入​
+可选输入可以是任何 HTML input 类型。他们需要有一个属性 name="attribute[information_id]"，其中information_id 简要标识了您正在收集的信息。这些标题出现在联系人通知中，并且在表单中必须是唯一的。
+
+要使客户需要特定字段，您需要required="required"在字段的输入元素中添加字段属性。
+
+以下是您可能希望添加到表单中的输入类型示例。
+
+下拉类型​
+<div class="request-type">
+  <label for="request-type">What is this regarding?</label>
+  <select id="request-type" name="attribute[request_type]" title="{{ t 'contact.request_type' }}">
+    <option>Returns</option>
+    <option>Shipping</option>
+    <option>Custom order</option>
+    <option>Other</option>
+  </select>
+</div>
+
+单选类型​
+<div class="contact-method">
+  <label for="contact-method">How do you want us to contact you?</label>
+  <input type="radio" name="attribute[contact_method]" value="email" id="email" title="{{ t 'contact.contact_method.email' }}"><label for="email">Email</label><br>
+  <input type="radio" name="attribute[contact_method]" value="phone" id="phone" title="{{ t 'contact.contact_method.phone' }}"><label for="phone">Phone</label><br>
+  <input type="radio" name="attribute[contact_method]" value="text message" id="text" title="{{ t 'contact.contact_method.message' }}"><label for="text">Text message</label>
+</div>
+
+复选框类型​
+要接受多项选择，复选框组中的每个输入都需要具有唯一name值。如果您不name为每个输入使用唯一值，则表单将只返回最后选择的值。
+
+<div class="contact-time">
+  <label for="contact-time">When is the best time to reach you?</label>
+  <input type="checkbox" name="attribute[contact_time_1]" value="morning" title="{{ t 'contact.contact_time_1.contact_time_1' }}"><label for="morning">Morning</label><br>
+  <input type="checkbox" name="attribute[contact_time_2]" value="afternoon" title="{{ t 'contact.contact_time_2.contact_time_2' }}"><label for="afternoon">Afternoon</label><br>
+  <input type="checkbox" name="attribute[contact_time_3]" value="evening" title="{{ t 'contact.contact_time_3.contact_time_3' }}"><label for="evening">Evening</label>
+</div>
+

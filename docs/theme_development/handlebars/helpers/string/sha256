@@ -1,0 +1,18 @@
+sha256​
+将字符串转换成SHA-256哈希值。
+
+参数​
+str {String} 必须输入的字符串
+returns {String} 返回的字符串
+用法​
+{{ sha256 str }}
+
+例子​
+Code
+1
+2
+{{ sha256 'ShoplineIsAwesome!' }}
+
+Output
+1
+b06501b6ebb79b14707e506c68bbc2ca81c60a80c55400368b77e07b6bde091c

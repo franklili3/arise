@@ -1,0 +1,26 @@
+media_tag​
+为给定的媒体对象生成适当的HTML标签。
+
+参数​
+media {Object} 媒体对象。
+image_size {String} 以像素指定媒体海报图像的尺寸。
+returns {String} 适当的HTML标签。
+用法​
+{{#each product.media as |media|}}
+  {{ media_tag media }}
+{{/each}}
+
+例子​
+Code
+Data
+1
+2
+3
+4
+{{#each product.media as |media|}}
+  {{ media_tag media }}
+{{/each}}
+
+Output
+1
+FAIL

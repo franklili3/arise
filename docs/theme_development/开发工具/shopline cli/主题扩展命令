@@ -1,0 +1,33 @@
+主题扩展命令​
+应用拓展命令​
+主题应用拓展目前包含如下两个命令：
+
+create
+push
+connect
+create​
+在应用程序的子目录中搭建一个新的扩展项目。在交互式命令中，会提示您选择要关联的 extension 才能完成应用拓展的创建。另外可以通过 --name标记来指定要生成的应用拓展目录名称，若不指定默认将在当前目录下生成 theme-app-extension子目录。
+
+shopline extension create
+# 指定目录名称
+shopline extension create --name shopline-theme-app-extension
+
+push​
+上传你的代码到 SHOPLINE。在 SHOPLINE 开放平台发布主题拓展之前，您需要运行此命令。若您的应用拓展没有被注册，该命令将会自动帮您注册并推送到 SHOPLINE。
+
+shopline extension push
+
+推送成功后，CLI 会生成一个指向开放平台应用拓展详情的链接，您可以在那里创建新版本并发布您的主题应用拓展。
+
+shopline extension push
+✔ Pushed xxxx to a draft on 2022-09-22 14:32:43.
+✨ Visit https://developer.myshopline.com/app/edit-extension/xxxx/xxxx to version and publish your extension.
+
+connect​
+将您的本地项目目录连接到开放平台中的现有应用程序。
+此命令旨在帮助团队协作处理相同的拓展代码。每个开发人员都可以在本地克隆拓展代码，然后运行以使用 shopline extension connect 更改推送到拓展所需的 App 密钥填充到本地的 .env文件。
+
+shopline extension connect
+? Which extension would you like to connect to?
+Project now connected to My first app: theme-app-extension
+

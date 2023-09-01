@@ -1,0 +1,18 @@
+strip_html​
+从字符串中去除所有HTML标签。
+
+参数​
+str {String} 输入字符串，必需
+return {Array} 返回字符串
+用法​
+{{ strip_html str }}
+
+例子​
+Code
+1
+2
+{{ strip_html '<h1>Hello World</h1>' }}
+
+Output
+1
+Hello World

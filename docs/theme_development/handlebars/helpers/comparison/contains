@@ -1,0 +1,29 @@
+contains​
+collection如果具有给定的，则渲染块的块helper 的 value，使用严格相等（===）进行比较，否则渲染反向块（如果指定）。如果startIndex指定了 a 且为负数，则将其用作距集合末尾的偏移量。
+
+参数​
+collection {Array|Object|String}: 要迭代的集合。
+value {any}: 要检查的值。
+[startIndex=0] {Number}: 可选地定义起始索引。
+options {Object}: Handlebars 提供的选项对象。
+例子​
+Code
+1
+2
+3
+4
+5
+6
+7
+8
+{{ assign 'array' (JSONparse '["a", "b", "c", "d"]') }}
+
+{{#contains array "d"}}
+  This will be rendered.
+{{else}}
+  This will not be rendered.
+{{/contains}}
+
+Output
+1
+This will be rendered.

@@ -1,0 +1,126 @@
+将预测搜索添加到您的主题​
+您可以将预测搜索添加到您的主题中，以便在您输入搜索字段时立即显示建议的结果。预测搜索可帮助客户阐明和优化他们的搜索查询，并为他们提供探索在线商店的新方法。它还可以让他们快速浏览匹配项，而无需离开当前页面查看单独的搜索结果列表。
+
+predictive-search
+
+预测搜索支持对商品的建议。
+
+资源​
+predictive_search object
+预测搜索 API /search/suggest
+实现预测搜索​
+要支持预测搜索，您需要实现以下组件：
+
+主要搜索：用于预测搜索的搜索输入
+预测搜索部分：一个承载一般预测性搜索显示的 section。这个显示是使用 predictive_search object 的 resources(暂无)显示搜索结果。
+一个JavaScript函数：使用预测性搜索API的章节响应来渲染预测性搜索章节。
+提示 有关更深入的示例，请参阅 Seed 中的以下文件： sections/main-search.html sections/predictive-search.html assets/component-predictive-search.js
+
+主要搜索​
+主搜索是要应用的预测搜索功能的搜索输入。
+
+<script src="{{ asset_url 'sections/header/predictive-search.js' }}" defer></script>
+<predictive-search>
+  <form action="{{ routes.search_url }}" method="get">
+    <div>
+      <input
+        id="Search-In-Modal-1"
+        type="search"
+        name="keyword"
+        value=""
+        maxlength="255"
+        autocorrect="off"
+        autocomplete="off"
+        autocapitalize="off"
+        spellcheck="false"
+        autofocus
+      >
+      <label class="search-modal__field-label field__label body3" for="Search-In-Modal-1">Search</label>
+      <button class="search-modal__submit-button">{{snippet 'icons/search'}}</button>
+    </div>
+    <input type="hidden" name="type" value="user_search">
+    <div class="predictive-search__results" tabindex="-1" data-predictive-search></div>
+  </form>
+</predictive-search>
+
+预测搜索部分​
+预测搜索部分托管预测搜索结果。通过循环对象resources的属性输出这些结果predictive_search。
+
+以下示例呈现搜索结果中的产品。
+
+/sections/predictive-search.html
+
+<div class="predictive-search-results">
+  {{#if (length predictive_search.products)}}
+    <h2 class="predictive-search__head body5">
+      Products
+    </h2>
+  {{/if}}
+  <ul class="predictive-search__results-list list-unstyled">
+    {{#each predictive_search.products}}
+      <li class="predictive-search__list-item">
+        <a class="predictive-search__item link" href="{{ url }}">
+          {{ image_tag (image_url product width=50) }}
+          <p>{{ title }}</p>
+        </a>
+      </li>
+    {{/each}}
+    <li class="predictive-search__list-item">
+      <button class="predictive-search__term">
+        Search for “__QUERY_KEY__”
+      </button>
+    </li>
+  </ul>
+</div>
+
+JavaScript 函数​
+当预测性搜索section最初呈现时，predictive_search对象并没有被定义，所以你需要使用预测性搜索API的部分响应来检索填充的section内容。
+
+下面的例子使用了预测性搜索API的默认参数，但你可以根据自己的需要进行定制。
+
+建议使用 Handlebars routes 对象来动态地设置 fetch 调用的端点URL。
+
+class PredictiveSearch extends BaseElement {
+  constructor() {
+    super();
+    this.input = this.querySelector('input[type="search"]');
+    this.predictiveSearchResults = this.querySelector('[data-predictive-search]');
+    this.setupEventListeners();
+  }
+  onChange() {
+    const searchTerm = this.query;
+    if (!searchTerm.length) return this.close(true);
+    this.getSearchResults(searchTerm);
+  }
+  getSearchResults(searchTerm) {
+    fetch(
+      `/search/suggest?q=${encodeURIComponent(searchTerm)}&field=title&resource_type=product&available_type=show&section_id=predictive-search`,
+    )
+      .then((response) => {
+        if (!response.ok) {
+          this.close();
+          throw new Error(response.status);
+        }
+        return response.text();
+      })
+      .then((text) => {
+        const resultHtml = new DOMParser()
+          .parseFromString(text, 'text/html')
+          .querySelector('.predictive-search-results').innerHTML;
+        this.cachedResults[queryKey] = resultHtml;
+        this.renderSearchResult(queryKey, resultHtml);
+      })
+      .catch((error) => {
+        this.close();
+        throw error;
+      });
+  }
+  open() {
+    this.setAttribute('open', true);
+  }
+  close(clearSearchTerm = false) {
+    this.removeAttribute('open');
+  }
+}
+customElements.define('predictive-search', PredictiveSearch);
+

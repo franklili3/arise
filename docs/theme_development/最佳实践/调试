@@ -1,0 +1,23 @@
+调试​
+Shopline 主题开发的调试主要是快速帮助商家现有主题的问题
+
+使用浏览器调试​
+使用浏览器调试可以针对线上的主题直接进行调试，而无需启动任何额外工具。
+缺点是无法修改到源到代码，需要在浏览器进行排查调试之后，回到浏览器进行修改保存。
+
+打开浏览器调试面板​
+这里以 Chrome 浏览器为例，Chrome 浏览器也是推荐使用的浏览器。
+
+在Chrome菜单中选择 更多工具 > 开发者工具 。
+在页面元素上右键点击，选择 " 检查"。
+使用快捷键 Ctrl+Shift+I (Windows) 或者 Cmd+Opt+I (Mac)。
+使用 Shopline CLI 调试​
+使用 Shopline CLI 调试可以更加全面的排查并且定位到代码位置。
+以下步骤基于已经安装了 Shopline CLI。
+
+运行shopline login --store <STORE>命令登录商店。
+创建并进入一个空目录。
+运行shopline theme pull --themeId <THEME_ID> 命令获取指定的主题代码。
+运行shopline theme serve命令启动本地服务。
+结合浏览器开始调试。
+调试完毕后，运行shopline theme push --themeId <THEME_ID>命令进行上传覆盖指定的主题。

@@ -1,0 +1,23 @@
+divided_by​
+输出除以一个数字。输出向下舍入到最接近的整数，输入参数类型不对时，将参数转为数字再比较。
+
+参数​
+a {Number} 输入数字，必填
+b {Number} 除数，必填
+returns {Number} 返回数字
+用法​
+{{ divided_by a b  }}
+
+例子​
+Code
+1
+2
+3
+{{ divided_by 10 5 }}
+{{ divided_by 10 3 }}
+
+Output
+1
+2
+2
+3

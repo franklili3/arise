@@ -1,0 +1,11 @@
+robots​
+robots.txt文件的默认规则组。
+
+提示
+您可以在Shopline管理员界面自定义robots.txt。
+
+属性​
+
+default_groups
+array of group
+

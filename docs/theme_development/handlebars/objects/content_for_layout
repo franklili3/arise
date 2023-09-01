@@ -1,0 +1,11 @@
+content_for_layout​
+根据当前模板动态返回内容。
+
+在 <body> 和 </body> HTML 标签之间的布局文件中包含 content_for_layout 对象。
+
+注意
+theme.html 文件中必须包含 content_for_header 对象。
+
+从模板获取
+Global
+content_for_layout

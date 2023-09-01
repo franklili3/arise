@@ -1,0 +1,21 @@
+external_video_url​
+返回指定外部视频的链接。使用此helper来为由 external_video_tag helper生成的外部视频播放器指定参数。
+
+您可以通过添加与参数名称匹配的参数以及所需的值来指定 YouTube 视频参数。
+
+参数​
+media {Object} 媒体对象，必需。
+returns {String} 外部视频链接
+用法​
+{{external_video_url video}}
+
+例子​
+Code
+Data
+1
+2
+{{ external_video_tag (external_video_url media color="white") class="youtube-video" }}
+
+Output
+1
+<iframe allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="allowfullscreen" class="youtube-video" src="https://www.youtube.com/embed/xcVZdRSiVhU?controls=1&enablejsapi=1&modestbranding=1&playsinline=1&rel=0&color=white&origin=https%3A%2F%2Fpolinas-potent-potions.myshopline.com"></iframe>

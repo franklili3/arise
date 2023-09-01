@@ -1,0 +1,20 @@
+money_without_currency​
+根据商店的HTML无货币设置，形成一个给定的价格，没有货币符号。
+
+参数​
+value {Number} 金额, 必填
+[hash.code] {Number} 币种，非必填，默认值为市场币种
+returns {String} 格式化后的金额
+用法​
+{{ money_without_currency number [code='CNY'] }}
+
+例子​
+Code
+Data
+1
+2
+{{ money_without_currency product.price }}
+
+Output
+1
+0.10

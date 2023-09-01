@@ -1,0 +1,22 @@
+video_source​
+本地上传的视频信息。
+属性​
+
+format
+string from a set of values
+
+
+height
+number
+
+mime_type
+string
+
+url
+string
+
+width
+number
+从Object获取
+video.sources
+video_source

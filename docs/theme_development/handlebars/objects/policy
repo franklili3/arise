@@ -1,0 +1,17 @@
+policy​
+商店政策，例如隐私政策或退货政策。
+
+属性​
+
+body
+string
+
+id
+string
+从Object获取
+shop.policies
+shop.refund_policy
+shop.shipping_policy
+shop.privacy_policy
+shop.terms_of_service
+policy

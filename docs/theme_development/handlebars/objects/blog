@@ -1,0 +1,42 @@
+blog​
+注意
+在非OS2.1主题，使用 blog_collection 获取相同的 object
+
+商店中的一篇的博客信息。
+
+属性​
+
+all_tags
+array of string
+
+articles
+array of article
+
+
+articles_count
+number
+
+comments_enabled?
+boolean
+
+handle
+string
+
+id
+string
+
+moderated?
+boolean
+
+tags
+array of string
+
+title
+string
+
+url
+string
+从模板获取
+blog
+article
+blog

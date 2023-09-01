@@ -1,0 +1,19 @@
+not​
+如果val是false，返回true。作为一个块状或内联helper工作。
+
+参数​
+val {String}
+returns {String}
+例子​
+Code
+1
+2
+3
+4
+{{#not val}}
+  This will be rendered if val is falsey
+{{/not}}
+
+Output
+1
+  This will be rendered if val is falsey

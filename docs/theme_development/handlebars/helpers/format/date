@@ -1,0 +1,58 @@
+date​
+将时间戳转换为另一种日期格式。
+
+输出格式可以参考Ruby documentation。
+
+参数​
+time {String} 时间, 必填
+format {String} 格式, 可选
+hash.format {String} 格式, 可选
+returns {String} 时间字符串
+用法​
+{{date string string}}
+
+例子​
+Code
+Data
+1
+2
+{{ date article.created_at '%B %d, %Y' }}
+
+Output
+1
+April 15, 2022
+当前日期​
+您可以将date过滤器应用于关键字'now'并'today'输出当前时间戳。
+
+NOTE
+时间戳将反映上次渲染 Handlebars 的时间。因此，时间戳可能不会针对每个页面视图进行更新，具体取决于上下文和缓存。
+
+Code
+1
+2
+{{ date 'now' '%B %d, %Y' }}
+
+Output
+1
+September 01, 2023
+格式​
+{{date string string}}
+{{date string format=string}}
+
+指定可识别区域设置的日期格式。您可以使用以下格式：
+
+abbreviated_date
+basic
+date
+date_at_time
+default
+on_date
+Code
+Data
+1
+2
+{{ date article.created_at 'abbreviated_date' }}
+
+Output
+1
+15 Apr 2022

@@ -1,0 +1,19 @@
+prepend​
+在字符串的开头添加指定的字符串。
+
+参数​
+str1 {String} 输入字符串，必需
+str2 {String} 输入字符串，必需
+returns {String} 返回字符串
+用法​
+{{ prepend str1 str2 }}
+
+例子​
+Code
+1
+2
+{{ prepend 'hello' 'world' }}
+
+Output
+1
+worldhello

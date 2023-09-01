@@ -1,0 +1,14 @@
+all_country_option_tags​
+为每个国家创建一个<option>标签。
+
+每个<option>都设置了一个名为data-provinces的属性，其中包含一个 JSON 编码的国家或地区的子区域数组。如果一个国家没有任何子区域，那么其 data-provinces 属性会设置为空数组。
+
+你可以将 all_country_option_tags 对象包装在<select>标签中，构建一个国家选项选择器。
+
+<select>
+  {{{all_country_option_tags}}}
+</select>
+
+从模板获取
+customers/addresses
+all_country_option_tags

@@ -1,0 +1,18 @@
+file_url​
+从 Shopline 后台的文件库返回文件的 CDN URL 。
+
+参数​
+filename {String} required
+returns {String} 文件的 cdn 地址.
+用法​
+{{ file_url filename }}
+
+例子​
+Code
+1
+2
+{{ file_url "filename.txt" }}
+
+Output
+1
+https://cdn.myshopline.com/filename.txt

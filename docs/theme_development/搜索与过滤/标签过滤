@@ -1,0 +1,41 @@
+标签筛选集合​
+笔记
+您应该考虑使用店面筛选而不是按标签筛选。店面筛选使商家能够根据现有产品数据轻松创建筛选器，而不是手动构建标签系统。除集合外，店面筛选还可以应用于搜索结果。
+
+您可以使用产品标签将集合筛选为更小的产品子集。
+
+标签筛选的工作原理​
+通过在集合URL后附加/[tag-handle]来应用标签筛选器，其中[tag-handle]是所需产品标签的处理版本。
+
+例如，如果您只想展示首页集合中带有“新品”标签的产品，您可以使用以下网址结构：
+
+https://my-store.myshopline.com/collections/frontpage/new
+
+您还可以通过将处理过的标签用+号组合来进行多个标签的筛选：
+
+https://my-store.myshopline.com/collections/frontpage/new+sale
+
+资源​
+collection 对象下的 all_tags 属性
+current_tags 对象
+link_to_add_tag URL helper
+link_to_remove_tag URL helper
+实现标签筛选​
+基于对收藏夹URL的修改应用标签筛选。然而，您应该为顾客提供一种与此功能互动的方式，这样他们就不需要手动修改URL了。
+
+标签筛选器显示应该包含在 collection template 中，或者通过一个包含在集合collection template中的 section。
+
+要实现标签筛选功能，您可以使用集合对象的 all_tags 属性遍历集合中的所有产品标签。对于每个标签，您可以检查其在 current_tags 对象中的存在，并相应地输出一个添加或删除它的链接。
+
+{{#if collection.all_tags.length ">" 0 }}
+  <ul class="tag-filters">
+    {{#each collection.all_tags as |tag| }}
+      {{#contains current_tags tag}}
+        <li class="tag-filters__item active">{{link_to_remove_tag tag title=tag}}</li>
+      {{else}}
+        <li class="tag-filters__item">{{link_to_remove_tag tag title=tag}}</li>
+      {{/contains}}
+    {{/each}}
+  </ul>
+{{/if}}
+

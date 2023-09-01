@@ -1,0 +1,35 @@
+media​
+一个抽象的媒体对象，可以代表以下对象类型：
+
+image
+video
+external_video
+media 对象可以通过 product.media 数组返回。
+
+您可以使用媒体 helper来生成URL和媒体显示。要了解如何在您的主题中使用媒体，请参考支持产品媒体。
+
+备注
+每种媒体类型除了一般的 media 属性外，还具有独特的属性。要了解这些额外的属性，请参考每种类型的参考资料。
+
+属性​
+
+alt
+string
+
+id
+number
+
+media_type
+string from a set of values
+
+position
+number
+
+preview_image
+image
+
+从Object获取
+product.media
+product.featured_media
+variant.featured_media
+media

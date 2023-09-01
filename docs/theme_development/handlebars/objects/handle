@@ -1,0 +1,15 @@
+handle​
+当前模板资源关联的 handle。
+
+只有当前模板为以下模板时，handle对象才会返回值：
+
+article
+blog
+collection
+page
+product
+如果当前模板是其他模板，则返回null。
+
+从模板获取
+Global
+handle

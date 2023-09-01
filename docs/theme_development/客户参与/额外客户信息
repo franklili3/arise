@@ -1,0 +1,86 @@
+收集额外的客户信息​
+当客户通过客户注册表创建帐户时，您可以从他们那里收集更多信息。
+
+此信息可以使用任何 HTML input 类型收集，除了file. 输入需要具有 的属性name="attribute[Information title]"，其中Information title是您正在收集的信息的标题。您可以有多个输入来收集笔记条目。
+
+例如，以下内容将允许您收集客户的年龄：
+
+{{#form 'create_customer'}}
+  <form method="get">
+    <div class="account">
+      <label for="email">{{ t 'user.username' }}</label>
+      <input type="text" name="customer[email]" placeholder="{{ t 'user.username' }}" />
+    </div>
+    <div class="password">
+      <label for="password">password</label>
+      <input type="password" name="customer[password]" placeholder="password" />
+    </div>
+    <div class="age">
+      <label for="age">age</label>
+      <input type="text" name="attribute[age]" placeholder="age" />
+    </div>
+    <div class="submit">
+      <input class="submit-button" type="submit" value="signUp">
+    </div>
+  </form>
+{{/form}}
+
+JavaScript 函数​
+用户注册需要配合 JavaScript 函数实现提交
+
+class Register {
+  constructor() {
+    this.form = document.querySelector('#create-customer-form');
+    this.form.addEventListener('submit', this.onSubmitHandler.bind(this));
+    this.verifyCodeButton = this.form.querySelector('.verifycode-button');
+    this.verifyCodeButton.addEventListener(
+      'click', this.onSendVerifyCodeHandler.bind(this)
+    );
+    this.register = new window.Shopline.customerAccount.Register(this.form)
+  }
+  // 发送邮箱或短信验证码逻辑
+  onSendVerifyCodeHandler(e) {
+    e.preventDefault();
+    if (this.verifyCodeButton.getAttribute('aria-disabled') === 'true') return;
+    this.verifyCodeButton.setAttribute('aria-disabled', true);
+    this.register.sendVerifyCode()
+      .then(response => {
+        if (response.errorMessage) {
+          this.verifyCodeError = true;
+          // 处理发送失败异常场景
+        }
+      })
+      .finally(() => {
+        if (!this.verifyCodeError) {
+          this.verifyCodeButton.removeAttribute('aria-disabled');
+        }
+      })
+  }
+  // 注册逻辑
+  onSubmitHandler(e) {
+    e.preventDefault();
+    this.register.submit()
+      .then(response => {
+        window.location.href = window.routes.account_url;
+      })
+      .catch(error => {
+        // 处理注册失败异常场景
+      })
+  }
+}
+// 初始化用户登录注册 JS SDK
+window.Shopline.loadFeatures(
+  [
+    {
+      name: 'customer-account-api',
+      version: '0.1'
+    }
+  ],
+  function(error) {
+    if (error) {
+      throw error;
+    }
+    new Register();
+  }
+);
+

@@ -1,0 +1,23 @@
+assign​
+创建一个变量。
+
+参数​
+key {String|property|subexpression} 变量名称
+value {String|Number|property|subexpression} 变量值
+用法​
+{{ assign key value }}
+
+例子​
+Code
+Data
+1
+2
+3
+4
+{{ assign 'product_title' (upcase product.title) }}
+
+{{ product_title }}
+
+Output
+1
+HEALTH POTION

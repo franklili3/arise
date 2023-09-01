@@ -1,0 +1,729 @@
+Input setting（控件配置）​
+可以保存一个值，并且可由商家配置。
+输入配置根据标准属性分为两类：
+
+基础的输入配置
+专有的输入配置
+标准属性​
+以下是输入配置的标准属性。但是，根据输入类型的不同，可能还会有额外的属性或者一些属性不起作用：
+
+属性	描述	是否必需
+type	控件类型，可以是任何基本或专有的输入控件类型。	是
+id	配置ID，用于访问配置值。	是
+label	控件标签，将显示在主题编辑器中。	是
+default	配置的默认值。	否
+info	此配置的提示文本。	否
+基础输入配置​
+以下是基础的输入控件类型：
+
+开关 / switch
+单个复选框 / checkbox
+多个复选框 / checkboxes
+单选 / radio
+滑杆 / range
+下拉选择 / select
+输入框 / text
+文本域 / textarea
+富文本 / richtext
+开关/switch​
+type 设置为 switch 展示开关控件。此控件可用于打开和关闭功能，例如是否展示语言选择器。
+示例代码：
+
+{
+  "type": "switch",
+  "id": "show_locale_selector",
+  "label": {
+    "zh-hans-cn": "展示语言选择器",
+    "en": "Display the language selector"
+  },
+  "info": {
+    "zh-hans-cn": "若要添加语言，可前往[语言设置](/admin/settings/lang)"
+  },
+  "default": true
+}
+
+访问 switch 控件生成的值时，返回值为 boolean 类型。
+在主题编辑器内的效果：
+image.png
+
+💡 若未配置 default 值，则默认为 false。
+
+单个复选框 / checkbox​
+type 设置为 checkbox 展示单个复选框控件。此控件可用于打开和关闭功能，例如是否展示搜索入口。
+示例代码：
+
+{
+  "type": "checkbox",
+  "id": "show_search",
+  "label": {
+    "zh-hans-cn": "展示搜索入口",
+    "en": "Display the search entrance"
+  },
+  "default": true
+}
+
+在主题编辑器内的效果：
+image.png
+访问 checkbox 控件生成的值时，返回值为 boolean 类型。
+
+💡 若未配置 default 值，则默认为 false。
+
+多个复选框 / checkboxes​
+type 设置为 checkboxes 展示多个复选框控件。除了配置标准属性之外，checkboxes 控件还需要配置 options 属性，它接受一个 value 和 label 定义的数组。
+此控件可用于选中多个选项值，例如按需选择展示支付图标。
+示例代码：
+
+{
+  "type": "checkboxes",
+  "id": "pay_channel_list",
+  "options": [
+    {
+      "icon": "Visa",
+      "label": {
+        "en": "Visa",
+        "zh-hans-cn": "Visa"
+      },
+      "value": "visa"
+    },
+    {
+      "icon": "MasterCard1",
+      "label": {
+        "en": "Master Card",
+        "zh-hans-cn": "Master Card"
+      },
+      "value": "master-card"
+    },
+    {
+      "icon": "VISA_Electron",
+      "label": {
+        "en": "VISA(Electron)",
+        "zh-hans-cn": "VISA(Electron)"
+      },
+      "value": "visa-electron"
+    }
+  ]
+}
+
+在主题编辑器内的效果：
+image.png
+访问 checkboxes 控件生成的值时，返回值为由各个 option 的 value 组成的字符串数组。
+
+单选 / radio​
+type 设置为 radio 展示单选框控件。除了配置标准属性之外，radio 控件还需要配置 options 属性，它接受一个 value 和 label 定义的数组。
+此控件可用于多个选项的单选，例如标题徽标的对齐方式。
+示例代码：
+
+{
+  "type": "radio",
+  "id": "image_1_position",
+  "label": {
+    "zh-hans-cn": "图片位置",
+    "en": "Image position"
+  },
+  "default": "right",
+  "options": [
+    {
+      "value": "left",
+      "label": {
+        "zh-hans-cn": "前面",
+        "en": "Front"
+      }
+    },
+    {
+      "value": "right",
+      "label": {
+        "zh-hans-cn": "后面",
+        "en": "Back"
+      }
+    }
+  ]
+}
+
+在主题编辑器内的效果：
+image.png
+访问 radio 控件生成的值时，返回值为 string 类型。
+
+💡 若未配置 default 值，则默认为 false。
+
+滑杆 / range​
+type 设置为 range 展示滑杆控件。滑动型输入器，展示当前值和可选范围。除了配置标准属性之外， range 控件还具有以下配置：
+
+属性	描述	是否必需
+min	最小值	是
+max	最大值	是
+step	滑块步长，取值必须大于 0，并且可被 (max - min) 整除。	是
+unit	输入值的单位。例如，您可以为宽度滑块设置px单位。	否
+此控件可用于多个数值的输入，例如电脑端 logo 宽度。
+示例代码：
+
+{
+  "type": "range",
+  "id": "desktop_logo_width",
+  "label": {
+    "zh-hans-cn": "电脑端LOGO宽度",
+    "en": "PC Logo width"
+  },
+  "default": 200,
+  "min": 100,
+  "max": 400,
+  "step": 10,
+  "unit": "px"
+}
+
+在主题编辑器内的效果：
+image.png
+访问 range 控件生成的值时，返回值为 number 类型。
+
+该 default 属性是必需的。min，max，step，和 default 属性不能是字符串值。不遵守此规范会导致错误。
+
+下拉选择 / select​
+type 设置为 select 展示下拉菜单控件。弹出一个下拉菜单给用户选择操作。除了配置标准属性之外， select 控件还需要配置 options 属性，它接受一个 value 和 label 定义的数组。
+此控件可用于多个选项的单选，例如图片大小。
+示例代码：
+
+{
+  "type": "select",
+  "id": "image_1_size",
+  "label": {
+    "zh-hans-cn": "图片大小",
+    "en": "Size of picture"
+  },
+  "default": "300",
+  "options": [
+    {
+      "value": "200",
+      "label": {
+        "zh-hans-cn": "小",
+        "en": "Small"
+      }
+    },
+    {
+      "value": "300",
+      "label": {
+        "zh-hans-cn": "中",
+        "en": "Middle"
+      }
+    },
+    {
+      "value": "400",
+      "label": {
+        "zh-hans-cn": "大",
+        "en": "Big"
+      }
+    }
+  ]
+}
+
+在主题编辑器内的效果：
+image.png
+访问 select 控件生成的值时，返回值为 string 类型。
+
+输入框 / text​
+type 设置为 text 展示单行文本控件。除了配置标准属性之外，text 控件还具有以下配置：
+
+属性	描述	是否必需
+placeholder	输入框默认文本	否
+此控件可用于单行文案输入，例如组件标题。
+示例代码：
+
+{
+  "type": "text",
+  "id": "image_1_title",
+  "default": "",
+  "label": {
+    "zh-hans-cn": "标题",
+    "en": "Title"
+  }
+}
+
+在主题编辑器内的效果：
+image.png
+访问 text 控件生成的值时，返回值为 string 类型。
+
+文本域 / textarea​
+type 设置为 textarea 展示多行文本控件。除了配置标准属性之外，textarea 控件还具有以下配置：
+
+属性	描述	是否必需
+placeholder	输入框默认文本	否
+limit	文本输入最大长度	否
+此控件可用于多行文案输入，例如主标题展示。
+示例代码：
+
+{
+  "type": "textarea",
+  "id": "title",
+  "label": {
+    "zh-hans-cn": "主标题",
+    "en": "Main title"
+  },
+  "default": "Two Line\nTitle Slide",
+  "limit": 500
+}
+
+在主题编辑器内的效果：
+image.png
+访问 text 控件生成的值时，返回值为 string 类型。
+
+专有的输入配置​
+以下是专有的输入控件类型：
+
+富文本 / richtext
+文本对齐 / text_align
+垂直对齐 / vertical_align
+水平对齐 / horizontal_align
+跳转链接 / url
+颜色选择器 / color
+图片选择器 / image_picker
+字体选择器 / font
+博客集选择器 / blog
+商品分类选择器 / collection_picker
+商品选择器 / product_picker
+商品标签选择器 /tag_picker
+商品自定义标签选择器 /specify_tag_picker
+自定义页面选择器 / page_picker
+favicon选择器 / favicon_picker
+菜单导航选择器 / menu_picker
+支付方式图标选择器 / choose_payment_icons
+边距 / padding
+富文本 / richtext​
+type 设置为 richtext 展示富文本控件，输出具有以下基本格式的文本：
+
+加粗文本
+斜体文本
+超链接
+段落
+此控件可用于多内容元素正文文本的展示，例如图片大小。
+示例代码：
+
+{
+  "type": "richtext",
+  "id": "content",
+  "label": {
+    "zh-hans-cn": "正文",
+    "en": "Main text"
+  },
+  "default": "Add the details of your promotion in smaller text"
+}
+
+在主题编辑器内的效果：
+image.png
+访问 richtext 控件生成的值时，返回值为 string 类型。
+
+文本对齐 / text_align​
+type 设置为 text_align 展示文本在x轴对齐方式的选择控件。此控件可用于文本对齐方式的选择，例如标题的对齐方式。
+示例代码：
+
+{
+  "type": "text_align",
+  "id": "text_align",
+  "label": {
+    "en": "Text alignment",
+    "zh-hans-cn": "文本对齐"
+  }
+}
+
+在主题编辑器内的效果：
+image.png
+访问 text_align 控件生成的值时，返回值为 string 类型。为以下三个枚举值：
+
+left
+center
+right
+垂直对齐 / vertical_align​
+type 设置为 vertical_align 展示垂直对齐方式选择控件。此控件可用于控制在垂直的交叉轴上，组件之间对齐方式，例如每行元素对齐方式。
+示例代码：
+
+{
+  "type": "vertical_align",
+  "id": "vertical_align",
+  "label": {
+    "en": "Alignment",
+    "zh-hans-cn": "对齐方式"
+  }
+}
+
+在主题编辑器内的效果：
+image.png
+访问 vertical_align 控件生成的值时，返回值为 string 类型。为以下三个枚举值：
+
+top
+middle
+bottom
+水平对齐 / horizontal_align​
+type 设置为 vertical_align 展示水平对齐方式选择控件。此控件用于控制在水平的主轴上，组件之间对齐方式，例如每行元素对齐方式。
+示例代码：
+
+{
+  "type": "horizontal_align",
+  "id": "horizontal_align",
+  "label": {
+    "en": "Alignment",
+    "zh-hans-cn": "对齐方式"
+  }
+}
+
+在主题编辑器内的效果：
+image.png
+访问 horizontal_align 控件生成的值时，返回值为 string 类型。为以下三个枚举值：
+
+left
+center
+right
+跳转链接 / url​
+type 设置为url展示 URL 输入控件，您可以在输入框中手动输入外部 URL 和相对路径。同时还有一个选择器，可以自动填充当前店铺的以下可用资源：
+
+首页
+商品分类页
+商品详情页
+自定义页面
+政策页
+博客集合页
+博客详情页
+个人中心页
+购物车页
+示例代码：
+
+{
+  "type": "url",
+  "id": "image_1_link",
+  "label": {
+    "zh-hans-cn": "跳转链接",
+    "en": "Jump link"
+  }
+}
+
+在主题编辑器内的效果：
+image.png
+
+访问 url 类型设置的值时，数据将作为以下之一返回：
+
+包含所选 URL 的字符串。
+对象字符串化(JSON.stringify)后的string 类型。
+注意
+这种数据格式可能存在于OS2.0的主题已经添加过涉及url控件的组件，至于新添加的url控件组件可通过上述1的数据方式字符串直接获取对应url链接。
+如果没有输入任何内容，则为空字符串。
+针对以上url返回值第2点的情况可得到以下属性：
+
+value 值有以下几种情况
+选择的是某个商品分类页时，保存的是分类 ID
+选择的是某个商品详情页时，保存的是商品 ID
+选择的是自定义页面时，保存的是页面 ID
+选择的是政策页时，保存的是页面路径
+选择的是博客集合页时，保存的是集合 ID
+选择的是博客页时，保存的是页面 ID和页面所属的博客集合 ID
+label 页面标题
+pageType 有以下枚举值
+10 - 商品详情页
+12 - 商品分类页
+3 - 自定义页面
+0 - 预设页（政策页）
+4 - 博客页
+11 - 博客集合页
+-1 - 自行输入链接
+linkType 有以下枚举值
+select - 通过选择器选择的页面
+input - 通过用户输入的页面
+url 控件不支持 default 字段。
+
+颜色选择器 / color​
+type 设置为 color 展示颜色选择控件，您可以在输入框中手动输入颜色色值。同时还有一个颜色码面板选择器，通过拖拽着色器，快速选择颜色。
+此控件可用于控制元素的UI颜色，例如全局背景颜色。
+
+示例代码：
+
+{
+  "id": "color_page_background",
+  "type": "color",
+  "label": {
+    "en": "Background",
+    "zh-hans-cn": "背景"
+  },
+  "default": "#FFFFFF"
+}
+
+在主题编辑器内的效果：
+image.png
+
+访问 color 控件生成的值时，数据将作为以下之一返回：
+
+color object，仅在OS2.1及其以上主题版本支持。
+包含所选十六进制颜色码的字符串，如：#FFFFFF。
+如果未进行选择，则为空。
+配置 default 值时，字符串必须带上#。不遵守此规范会导致错误。
+
+图片选择器 / image_picker​
+type 设置为 image_picker 展示图片选择控件，此控件可以直接选择 Shopline admin 后台图片库内的可用图片，并且可以选择上传新图片。此控件可用于展示图片的选择，例如轮播图图片选择。
+示例代码：
+
+{
+  "type": "image_picker",
+  "id": "image",
+  "label": {
+    "zh-hans-cn": "电脑端图片",
+    "en": "Image on PC"
+  }
+}
+
+在主题编辑器内的效果：
+image.png
+访问 image_picker 控件生成的值时，返回值为 object 类型。对象有以下属性：
+
+alt 图像的替代文本
+height 图片高度
+paddingBottom 图片宽高比
+scale 图片比例
+url 图片地址
+width 图片宽度
+image_picker 控件不支持 default 字段。
+
+字体选择器 / font​
+type 设置为 font 展示字体选择控件，此控件可以直接选择谷歌字体库的字体。
+此控件可用于各种主题元素的字体选择，例如全局的标题字体。
+示例代码：
+
+{
+  "id": "type_title_font",
+  "type": "font",
+  "label": {
+    "en": "Font",
+    "zh-hans-cn": "字体"
+  },
+  "default": "Arimo:700"
+}
+
+在主题编辑器内的效果：
+image.png
+
+访问 font 控件生成的值时，数据将作为以下之一返回：
+
+font object，仅在OS2.1及其以上版本的主题支持。
+包含所选字体的字符串，如：Arimo:700，仅在OS2.0版本的主题支持获取。
+注意
+在OS2.1及其以上版本的主题，只能通过font object获取，用以上格式2的数据形式获取则无效。
+如果未进行选择，则为空。
+博客集选择器 / blog​
+type 设置为 blog 展示博客集合选择控件。此控件可以选择商店的可用博客进行展示，例如要在侧边栏中显示的博客。
+
+示例代码：
+
+{
+  "id": "blog_collection",
+  "type": "blog",
+  "label": {
+    "zh-hans-cn": "博客集合",
+    "en": "Blog collection"
+  }
+}
+
+在主题编辑器内的效果：
+image.png
+
+访问博客类型设置的值时，数据将作为以下之一返回：
+
+blog object，仅针对OS2.1及其以上版本的主题支持。
+如果未进行任何选择或选择不再存在，则为空。
+注意
+type 设置为 blog 控件仅针对OS2.1及以上版本的主题才可用，如需在OS2.0版本的主题使用，请使用 type 设置为 blogs_picker展示该控件。
+访问type设置为blogs_picker值时，数据将作为以下之一返回：
+
+所选博客集合的id字符窜，为了兼容旧的取值方式，可参考下面代码
+Code
+1
+2
+3
+4
+5
+6
+{{assign "blog_id" section.settings.blog_collection}} 
+{{assign "blogData" (get blog_id all_blogs) }}
+{{#each blogData.blogs.list as |blog|}}
+  {{ blog.title }}
+{{/each}}
+
+商品分类选择器 / collection_picker​
+type 设置为 collection_picker 展示商品分类选择控件。此控件可以直接选择商店里面的所有可用商品分类。
+此控件可用于选择需要展示的商品分类，例如在首页展示某个商品分类的前20个商品。
+示例代码：
+
+{
+  "id": "product_categories",
+  "type": "collection_picker",
+  "label": {
+    "zh-hans-cn": "商品分类",
+    "en": "Collection list"
+  },
+  "default": ""
+}
+
+在主题编辑器内的效果：
+image.png
+访问 collection_picker 控件生成的值时，返回值为 string 类型，为商品分类 ID。
+
+商品选择器 / product_picker​
+type 设置为 product_picker 展示商品选择控件。此控件可以直接选择商店里面的所有已上架的商品。
+此控件可用于选择需要展示的商品，例如在首页展示单个商品详情。
+示例代码：
+
+{
+  "type": "product_picker",
+  "id": "product_id",
+  "label": {
+    "zh-hans-cn": "商品",
+    "en": "Product"
+  }
+}
+
+在主题编辑器内的效果：
+image.png
+访问 product_picker 控件生成的值时，返回值为 string 类型，为商品 ID。
+
+商品标签选择器 /tag_picker​
+type 设置为 tag_picker 展示商品标签选择控件。此控件可以直接选择商店里面的所有商品标签（最多展示前50个），同时可以选择部分商品标签及其顺序。tag_picker 控件还具有以下配置：
+
+属性	描述	是否必需
+limit	限制在指定商品标签时的选中数量	否
+此控件可用于选择需要展示商品标签，例如在商品列表页展示标签筛选。
+示例代码：
+
+{
+  "type": "tag_picker",
+  "id": "tag_data",
+  "label": {
+    "zh-hans-cn": "标签选择器",
+    "en": "Tag selector"
+  },
+  "default": {
+    "group": "1",
+    "tags": []
+  }
+}
+
+在主题编辑器内的效果：
+image.png
+访问 tag_picker 控件生成的值时，返回值为 object 类型，有以下属性：
+
+group
+全部商品标签
+指定商品标签
+tags 当为指定标签时，这里将保存着用户选中的标签。类型为 string 数组。
+商品自定义标签选择器 /specify_tag_picker​
+type 设置为 specify_tag_picker 展示商品标签选择控件。此控件是 tag_picker 的衍生物，区别只是在于少了全部或者指定的下拉选项。
+示例代码：
+
+{
+  "id": "tag_1_data",
+  "type": "specify_tag_picker",
+  "label": {
+    "zh-hans-cn": "标签选择器",
+    "en": "Tag selector"
+  },
+  "limit": 200,
+  "default": []
+}
+
+在主题编辑器内的效果：
+image.png
+
+自定义页面选择器 / page_picker​
+type 设置为 page_picker 展示页面选择控件。此控件可以直接选择商店里面的所有可用的自定义页面。此控件可用于自定义页面的选择，例如商详页的自定义tab的页面。
+示例代码：
+
+{
+  "id": "product_custom_tab1",
+  "type": "page_picker",
+  "label": {
+    "en": "Custom content 1",
+    "zh-hans-cn": "自定义内容1"
+  }
+}
+
+在主题编辑器内的效果：
+image.png
+访问 page_picker 控件生成的值时，返回值为 string 类型，为页面 ID。
+
+favicon选择器 / favicon_picker​
+type 设置为 favicon_picker 展示页面图标上传控件。此控件可用于网站图标的上传。
+
+此控件相较于 image_picker 多了宽高 32px 的图片限制，及没有图片库。
+
+菜单导航选择器 / menu_picker​
+type 设置为 menu_picker 展示菜单选择控件。此控件可以直接选择商店里面的所有可用的菜单导航。此控件可用于选择菜单导航进行展示，例如页头的导航菜单链接。
+示例代码：
+
+{
+  "type": "menu_picker",
+  "id": "main_menu_link_list",
+  "label": {
+    "zh-hans-cn": "导航菜单",
+    "en": "Navigation menu"
+  },
+  "default": "head"
+}
+
+在主题编辑器内的效果：
+image.png
+访问 menu_picker 控件生成的值时，返回值为 string 类型，为导航 ID。
+
+head 和 footer 这两个菜单导航是创建店铺时默认就生成的，且不可删除。同时这两个菜单不管如何修改名称，key 都指向 header和 footer。所以这里默认值可以直接使用 head。
+
+支付方式图标选择器 / choose_payment_icons​
+type 设置为 choosePaymentIcons 展示支付方式图标选择控件。此控件可以选择是否展示支付图标和选择展示哪些图标。此控件可用于选择支付图标展示，例如页脚的支付图标展示。
+示例代码：
+
+{
+  "type": "choose_payment_icons",
+  "id": "show_pay_channel",
+  "label": {
+    "en": "Display the payment channel icon",
+    "zh-hans-cn": "展示支付渠道图标"
+  }
+}
+
+在主题编辑器内的效果：
+image.png
+访问 choose_payment_icons 控件生成的值时，返回值为 object 类型，有以下属性：
+
+show 是否展示支付渠道图标
+pay_channel_list icon 展示列表 类型为 object 数组。
+type: icon 类型 有以下枚举值：
+visa
+master-card
+master-card2
+visa-electron
+jcb
+american-express
+diners-club
+discover
+paypal
+union-pay
+show: boolean 值
+边距 / padding​
+type 设置为 padding 展示布局控件。此空间可用于存储pc端及移动端 上、下、左、右 四个方向的数值，多数场景用于输入容器的内边距或外边距。
+示例代码：
+
+{
+  "type": "padding",
+  "id": "padding_info",
+  "label": {
+    "zh-hans-cn": "内间距",
+    "en": "Padding"
+  },
+  "default": {
+    "pc":{
+      "left":10,
+      "right":10,
+      "top":10,
+      "bottom":10
+    },
+    "mobile":{
+      "left":10,
+      "right":10,
+      "top":10,
+      "bottom":10
+    }
+  }
+}
+
+在主题编辑器内的效果：
+image.png
+

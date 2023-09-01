@@ -1,0 +1,23 @@
+at_most​
+将数字限制为最大值，输入参数类型不对时，将参数转为数字再比较。
+
+参数​
+number {Number} 输入数字，必填
+max {Number} 最大值, 必填
+returns {Number} 返回数字
+用法​
+{{ at_most number max }}
+
+例子​
+Code
+1
+2
+3
+{{ at_most 4 5 }}
+{{ at_most 4 3 }}
+
+Output
+1
+2
+4
+3

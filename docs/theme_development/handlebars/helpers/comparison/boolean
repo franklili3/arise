@@ -1,0 +1,33 @@
+boolean​
+根据输入的参数返回布尔值。
+
+参数​
+val1 {any}
+compare {String}
+'=='
+'==='
+'!='
+'!=='
+'>'
+'>='
+'<'
+'<='
+'&&'
+'||'
+val2 {any}
+用法​
+{{boolean val1 compare val2}}
+
+例子​
+Code
+1
+2
+3
+4
+{{#if (boolean 1 '==' 1)}}
+  This is truthy
+{{/if}}
+
+Output
+1
+  This is truthy

@@ -1,0 +1,72 @@
+将导航添加到您的主题​
+商家可以为他们的商店导航创建菜单，这些菜单可以嵌套以创建下拉菜单。
+
+在本教程中，您将学习如何向主题添加导航。
+
+资源​
+linklists 对象
+实现导航​
+要向您的主题添加导航，您需要在 SHOPLINE 后台的在线商店 > 菜单导航中创建导航。
+
+创建好菜单导航后，您可以在商店中使用 linklists 全局对象访问所有的菜单导航。SHOPLINE 提供了 menu_picker 菜单选择，让商家可以自己选择菜单。您可以使用设置名称引用菜单。
+
+<!-- 获取选择的导航对象 -->
+{{ assign 'main_menu' (default (first (where linklists 'id' section.settings.main_menu_link_list)) (first (where linklists 'navType' 0))) }}
+{{#schema}}
+{
+  "settings": {
+    {
+      "type": "menu_picker",
+      "id": "main_menu_link_list",
+      "label": "导航菜单",
+      "default": "主菜单"
+    }
+  }
+}
+{{/schema}}
+
+对于每个菜单链接，您应该输出标题和 URL 等信息。例如，如果您创建了一个名为 main_menu_link_list 的菜单导航，商家可以在 header 部分中选择他们想要使用的菜单，那么以下代码将显示您可能如何输出菜单。
+
+<ul class="menu">
+  {{#each main_menu.links}}
+    <li class="menu-link">
+      <a href="{{ url }}">{{ title }}</a>
+    </li>
+  {{/each}}
+</ul>
+
+以上示例仅用于说明如何遍历导航菜单并输出链接。它不是一个完整的导航功能。
+
+实现多级导航​
+您可能还想输出链接的子链接。您最多可以嵌套三层链接，并且可以通过 links 属性对象访问它们的链接。
+
+<ul class="menu">
+  {{#each main_menu.links}}
+    {{#if (size links) '>' 0}}
+      <ul class="menu dropdown-child">
+        {{#each links}}
+          {{#if (size links) '>' 0}}
+            <ul class="menu dropdown-grandchild">
+              {{#each links}}
+                <li class="menu-link">
+                  <a href="{{ url }}">{{ title }}</a>
+                </li>
+              {{/each}}
+            </ul>
+          {{else}}
+            <li class="menu-link">
+              <a href="{{ url }}">{{ title }}</a>
+            </li>
+          {{/if}}
+        {{/each}}
+      </ul>
+    {{else}}
+      <li class="menu-link">
+        <a href="{{ url }}">{{ title }}</a>
+      </li>
+    {{/if}}
+  {{/each}}
+</ul>
+
+根据您构建导航类型，您应该在页眉或页脚部分包含导航菜单。
+

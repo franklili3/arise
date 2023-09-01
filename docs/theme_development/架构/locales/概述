@@ -1,0 +1,63 @@
+概述​
+语言环境文件是 JSON 文件，其中包含一组用于整个主题和主题编辑器的文本字符串的翻译。
+
+除了为商家提供一个单一位置来轻松编辑在整个主题中重复的单词和短语外，区域设置文件还允许您将店面内容和主题编辑器设置翻译为国际商家和客户的多种语言。
+
+位置​
+语言环境文件位于locales主题目录中：
+
+└── theme
+		...
+		└── locales
+
+类型​
+有两种类型的本地化文件：
+
+类型	描述
+店铺	店面区域设置文件具有.json文件扩展名，并控制店面内容的翻译。商家可以通过 Shopline 语言编辑器编辑这些翻译。
+Schema	Schema 本地化文件具有 .schema.json文件拓展名，并且为主题编辑器的设置控制翻译
+架构​
+语言环境文件需要遵循特定的命名结构。他们还遵循基本的组织结构：
+
+类别：翻译的顶级类别。
+组：类别内的第二级翻译分组。
+描述：第三层，代表个别翻译。
+{
+  "my_category": {
+    "my_group": {
+      "my_description": "translation text",
+      ...
+    },
+    ...
+  },
+  ...
+}
+
+提示 在命名翻译描述时，尽量描述性足以给出翻译上下文。例如，blogs.article_comment.submit_button_text提供比 更多的上下文blogs.article_comment.submit。
+
+您可以使用 2 个字母的小写语言表示。
+例如：
+
+语言	店面	Schema
+Finnish - All regions	fi.json	fi.schema.json
+使用​
+<div>
+	{{ t 'header.search' }}
+</div>
+
+根据当前店铺设置的语言环境读取对应的 .json ，输出对应的值
+zh-hans-cn.json
+
+<div>
+	搜索
+</div>
+
+en.json
+
+<div>
+  Search
+</div>
+
+参考语言环境文件​
+引用语言环境文件的代码会有所不同，具体取决于您引用的是店面语言环境文件还是schema语言环境文件。
+

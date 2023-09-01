@@ -1,0 +1,105 @@
+{
+  "name": "blogs/detail.html",
+  "sections": {
+    "main-blog-detail": {
+      "type": "main-blog-detail",
+      "disabled": false,
+      "settings": {
+        "is_show_author": true,
+        "is_show_date": true,
+        "is_show_breadcrumb": true,
+        "is_show_sidebar": false,
+        "position": "right",
+        "is_show_tag": true,
+        "is_show_related_articles": true,
+        "is_show_comment": true,
+        "is_show_prev_next": true,
+        "related_align": "left",
+        "is_show_related_tag": false,
+        "is_show_related_date": true,
+        "is_show_related_abstract": true,
+        "is_show_related_author": false,
+        "is_show_related_read_more": false
+      },
+      "blocks": {
+        "category1": {
+          "type": "category",
+          "settings": {
+            "title": "Categories"
+          }
+        },
+        "recent-blog1": {
+          "type": "recent-blog",
+          "settings": {
+            "title": "Recent Post",
+            "blog_num": 3,
+            "is_show_tag": false,
+            "is_show_date": true,
+            "is_show_abstract": false,
+            "is_show_author": false
+          }
+        },
+        "tag1": {
+          "type": "tag",
+          "settings": {
+            "title": "Tags"
+          }
+        }
+      },
+      "block_order": [
+        "category1",
+        "recent-blog1",
+        "tag1"
+      ]
+    },
+    "1692853232379763dfb9": {
+      "disabled": false,
+      "type": "image-with-text",
+      "settings": {
+        "image": {},
+        "image_height": "auto",
+        "pc_image_width": "medium",
+        "pc_image_position": "left",
+        "pc_box_align": "middle",
+        "pc_text_align": "left",
+        "image_overlap_display": false,
+        "color_scheme": "none",
+        "mobile_text_align": "left"
+      },
+      "blocks": {
+        "1692853232380712c87a": {
+          "type": "title",
+          "settings": {
+            "title": "作者介绍",
+            "title_size": "medium"
+          },
+          "blockId": "1692853232380712c87a"
+        },
+        "1692853232380e511057": {
+          "type": "content",
+          "settings": {
+            "content": "全球前1%区块链投资专家； 美国特许金融分析师一级，证券从业资格，期货从业资格； 师从高盛风险管理部副总裁Ken Gleason； 5年投资累计收益50倍。"
+          },
+          "blockId": "1692853232380e511057"
+        },
+        "1692853232380781cacf": {
+          "type": "button",
+          "settings": {
+            "button_text": "",
+            "link": ""
+          },
+          "blockId": "1692853232380781cacf"
+        }
+      },
+      "block_order": [
+        "1692853232380712c87a",
+        "1692853232380e511057",
+        "1692853232380781cacf"
+      ]
+    }
+  },
+  "order": [
+    "main-blog-detail",
+    "1692853232379763dfb9"
+  ]
+}

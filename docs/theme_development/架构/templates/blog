@@ -1,0 +1,42 @@
+blog​
+blog模板呈现博客集合页面，该页面列出来指定博客集合中的所有博客列表。
+
+image.png​
+位置​
+blogs/list模板位于主题的模板目录中：
+
+└── theme
+    ├── layout
+    ├── templates
+    |   ...
+    |   ├── blog.json
+    |   ...
+    ...
+
+内容​
+您应该在blog模板或者在里面的 section 中包含 blog 对象。
+
+blog 对象​
+您可以通过访问 blog 对象以显示博客集合列表。
+
+使用​
+您应该在 blog 模板中包含 blog 对象 用来访问博客集合信息。
+
+<div>
+  <span>博客集名称：{{ blog.title }}</span>
+  <ul>
+    {{#each blog.articles}}
+      <li>文章标题：{{ this.title }}</li>
+    {{/each}}
+  </ul>
+</div>
+
+访问​
+您可以在 URL 上输入如下的格式来访问博客集。
+
+通过 handle 访问​
+https://my-store.myshopline.com/blogs/{blog_handle}
+
+通过 id 访问​
+https://my-store.myshopline.com/blogs/{blog_id}
+

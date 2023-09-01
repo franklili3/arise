@@ -1,0 +1,76 @@
+settings_schema.json​
+settings_schema.json文件控制主题编辑器里 主题设置 的配置项和内容。主题编辑器中所有的配置值都保存在 settings_data.json 中
+
+位置​
+settings_schema.json 文件存放在 config 目录下：
+
+├── config
+   ├── settings_schema.json
+   └── settings_data.json
+
+结构​
+settings_schema.json 文件数据结构表现为对象数组，每个对象都需要具备以下属性：
+
+属性	描述	必需的
+name	配置的类型	是
+settings	settings 的相关配置	是
+settings_schema.json文件应该遵循以下基本格式：
+
+[
+  {
+    "name": "Category",
+    "settings": [
+      ...
+    ]
+  },
+  ...
+]
+
+settings_schema.json文件是一个 JSON 文件，所以所有的内容必须是有效的 JSON。此外，请确保您所需要的设置遵循了适当的语法。
+
+用法​
+使用配置文件时，您应该熟悉以下内容：
+
+配置类型
+使用配置
+主题元数据
+配置类型​
+有两种配置类型：
+
+类别	描述
+Input settings	该配置可以保存商家配置的值
+Sidebar settings	该配置不可以保存商家配置的值，仅作为引导、提示用
+使用配置​
+可通过 theme.settings 访问主题设置，要了解相关语法、注意事项等更多信息，可以参阅 Settings。
+
+主题元数据​
+主题元数据会在主题编辑器的左上角显示，并在主题商城上有所体现：
+image.png
+image.pngimage.png
+要添加此元数据，您可以在 settings_schema.json 文件中包含一个 name 为 theme_info 的对象。该对象必须包括以下属性：
+
+属性	描述	必需的
+name	此属性的值必须是theme_info	是
+theme_name	主题名称	是
+theme_version	主题版本号	是
+theme_author	主题作者	是
+theme_documentation_url	主题文档URL	是
+theme_support_url	主题支持的URL	否
+theme_cover_img	主题在商城显示的封面图	是
+theme_home_pc_preview_img	主题在商城显示的PC端首页预览图	是
+theme_home_mobile_preview_img	主题在商城显示的H5端首页预览图	是
+theme_pdp_pc_preview_img	主题在商城显示的PC端商品详情页预览图	是
+theme_pdp_mobile_preview_img	主题在商城显示的H5端商品详情页预览图	是
+例如：
+
+[
+  {
+    "name": "theme_info",
+    "theme_name": "Edges",
+    "theme_author": "Shopline",
+    "theme_version": "1.0.0",
+    "theme_documentation_url": "",
+  },
+  ...
+]
+

@@ -1,0 +1,104 @@
+支持多种货币和语言​
+商家可以使用 Shopline Payments 以多种货币和多种语言进行销售。这意味着客户可以使用他们首选的货币和语言浏览商店和结账。
+
+实现国家/地区和语言选择器​
+如果商家启用了多种货币和语言，那么您应该让客户能够选择他们的偏好。您可以构建以下组件来为客户提供此功能：
+
+国家/地区选择器
+语言选择器
+您可以在页眉或页脚或导航抽屉内包含国家/地区和语言选择器。
+
+国家/地区选择器​
+您可以构建国家/地区选择器以允许客户手动选择他们的首选货币。如果所选国家/地区不支持当前选择的语言，它将更新为该国家/地区的默认语言。
+
+选择器需要放置在本地化表单中。可以使用 Handlebars form helper和 'localization' 参数创建此表单。选择器还需要包含一个具有 name="country_code" 的 input 属性，其值将是所选国家/地区。
+
+商家启用的国家/地区可以通过 localization 对象下的 available_countries 的属性访问，当前选择的国家/地区可以通过 country 属性访问。
+
+以下示例包含一个按钮和一个包含每个国家/地区选项的弹出窗口：
+
+{{#if (gt (size localization.available_countries) 1)}}
+  <localization-form>
+    {{#form 'localization' id="localization-form" enctype="multipart/form-data" accept-charset="UTF-8"}}
+      <div class="dropdown-menu">
+        <input type="hidden" name="country_code" value="{{ localization.country.iso_code }}">
+        <button class="button button--secondary dropdown-menu__button" type="button">
+          <span data-label>{{localization.country.name}}（{{localization.country.currency.iso_code}} {{localization.country.currency.symbol}}）</span>
+          <svg class="icon icon-arrow" width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M0.899486 3.44971L4.94974 7.49996L9 3.44971" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </button>
+        <div class="dropdown-menu__list-wrapper top global-modal-border-shadow body4" hidden>
+          <ul class="dropdown-menu__list list-unstyled">
+            {{#each localization.available_contries}}
+              <li>
+                <a href="#" data-value="{{iso_code}}">{{name}}（{{currency.iso_code}} {{currency.symbol}}）</a>
+              </li>
+            {{/each}}
+          </ul>
+        </div>
+      </div>
+    {{/form}}
+  </localization-form>
+{{/if}}
+
+有关管理选项列表可见性并在选择时提交表单的 JavaScript 示例，请参阅本地化表单的 JavaScript 提交。
+
+语言选择器​
+您可以构建一个语言选择器，让客户手动选择他们喜欢的语言。
+
+选择器需要放置在本地化表单中。可以使用 Handlebars form helper 和 localization 参数创建此表单。选择器还需要包含具有 name="language_code" 的 input 属性，其值将是所选语言。
+
+可以通过 localization 对象的 available_languages 的属性访问可用的语言，并可以通过 language 属性访问当前选择的语言。
+
+以下示例包含一个按钮和一个包含每种语言选项的弹出窗口：
+
+{{#if (gt (size localization.available_languages) 1)}}
+  <localization-form>
+    {{#form "localization" id="localization-form" }}
+      <div class="dropdown-menu">
+        <input type="hidden" name="locale_code" value="{{ localization.language.iso_code }}">
+        <button class="button button--secondary dropdown-menu__button" type="button">
+          <span data-label>{{ localization.language.endonym_name }}</span>
+          <svg class="icon icon-arrow" width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M0.899486 3.44971L4.94974 7.49996L9 3.44971" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </button>
+        <div class="dropdown-menu__list-wrapper top global-modal-border-shadow body4" hidden>
+          <ul class="dropdown-menu__list list-unstyled">
+            {{#each localization.available_languages}}
+              <li>
+                <a href="#" data-value="{{iso_code}}">{{endonym_name}}</a>
+              </li>
+            {{/each}}
+          </ul>
+        </div>
+      </div>
+    {{/form}}
+  </localization-form>
+{{/if}}
+
+有关管理选项列表可见性并在选择时提交表单的 JavaScript 示例，请参阅本地化表单 JavaScript 提交。
+
+本地化表单的 JavaScript 提交​
+因为您的国家/地区或语言选择器是一个自定义元素，并且表单中没有包含提交按钮，所以您需要通过 JavaScript 提交表单。
+
+以下示例基于之前的国家/地区和语言选择器示例:
+
+class LocalizationForm extends HTMLElement {
+  constructor() {
+    super();
+    this.elements = {
+      country: this.querySelector('input[name="country_code"]'),
+      language: this.querySelector('input[name="locale_code"]'),
+      form: this.querySelector('form'),
+    };
+    this.elements.country && this.elements.country.addEventListener('change', this.handleSubmit.bind(this));
+    this.elements.language && this.elements.language.addEventListener('change', this.handleSubmit.bind(this));
+  }
+  handleSubmit(e) {
+    this.elements.form.submit();
+  }
+}
+defineCustomElement('localization-form', () => LocalizationForm);
+

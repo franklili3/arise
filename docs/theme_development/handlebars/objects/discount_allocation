@@ -1,0 +1,15 @@
+discount_allocation​
+有关折扣如何影响商品的信息。
+
+了解如何在主题中显示折扣，请参阅Discounts.
+
+属性​
+
+amount
+number
+
+discount_application
+discount_application
+从Object获取
+line_item.discount_allocations
+discount_allocation

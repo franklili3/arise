@@ -1,0 +1,27 @@
+round​
+将输出四舍五入为最接近的整数或指定的小数位数，输入参数类型不对时，返回错误。
+
+参数​
+number {Number} 输入数字，必填
+[digit] {Number} 保留小数位数，可选
+returns {Number} 返回数字
+用法​
+{{ round number [digit] }}
+
+例子​
+Code
+1
+2
+3
+4
+{{ round 4.6 }}
+{{ round 4.3 }}
+{{ round 4.5612 2 }}
+
+Output
+1
+2
+3
+5
+4
+4.56

@@ -1,0 +1,19 @@
+plus​
+将两个数字相加。
+
+参数​
+a {Number} 输入数字，必填
+b {Number} 输入数字，必填
+returns {Number} 返回数字
+用法​
+{{ plus a b }}
+
+例子​
+Code
+1
+2
+{{ plus 2 2 }}
+
+Output
+1
+4

@@ -1,0 +1,19 @@
+replace​
+将字符串内的任何子字符串实例替换为给定的字符串。
+
+参数​
+str1 {String} 输入字符串，必需
+str2 {String} 输入字符串，必需
+returns {String} 返回字符串
+用法​
+{{ removeFirst str1 str2 }}
+
+例子​
+Code
+1
+2
+{{ replace 'hello' 'l' 'm' }}
+
+Output
+1
+hemmo

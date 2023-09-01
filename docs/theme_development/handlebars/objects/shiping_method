@@ -1,0 +1,24 @@
+shipping_method​
+有关订单运输方式的信息。
+
+属性​
+
+id
+string
+
+original_price
+number
+
+price
+number
+
+tax_lines
+array of tax_line
+
+
+title
+string
+从Object获取
+checkout.shipping_method
+order.shipping_methods
+shipping_method

@@ -1,0 +1,32 @@
+join​
+将一个数组中的所有项目合并成一个字符串，默认用,分隔。
+
+参数​
+array {Array} 数组，必填。
+[separator] {String} 分隔符, 可选, 默认 ,。
+returns {String}
+用法​
+{{join array}}
+
+例子​
+Code
+Data
+1
+2
+{{ join collection.all_tags }}
+
+Output
+1
+
+自定义分隔符​
+你可以为加入的项目指定一个自定义分隔符。
+
+Code
+Data
+1
+2
+{{ join collection.all_tags "_" }}
+
+Output
+1
+

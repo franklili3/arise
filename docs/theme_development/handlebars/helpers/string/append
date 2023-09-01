@@ -1,0 +1,19 @@
+append​
+在字符串的末尾添加指定的字符串。
+
+参数​
+str1 {String} 输入所需的字符串。
+str2 {String} 输入所需的字符串。
+returns {String} 返回字符串。
+用法​
+{{ append str1 str2 }}
+
+例子​
+Code
+1
+2
+{{ append 'hello' 'world' }}
+
+Output
+1
+helloworld

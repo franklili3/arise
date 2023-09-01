@@ -1,0 +1,21 @@
+first​
+参数​
+array {Array} 数组，必填
+returns {Any} 第一个数组内容
+用法​
+{{first array}}
+
+例子​
+Code
+Data
+1
+2
+3
+4
+{{ assign 'first_product' (first collection.products) }}
+
+{{ first_product.title }}
+
+Output
+1
+

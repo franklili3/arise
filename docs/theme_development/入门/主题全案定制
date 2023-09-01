@@ -1,0 +1,86 @@
+主题全案定制​
+您已准备好创建新主题。您可能会问自己：如何快速设置开发环境并开始编码？
+在本教程中，您将使用 Shopline CLI，Arise 来创建新主题并将其上传到 SHOPLINE。
+
+你会学到什么​
+完成本教程后，您将完成以下操作：
+
+设置本地开发环境
+克隆 Arise，SHOPLINE 的参考主题
+对本地代码所做的预览更改
+将主题代码推送到您的 SHOPLINE 店铺并发布您的主题
+在你开始之前​
+在开始开发主题之前，请执行以下操作：
+
+记下您要处理的店铺的 URL，例如：sl.myshopline.com
+如果你是以员工账号登录，确保您的账号具有在线商店的权限
+⚠️ 警告
+如果您是店主，则 {shop}.myshopline.com/admin在使用 Shopline CLI 登录之前，您需要至少使用商店 URL 直接登录商店一次。
+
+第 1 步：安装 Shopline CLI​
+Shopline CLI 是一个命令行工具，可帮助您构建 SHOPLINE 主题。它允许您在本地开发时预览、测试和共享对主题的更改。按照以下说明在 macOS 或 Windows 上安装 Shopline CLI。
+要安装和运行 Shopline CLI，您需要在计算机上安装以下内容：
+
+Git
+Nodejs 14.0.0 或更高版本
+在 Shopline CLI 入门中查看与 Shopline CLI 交互的完整要求。
+
+npm install --global @shoplinedev/cli
+# or
+yarn global add @shoplinedev/cli
+
+第 2 步：使用 Arise 初始化新主题​
+使用 shopline theme init 命令将 Arise Git 存储库克隆到本地计算机。
+Arise 是 SHOPLINE 的参考主题，专为提高性能、灵活性和易用性而打造。您可以使用 Arise 作为构建主题的起点。
+
+⚠️ 警告
+如果您正在为 SHOPLINE 主题商店构建主题，则可以使用 Arise 作为起点。但是，您提交的主题需要与 Arise 有本质区别，以便为商家提供附加价值。了解您可以使用 Arise 的方式
+
+在终端中，导航到要克隆 Arise 的工作目录。
+输入以下命令：
+shopline theme init <THEME_NAME>
+
+<THEME_NAME>是你克隆到本地的文件夹名称，例如 my-new-theme-project，主题被克隆到该文件夹中。
+克隆主题后，导航到文件夹：
+cd my-new-theme-project
+
+第 3 步：使用 Shopline CLI 进行身份验证​
+用 shopline login 将 Shopline CLI 与您要处理的商店连接。
+
+在终端中输入您要登录的商店 shopline login --store <DOMAIN>，其中 <DOMAIN>是你想要登录的店铺 ：
+shopline login --store johns-apparel.myshopline.com
+
+在您的浏览器窗口中，登录附加到您要用于开发的商店的账号。
+第 4 步：预览您的主题​
+初始化主题后，您可以运行 shopline theme serve 以在浏览器中与主题进行交互。 Shopline CLI 将主题作为开发主题上传到您连接的商店。
+该命令返回一个 URL，该 URL 会热重新加载对所有文件的本地更改，运行您使用商店的数据实时预览更改。
+
+使用以下命令为您的主题启动一个服务：
+shopline theme serve
+
+在浏览器中，导航到 http://127.0.0.1:8282以打开主题预览。
+第 5 步：测试您的连接​
+您可以通过对主题代码进行小的更改来测试主题。在此示例中，我们将更新页面背景颜色，然后在主题编辑器中对其进行验证。
+
+在编辑器中打开您的存储库。
+导航到 config文件夹，然后打开 settings_data.json
+在 current-> theme 找到 color_page_background配置项，更新该值以更改主题页面背景颜色
+{
+  "current": {
+    "theme": {
+      "color_page_background": "red"
+    }
+  }
+}
+
+保存您的更改，然后在主题编辑器中刷新并查看更新。
+此时，主题编辑器中间的预览部分将会呈现为红色背景的页面
+第 6 步：发布您的主题​
+如果您想让您的主题在您的商店中生效，那么您可以发布它。您可以通过 Shopline CLI 将您的主题代码发布到商家的商店中。有两种方式：
+
+通过 shopline theme package将本地主题代码打包成一个 .zip 文件
+向商家交付该 .zip 文件
+在商家后台 -> 在线商店进行上传
+通过 shopline theme push将本地主题代码上传到指定主题
+上传完成后即可在商家后台看到已发布的主题
+

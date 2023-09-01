@@ -1,0 +1,19 @@
+minus​
+从一个数中减去另一个数。
+
+参数​
+a {Number} 输入一个数字，必填
+b {Number} 输入一个数字，必填
+returns {Number} 返回一个数字
+用法​
+{{ minus a b  }}
+
+例子​
+Code
+1
+2
+{{ minus 4 2}}
+
+Output
+1
+2

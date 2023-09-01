@@ -1,0 +1,250 @@
+支持店面筛选​
+店面筛选允许商家轻松创建用于筛选收藏和搜索结果页面的筛选器。筛选器基于现有产品数据，例如可用性、价格、变体选项等。
+
+在本教程中，您将了解如何在主题中支持店面筛选。
+
+资源​
+要实现店面筛选，您将使用以下内容：
+
+filter 对象
+根据您正在处理的页面之一选择以下内容：
+collection 对象
+search 对象
+实现店面筛选​
+要支持店面筛选，您需要实现一个筛选器显示供客户进行交互。
+
+应用的筛选器是通过URL参数体现的，所以你也应该熟悉筛选器URL参数的结构。
+
+筛选器显示​
+以下部分概述了基本的集合和搜索结果筛选器实现。每个实现都使用一个表单来托管筛选器输入，并使用“提交”按钮来应用关联的筛选器。但是，您可以使用 JavaScript 根据输入更改自动提交表单。提交表单后，页面会刷新并应用筛选器。
+
+更深入的解决方案，参考Seed的实现。
+
+集合筛选器展示​
+收藏筛选器显示应包含在收藏模板中，或作为收藏模板的一部分包含的部分。
+
+下面的示例实现包含两个主要组件：
+
+筛选器组和值列表。
+如果有任何活动筛选器，则列出活动筛选器。
+这些组件中的每一个都通过集合对象的 filters 属性和相关联的 filter 对象进行输出。
+
+<form class="filter-form">
+  {{#each collection.filters as |filter|}}
+    <details class="filter-group">
+      <summary class="filter-group-summary">
+        <div>
+          <span>{{ filter.label }}</span>
+          {{#if filter.active_values.length '>' 0 }}
+            <span>({{ filter.active_values.length }})</span>
+          {{/if}}
+        </div>
+      </summary>
+      <div class="filter-group-display">
+        <div class="filter-group-display__header">
+          <span class="filter-group-display__header-selected">{{ filter.active_values.length }} selected</span>
+          {{#if filter.active_values.length '>' 0 }}
+            <a href="{{ filter.url_to_remove }}" class="filter-group-display__header-reset">Reset</a>
+          {{/if}}
+        </div>
+        {{#case filter.type}}
+          {{#when "boolean" "list"}}
+            <ul class="facets__list">
+              {{#each filter.values as |value|}}
+                <li class="facets__item">
+                  <label for="Filter-{{filter.param_name}}-{{@index}}" class="facet-checkbox">
+                    <input
+                      id="Filter-{{filter.param_name}}-{{@index}}"
+                      type="checkbox"
+                      name="{{value.param_name}}"
+                      value="{{value.value}}"
+                      {{#if value.active}}checked{{/if}}
+                    />
+                    <span>
+                      {{ value.label }}
+                    </span>
+                  </label>
+                </li>
+              {{/each}}
+            </ul>
+            <div class="filter-group-display__submit">
+              <input type="submit" value="Apply">
+            </div>
+          {{/when}}
+          {{#when "price_range"}}
+            <div class="filter-group-display__price-range">
+              <div class="filter-group-display__price-range-from">
+                <span>{{ ../cart.currency.symbol }}</span>
+                <input
+                  name="{{ filter.min_value.param_name }}"
+                  id="Filter-{{ filter.min_value.param_name }}"
+                  {{#if filter.min_value.value }}
+                    value="{{ replace (money_without_currency filter.min_value.value) ',' '' }}"
+                  {{/if}}
+                  type="number"
+                  placeholder="0"
+                  min="0"
+                  max="{{ replace (money_without_currency filter.range_max) ',' '' }}"
+                >
+                <label for="Filter-{{ filter.min_value.param_name }}">From</label>
+              </div>
+              <div class="filter-group-display__price-range-to">
+                <span>{{ ../cart.currency.symbol }}</span>
+                <input name="{{ filter.max_value.param_name }}"
+                  id="Filter-{{ filter.max_value.param_name }}"
+                  {{#if filter.max_value.value }}
+                    value="{{ replace (money_without_currency filter.max_value.value) ',' '' }}"
+                  {{/if}}
+                  type="number"
+                  placeholder="{{ replace (money_without_currency filter.range_max) ',' '' }}"
+                  min="0"
+                  max="{{ replace (money_without_currency filter.range_max) ',' '' }}"
+                >
+                <label for="Filter-{{ filter.max_value.param_name }}">To</label>
+              </div>
+            </div>
+            <div class="filter-group-display__submit">
+              <input type="submit" value="Apply">
+            </div>
+          {{/when}}
+        {{/case}}
+      </div>
+    </details>
+  {{/each}}
+  <div class="active-filters">
+    <a href="{{ collection.url }}?sort_by={{ collection.sort_by }}" class="active-filters__clear">Clear all</a>
+    {{#each collection.filters as |filter|}}
+      {{#if filter.type "==" "price_range"}}
+        {{#or filter.min_value.value filter.max_value.value }}
+          <a class="active-filters__remove-filter" href="{{ filter.url_to_remove }}">
+            {{ assign "min_value" (default filter.min_value.value 0) }}
+            {{ assign "max_value" (default filter.max_value.value filter.range_max) }}
+            {{ min_value | money }} - {{ max_value | money }} X
+          </a>
+        {{/or}}
+      {{else}}
+        {{#each filter.active_values as |filter_value| }}
+          <a class="active-filters__remove-filter" href="{{ filter_value.url_to_remove }}">
+            {{ filter.label }}: {{ filter_value.label }} X
+          </a>
+        {{/each}}
+      {{/if}}
+    {{/each}}
+  </div>
+</form>
+
+搜索筛选器显示​
+搜索结果筛选器显示应包含在搜索模板中，或作为搜索模板的一部分包含在某个部分中。
+
+下面的示例实现包含两个主要组件：
+
+筛选器组和值列表。
+活动筛选器列表（如果有）。
+这些组件都通过搜索对象的 filters 属性和相关的filter 对象进行输出。
+
+如果您在搜索结果页面上应用了筛选器，则所有非产品结果都会被筛选掉。
+
+<form class="filter-form">
+  {{#each search.filters as |filter|}}
+    <details class="filter-group">
+      <summary class="filter-group-summary">
+        <div>
+          <span>{{ filter.label }}</span>
+          {{#if filter.active_values.length '>' 0 }}
+            <span>({{ filter.active_values.length }})</span>
+          {{/if}}
+        </div>
+      </summary>
+      <div class="filter-group-display">
+        <div class="filter-group-display__header">
+          <span class="filter-group-display__header-selected">{{ filter.active_values.length }} selected</span>
+          {{#if filter.active_values.length '>' 0 }}
+            <a href="{{ filter.url_to_remove }}" class="filter-group-display__header-reset">Reset</a>
+          {{/if}}
+        </div>
+        {{#case filter.type}}
+          {{#when "boolean" "list"}}
+            <ul class="facets__list">
+              {{#each filter.values as |value|}}
+                <li class="facets__item">
+                  <label for="Filter-{{filter.param_name}}-{{@index}}" class="facet-checkbox">
+                    <input
+                      id="Filter-{{filter.param_name}}-{{@index}}"
+                      type="checkbox"
+                      name="{{value.param_name}}"
+                      value="{{value.value}}"
+                      {{#if value.active}}checked{{/if}}
+                    />
+                    <span>
+                      {{ value.label }}
+                    </span>
+                  </label>
+                </li>
+              {{/each}}
+            </ul>
+            <div class="filter-group-display__submit">
+              <input type="submit" value="Apply">
+            </div>
+          {{/when}}
+          {{#when "price_range"}}
+            <div class="filter-group-display__price-range">
+              <div class="filter-group-display__price-range-from">
+                <span>{{ ../cart.currency.symbol }}</span>
+                <input
+                  name="{{ filter.min_value.param_name }}"
+                  id="Filter-{{ filter.min_value.param_name }}"
+                  {{#if filter.min_value.value }}
+                    value="{{ replace (money_without_currency filter.min_value.value) ',' '' }}"
+                  {{/if}}
+                  type="number"
+                  placeholder="0"
+                  min="0"
+                  max="{{ replace (money_without_currency filter.range_max) ',' '' }}"
+                >
+                <label for="Filter-{{ filter.min_value.param_name }}">From</label>
+              </div>
+              <div class="filter-group-display__price-range-to">
+                <span>{{ ../cart.currency.symbol }}</span>
+                <input name="{{ filter.max_value.param_name }}"
+                  id="Filter-{{ filter.max_value.param_name }}"
+                  {{#if filter.max_value.value }}
+                    value="{{ replace (money_without_currency filter.max_value.value) ',' '' }}"
+                  {{/if}}
+                  type="number"
+                  placeholder="{{ replace (money_without_currency filter.range_max) ',' '' }}"
+                  min="0"
+                  max="{{ replace (money_without_currency filter.range_max) ',' '' }}"
+                >
+                <label for="Filter-{{ filter.max_value.param_name }}">To</label>
+              </div>
+            </div>
+            <div class="filter-group-display__submit">
+              <input type="submit" value="Apply">
+            </div>
+          {{/when}}
+        {{/case}}
+      </div>
+    </details>
+  {{/each}}
+  <div class="active-filters">
+    <a href="{{ collection.url }}?sort_by={{ collection.sort_by }}" class="active-filters__clear">Clear all</a>
+    {{#each collection.filters as |filter|}}
+      {{#if filter.type "==" "price_range"}}
+        {{#or filter.min_value.value filter.max_value.value }}
+          <a class="active-filters__remove-filter" href="{{ filter.url_to_remove }}">
+            {{ assign "min_value" (default filter.min_value.value 0) }}
+            {{ assign "max_value" (default filter.max_value.value filter.range_max) }}
+            {{ min_value | money }} - {{ max_value | money }} X
+          </a>
+        {{/or}}
+      {{else}}
+        {{#each filter.active_values as |filter_value| }}
+          <a class="active-filters__remove-filter" href="{{ filter_value.url_to_remove }}">
+            {{ filter.label }}: {{ filter_value.label }} X
+          </a>
+        {{/each}}
+      {{/if}}
+    {{/each}}
+  </div>
+</form>
+

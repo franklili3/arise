@@ -1,0 +1,53 @@
+概述​
+Shopline CLI 是一个命令行界面工具，可帮助您构建 Shopline 主题。它可以快速生成 Shopline 主题。
+本文档介绍了如何使用 Shopline CLI 进行主题开发。
+
+特征​
+Shopline CLI 具有一下功能以加速您的主题开发过程：
+
+使用开发中主题安全地预览、测试和共享对主题的更改
+预览主题时，在文件更改时自动刷新页面
+以 Arise 主题为起点初始化新主题
+从命令行推送主题
+开发中主题​
+开发中主题是连接到用于开发的 Shopline 商店的临时隐藏主题。当您将主题作为开发中主题连接商店时，您可以使用该商店的数据进行本地测试。
+您可以使用shopline theme serve命令创建开发主题。
+您可以在 Shopline 商店中使用开发中主题。开发中主题不计入您的主题限制，并且会在7天不活跃后从商店中删除。
+当你运行shopline logout命令时会删除您的开发中主题。如果您想要在注销后可以访问主题的预览链接，那么您应该将您的开发中主题推送到您商店中的未发布的主题。
+您的开发中主题可用于执行以下任务：
+
+实时查看您的本地开发的主题的更改
+使用商家后台的主题编辑器与主题进行交互
+与其他开发人员分享这个主题链接
+安装​
+要了解如何在 Windows、macOS上安装 Shopline CLI，请参阅安装 Shopline CLI
+
+入门​
+查看 Shopline CLI 入门指南以了解一下内容
+
+使用 Shopline CLI 的要求
+连接到商店
+创建新主题
+预览主题
+目录结构​
+当且仅当您使用的目录与默认Shopline 主题目录结构匹配时，您才能运行某些主题命令，例如：
+shopline theme serve。这个目录结构代表了一个无构建的主题，或者一个已经经历过任何必要文件转换的主题。如果您使用构建工具来生成主题文件，那么您可能需要在存储生成文件的目录运行命令。
+默认 Shopline 主题目录结构如下：
+
+└── project
+    ├── assets
+    ├── config
+    ├── layout
+    ├── locales
+    ├── sections
+    ├── snippets
+    └── templates
+
+命令参考​
+Shopline CLI 提供用于身份验证和与 Shopline 通信的基本命令，以及用于主题开发的特定命令。
+
+Shopline CLI 核心命令参考
+Shopline CLI 主题命令参考
+升级或卸载 Shopline CLI​
+要了解如何升级或卸载 Shopline CLI，请参阅升级或卸载 Shopline CLI
+

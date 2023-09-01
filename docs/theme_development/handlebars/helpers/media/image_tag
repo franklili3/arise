@@ -1,0 +1,28 @@
+image_tag​
+为给定的image_url生成HTML <img>标签。
+
+默认情况下，会根据图片URL的尺寸和纵横比向<img>标签添加width和height属性。不过，你可以通过宽度和高度参数来覆盖这些属性。如果只提供了一个参数，那么只会添加该属性。
+
+参数​
+image_url {String} image_url helper
+[hash.width] {Number} 指定<img>标签的width属性。你可以将参数设为 null，以防止添加该属性。
+[hash.height] {Number} 指定<img>标签的height属性。你可以将参数设为 null，以防止添加该属性。
+[hash.sizes] {String} 用HTML sizes 属性指定源尺寸。
+[hash.widths] {String} 用HTML sizes 属性指定源尺寸。
+[hash.srcset] {String} 默认情况下，Shopline会生成一个srcset。但是，你可以创建自己的srcset。srcset参数优先于宽度参数。除非你想通过将参数设为null来移除该属性，否则不应使用srcset参数。
+[hash.alt] {String} 默认情况下，<img>标签的alt属性设置为媒体alt文本，或者文章、集合、行项目、产品和变体图像的资源标题。但是，你可以覆盖此默认设置，或者在没有默认值的情况下设定值。
+[HTML attributes] {String} 你可以通过添加与属性名称匹配的参数和所需值，来指定HTML sizes 属性。
+returns {String} <img> 标签
+用法​
+{{ image_tag (image_url object) }}
+
+例子​
+Code
+Data
+1
+2
+{{ image_tag (image_url image width=200) }}
+
+Output
+1
+<img src="https://img.myshopline.com/sl_200x.png?w=1200&h=600" alt="alt string" width="200" height="100">

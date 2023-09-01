@@ -1,0 +1,32 @@
+article​
+article模板呈现博客文章页面，该页面展示博客集的文章内容。
+image.png
+
+位置​
+article模板位于主题的模板目录中：
+
+└── theme
+    ├── layout
+    ├── templates
+    |   ...
+    |   ├── article.json
+    |   ...
+    ...
+
+使用​
+您应该在 article模板中包含 article 对象 来访问博客的详细信息，blog 对象来访问博客对象所属的博客集合对象。
+
+<div>
+  <span>博客集名称: {{ blog.title }}</span>
+  <span>博客文章标题：{{ article.title }}</span>
+</div>
+
+访问​
+您可以在 URL 上输入如下的格式来访问博客详细信息。
+
+通过 handle 访问​
+https://my-store.myshopline.com/blogs/{blog_handle}/{article_handle}
+
+通过 id 访问​
+https://my-store.myshopline.com/blogs/{blog_id}/{article_id}
+
