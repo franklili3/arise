@@ -1,0 +1,20 @@
+user_agent​
+用户代理，即爬虫的名称，用于robots.txt文件中的特定群组。
+
+用户代理对象由User-agent指令和用户代理名称的值组成。例如：
+
+User-agent: *
+
+提示
+您可以在Shopline管理后台自定义robots.txt。
+
+属性​
+
+directive
+string
+
+value
+string
+从Object获取
+group.user_agent
+user_agent

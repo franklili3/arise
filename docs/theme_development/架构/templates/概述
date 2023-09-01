@@ -1,0 +1,109 @@
+概述​
+模板控制着主题中每种类型的页面所呈现的内容。
+
+在线商店中的每个页面类型都有一个关联的模板类型。您可以使用模板添加对页面类型有意义的功能。例如，您可以向产品模板添加额外的产品建议，或者向博客模板添加评论表单。
+
+您可以创建相同模板类型的多个版本，为不同的用例创建自定义模板。例如，您可以为产品创建一个单独的产品模板，或者为包含视频内容的页面创建一个单独的页面模板。
+
+位置​
+模板文件被托管在主题的 templates 目录下：
+
+└── theme
+    ├── layout
+    ├── templates
+    |   ├── 404.json
+    |   ├── blog.json
+    |   ...
+    ...
+
+子类型​
+可以在主题中使用两种不同的模板文件类型。这些模板文件类型可用于构建多个模板类型，每个模板类型代表商家在线商店中的一种类型的内容。
+
+文件类型​
+主题模板可以使用两种不同的文件类型：JSON 和 Html。
+有些模板类型只支持 HTML 文件类型，而其他模板类型则支持任意一种模板文件类型。
+
+类型	描述
+JSON	JSON 模板是文件拓展名为 .json 的数据文件。这些模板让您可以轻松地用 section 中的内容填充模板。商家可以使用主题编辑器添加、删除或重新排列 section。
+
+如果您使用的是 JSON 模板，那么任何 HTML 代码都需要包含在模板引用的 section 中。
+
+要了解更多信息，请参阅 JSON templates。
+HTML	HTML 模板是拓展名为 .html 的模板文件。您可以使用 Handlebars helper 访问模板数据
+对比 JSON 与 HTML​
+如果你想在模板中使用 sections，那么你应用使用 JSON templates。
+JSON templates 为商家提供了更多的灵活性来添加、删除和重排 sections，包括 app sections。此外，它们可以最小化 settings_data.json 中的数据量。相反，数据直接存储在模板中，这提高了主题编辑器的性能。
+
+您的主题中最多可以有 1000 个 JSON 模板，涵盖所有模板类型。例如，如果您有 20 个 JSON 产品模板、10 个 JSON 页面模板和 5 个 JSON 集合模板，那么您最多可以向主题添加 965 个附加模板。
+
+模板类型​
+每个可用的模板类型表示商家在线商店中的一种内容类型。不提供模板类型也是可以的。但是，对于要呈现的任何页面类型，都必须有一个匹配的模板。例如，要呈现一个产品页面，您至少需要一个 product 类型的模板。
+
+您可以在主题中使用以下模板类型。要了解关于每个模板类型的更多信息，请单击模板名称。
+
+类型	描述
+404	呈现页面内容，如果客户为商店输入无效的 URL，则显示该页面内容。
+index	呈现商店的主页，位于根路径（/）。
+activity	呈现活动页面。（注意：OS2.1主题不支持活动页面）
+cart	呈现购物车页面，该页面概述了客户的购物车内容。
+collection	呈现商品列表页，其中列出所有分类中的所有产品。位于 /collections
+collections_all	呈现商品分类页面。位于 /collections-all
+page	呈现商品的自定义页面。位于 /page/{pageId}
+proofing	呈现店铺的打烊页。
+product	呈现商品详情页。对应的路由为 /products/{product_handle} （注意：非OS2.1主题的模板为 products/detail）
+search	呈现搜索页，该页面显示店铺搜索的结果。路由为 /search （注意：非OS2.1主题的模板为 products/search）
+article	呈现博客文章页。需要通过 /blogs/{blog_handle}/{article_handle}访问具体的博客文章页面（注意：非OS2.1主题的模板为 /blogs/detail）
+blog	呈现博客集合页面，需要通过 /blogs/{blog_handle}访问具体的博客集合。（注意：非OS2.1主题的模板为 /blogs/list）
+customers/account	呈现客户帐户页面，该页面提供客户帐户的概览。
+customers/activate_account	呈现客户帐户激活页面，该页面承载用于激活客户帐户的表单。
+customers/addresses	呈现客户地址页面，允许客户查看和管理他们当前的地址，以及添加新地址。
+customers/foget_password	呈现忘记密码页面，允许用户通过忘记密码流程重置密码
+customers/login	呈现客户登录页面，该页面托管用于登录客户帐户的表单。
+customers/order	呈现客户订单详情页面，该页面显示客户订单的详细信息。
+customers/orders	呈现客户订单列表页面，该页面显示客户过去订单。
+customers/register	呈现客户注册页面，该页面承载用于创建客户帐户的表单。
+gift_card.html	呈现礼品卡页面，该页面显示购买时发给客户的礼品卡。
+这必须是 Html 模板。
+结构​
+Html 模板没有固定的结构。有关可以在 Html 模板中包含的内容的信息，请参阅内容。
+JSON 模板仅接受具有固定架构和接受属性列表的 JSON 文件。有关 JSON 模板架构的信息，请参阅JSON 模板。
+
+内容​
+您可以在模板中包含的内容取决于它是 JSON 模板还是 Html 模板。
+在决定要在模板中包含哪些内容时，您应该始终牢记模板类型的目标。例如，产品模板或产品模板中的 section 应始终包含呈现产品详细信息的 product object 和允许客户将产品变体添加到购物车的产品表单标签。根据您的模板类型和方法，您可能希望将这些项目包含在您在模板中引用的部分中。
+Html 模板接受标准的 HTML 和 Handlebars。Html 模板可以访问任何全局 Handlebars 对象，以及与模板关联的对象。有关详细信息，请参阅每种模板类型的文档。
+
+使用​
+在使用模板文件时，您应该熟悉备用模板以及如何使用它们。
+
+备用模板​
+在某些情况下，您可能需要为同一模板创建不同的标记。例如，您可能想要创建一个替代模板，其中包含特定产品的不同部分。
+
+您可以通过本地、代码编辑器或者主题编辑创建一个备用模板。
+
+笔记 您不能将默认模板替换为备用模板。如果默认模板不能满足您的需求，那么您可以编辑模板代码来自定义它。
+
+名称结构​
+备用模板文件使用以下名称结构，其中template-name是模板名称，template-suffix 是备用名称，template-file-type是文件类型。
+
+template-name.template-suffix.template-file-type
+
+例如，如果您创建一个名为alternate的备用 JSON 产品模板，则文件名将如下所示：
+
+products/detail.alternate.json
+
+使用备用模板​
+创建备用模板后，可以通过以下方式应用它：
+
+它可以分配给 Shopline 后台中的关联资源
+它可以在主题编辑器中预览
+它可以使用 viewURL 参数在店面呈现。
+提示 您可以在 template objects 中确定当前使用的是哪个模板
+
+渲染备用模板​
+备用模板可以通过视图URL参数在店面上渲染。这个参数的格式应该是?view=[template-suffix]，其中[template-suffix]是模板的备用名称。
+
+例如，给定上一节的 products/detail.alternate.json 模板，以及一个名为 Example product 的产品，你可以用该模板渲染该产品，方法如下。
+
+/products/example-product?view=alternate
+

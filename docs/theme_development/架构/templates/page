@@ -1,0 +1,25 @@
+page​
+page 模板呈现商店的自定义页面，例如关于我们、联系我们等。
+
+image.png
+
+位置​
+page模板位于主题的模板目录中：
+
+└── theme
+    ├── layout
+    ├── templates
+    |   ...
+    |   ├── page.json
+    |   ...
+    ...
+
+内容​
+您可以在page模板或模板内的部分中包含以下内容：
+
+pageInfo object
+pageInfo object​
+您可以访问 Handlebars page 对象以显示页面的详细信息
+
+提示 如果您使用的是 JSON 模板，则任何 HTML 或 Handlebars 代码都需要包含在模板引用的 section 中。
+

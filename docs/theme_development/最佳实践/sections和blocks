@@ -1,0 +1,60 @@
+Sections 和 Blocks​
+设计主题时，您应该考虑何时用 Section 或者 Block 提供功能。Section 和 Block 是模块化组件，让商家有机会自定义和扩展他们的主题。商家可以添加和删除 Section 和 Block，调整 Section 和 Block 配置，以及引入 app blocks 和 metafields
+这些准则适用于使用 JSON template 的在线商店 2.0 主题。您不能在 Html 模板中添加或删除部分。
+
+Sections​
+Sections 可以在所有页面上使用。您应该确保您的主题 template 的默认内容在主 template section 中是可用的，并且这些 sections 可以被添加，删除和重新排序。您可以使用 sections 做以下这些事情：
+
+在 template 级别添加，删除或重新排序内容
+控制范围限定为整个分区布局和内容的主题设置
+image.png
+
+Blocks​
+您应该在 section 级别或在增强 section 的可用性时提供 blocks 以添加、删除或重新排序内容。
+image.png
+开发 blocks 时，请记住以下原则：
+
+确保主题配置的范围仅限于 block。
+选择适合内容的 block 布局，并确保您的 block 能在逻辑上流通，无论 block 类型或顺序如何。
+blocks 布局​
+在为您的 section 设计网格布局时，请确保您的 block 遵循逻辑和直观的阅读流程，无论 block 的 类型和顺序如何。
+在确定 block 应如何在 section 中流动时，请考虑以下事项：
+
+对于需要层次结构的基于文本的内容，垂直堆叠 block
+image.png
+
+如果您不需要显示层次结构，则可以水平堆叠 block 或者创建一个网格以适应该 section 中的可用 block 的类型。
+image.pngimage.png
+
+当水平堆叠 block 时，要么确保剖面网格可以包裹在多条线上，要么提供水平滑动控件以保持舒适的 block 宽度。确保您的 section 网格是响应式的，并且 block 可以根据屏幕大小进行重排。
+image.png
+image.png
+image.png
+
+不要依赖特定的 block 类型或顺序来设计布局，也不要使用特定的 block 顺序来改变网格布局。
+image.png
+image.png
+image.png
+
+block 和灵活性​
+为了平衡简单性和灵活性，您应该仔细考虑何时添加 block 以及每个 block 应包含什么。太多的 block 会造成混乱和复杂。您可以使用以下原则来了解如何定义您的 block。
+
+将设置分组到 block 中以简化编辑体验并整理编辑器侧边栏。例如，您可以嵌套主题设置以自定义 block 内的图像 block。
+当元素遵循特定的层次结构时，将元素组合在一起，并且可以选择允许在之前和之后插入 block 。例如，您可以创建一个控制购物车页面行项目的 block。
+避免提供过于细化的 block。粒度增加了主题代码和商家编辑体验的复杂性。例如，您应该将作者、日期和评论分组到单个 block 或设置中，而不是将这些属性作为三个单独的 block 引入。
+image.png
+
+App blocks 的注意事项​
+商家可以将应用程序提供的 block 添加到他们的主题中。作为主题开发人员，您需要为您的 sections 提供这些类型 block 的支持。在决定是否支持 sections 中的 app blocks 时，请考虑以下事项：
+
+在具有明确用例的 section 中提供 app blocks，以便对其他转换工具或购买决策因素进行分层。例如，您可能希望在产品页面或购物车模板中包含带有产品信息的 app block。
+在考虑使用 app blocks 扩展主题时，请始终考虑反脆弱性和该 section 的目的。插入意外的 block 类型时，布局是否容易中断？是否需要添加边缘大小写的 CSS 样式来处理这些 block？它是否会使该 section 的目的模糊或不一致？如果这些问题的答案是肯定的，请避免使用 app block。
+主题设置​
+使用主题设置提供不同的外观和感觉选项。主题设置可以在 sections、blocks 和主题级别中应用。
+
+元字段​
+Shopline 提供了适合您的目标细分市场的各种标准元字段。查看可用的内容并考虑哪些用例对主题有意义。例如，您可能包括护理指南或尺寸表元字段的 sections 或 blocks。当被引用为动态源时，会更新以反映它们的上下文，例如正在呈现的产品。
+image.png
+
+在您的主题中构建元字段时，请考虑为元字段构建特定的 block。您还可以针对目标细分审核电子商务网站，并分析内容的呈现方式，以确定设计特定组件的机会。例如，您可能希望使用元字段为电子产品创建格式良好的信息列表，或添加有关咖啡混合物和原产地的信息。
+

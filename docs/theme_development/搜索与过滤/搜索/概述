@@ -1,0 +1,44 @@
+商品搜索​
+商品搜索基于查询参数，这些参数在搜索结果中返回什么信息以及信息的方式。
+
+可以通过在搜索表单中包含输入来使用查询参数，并且在执行搜索时它们会反映在搜索URL中。
+
+您还可以将预测搜索添加到您的主题中，以便在您输入搜索字段时立即显示建议的结果。要了解预测搜索，请参阅将预测搜索添加到您的主题。
+
+查询参数​
+搜索查询接受以下参数：
+
+查询参数	类型	必填	描述
+keyword	字符串	是	搜索关键字
+page_num	整数	否	指定当前搜索结果的页码。默认为1
+page_size	整数	否	指定当前搜索结果的数量。默认为48
+搜索表单​
+搜索表单可以包含在<form>具有 属性的元素中action="/products/search"。
+
+您应该使用该 routes对象来填充action属性，以便将适当的 URL 用于多语言商店。
+
+除了keyword参数之外，没有任何查询参数需要用户输入，因此它们应该是隐藏输入。
+
+<form action="{{ routes.search_url }}">
+  <input type="text"
+    placeholder="Search"
+    name="keyword"
+    value="{{ request.uri.query.keyword }}"
+  />
+  <input type="hidden" name="page_num" value="1"/>
+  <input type="hidden" name="page_size" value="48"/>
+</form>
+
+另外一个搜索表单的例子，可以参考[Seed的实现]。
+
+搜索网址结构​
+执行搜索时，搜索页面的 URL 会更新以反映这一点。
+
+例如，使用以下参数的搜索返回以下 URL：
+
+属性	值
+keyword	大衣
+page_num	1
+page_size	48
+/product/search?keyword=大衣&page_num=1&page_size=48
+

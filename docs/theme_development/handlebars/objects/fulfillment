@@ -1,0 +1,26 @@
+fulfillment​
+一个订单的履约，包括被履约的商品行和发货跟踪等信息。
+
+属性​
+
+created_at
+string
+
+fulfillment_line_items
+array of line_item
+
+
+item_count
+number
+
+tracking_company
+string
+
+tracking_url
+string
+
+tracking_url
+string
+从Object获取
+line_item.fulfillment
+fulfillment

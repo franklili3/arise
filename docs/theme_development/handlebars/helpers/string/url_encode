@@ -1,0 +1,22 @@
+url_encode​
+将字符串中的任何 URL 不安全的字符转换为 % 编码的字符。
+
+参数​
+str {String} 输入字符串，必需
+returns {String} 返回字符串
+用法​
+{{ url_encode str }}
+
+例子​
+Code
+1
+2
+3
+{{ url_encode 'john@shopline.com' }}
+{{ url_encode 'Tetsuro Takara' }}
+
+Output
+1
+2
+john%40shopline.com
+Tetsuro+Takara

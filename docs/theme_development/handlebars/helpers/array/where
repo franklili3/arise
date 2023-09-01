@@ -1,0 +1,101 @@
+where​
+过滤数组以仅包含具有特定属性值的项目。
+
+这需要您提供属性名称和关联值。
+
+属性​
+array {Array} 数组，必填, 如果类型不对，返回空数组。
+key {String} 属性 key，必填，如果类型不对，返回空数组。
+[value] {String} 属性 value, 可选，默认为 truthy 判断
+returns {Array} 数组
+用法​
+{{where array key [value]}}
+
+例子​
+Code
+Data
+1
+2
+3
+4
+5
+6
+7
+8
+{{ assign 'polina_products' (where collection.products 'vendor' "Polina's Potent Potions") }}
+
+Products from Polina's Potent Potions:
+
+{{#each polina_products as |product| }}
+  - {{ product.title }}
+{{/each}}
+
+Output
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+Products from Polina's Potent Potions:
+
+- Draught of Immortality
+- Crocodile tears
+- Draught of Immortality
+- Gift Card
+- Health potion
+- Invisibility potion
+- Love Potion
+- Potion beats
+- Potion bottle
+过滤具有true值的布尔属性​
+您可以过滤具有true布尔属性值的项目。这要求您仅提供属性名称。
+
+Code
+Data
+1
+2
+3
+4
+5
+6
+7
+8
+{{ assign 'available_products' (where collection.products 'available') }}
+
+Available products:
+
+{{#each available_products as |product| }}
+  - {{ product.title }}
+{{/each}}
+
+Output
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+Available products:
+
+- Glacier ice
+- Draught of Immortality
+- Dried chamomile
+- Gift Card
+- Ground mandrake root
+- Health potion
+- Invisibility potion
+- Potion beats
+- Viper venom
+- Whole bloodroot

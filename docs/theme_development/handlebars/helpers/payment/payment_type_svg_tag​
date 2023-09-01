@@ -1,0 +1,52 @@
+payment_type_svg_tag​
+为一个给定的支付类型生成一个HTML<svg>标签。
+
+参数​
+type {String} Payment Type, required
+用法​
+{{payment_type_svg_tag type }}
+
+例子​
+Code
+Data
+1
+2
+3
+4
+{{#each shop.enabled_payment_types as |type| }}
+  {{ payment_type_svg_tag type 'custom-class' }}
+{{/each}}
+
+Output
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+⌄
+⌄
+⌄
+⌄
+  <svg class="custom-class" width="160" height="100" viewBox="0 0 160 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <g clip-path="url(#clip0_52627_37739)">
+      <path d="M0 8C0 3.58172 3.58172 0 8 0H152C156.418 0 160 3.58172 160 8V92C160 96.4183 156.418 100 152 100H8C3.58172 100 0 96.4183 0 92V8Z" fill="white" />
+      <path fill-rule="evenodd" clip-rule="evenodd" d="M152 2H8C4.68629 2 2 4.68629 2 8V92C2 95.3137 4.68629 98 8 98H152C155.314 98 158 95.3137 158 92V8C158 4.68629 155.314 2 152 2ZM8 0C3.58172 0 0 3.58172 0 8V92C0 96.4183 3.58172 100 8 100H152C156.418 100 160 96.4183 160 92V8C160 3.58172 156.418 0 152 0H8Z" fill="#DDDDD8" />
+      <path d="M16 74C16 72.8954 16.8954 72 18 72H62C63.1046 72 64 72.8954 64 74V82C64 83.1046 63.1046 84 62 84H18C16.8954 84 16 83.1046 16 82V74Z" fill="#DDDDDD" />
+      <path d="M0 16H160V32H0V16Z" fill="#999999" />
+      <path d="M120 74C120 72.8954 120.895 72 122 72H142C143.105 72 144 72.8954 144 74V82C144 83.1046 143.105 84 142 84H122C120.895 84 120 83.1046 120 82V74Z" fill="#DDDDDD" />
+    </g>
+    <defs>
+      <clipPath id="clip0_52627_37739">
+        <rect width="160" height="100" rx="8" fill="white" />
+      </clipPath>
+    </defs>
+  </svg>

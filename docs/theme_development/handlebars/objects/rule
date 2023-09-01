@@ -1,0 +1,24 @@
+rule​
+一个用于robots.txt文件的规则，它告诉爬虫哪些页面可以访问，哪些不可以。
+
+一条规则由指令组成，该指令可以是Allow或Disallow，以及与之相关的URL路径值。
+
+例如：
+
+Disallow: /policies
+
+您可以直接输出一条规则，而不是引用其每个属性。
+
+提示
+您可以在Shopline Admin中自定义robots.txt。
+
+属性​
+
+directive
+string
+
+value
+string
+从Object获取
+group.rules
+rule

@@ -1,0 +1,19 @@
+localization​
+生成一个表格供客户选择他们的首选国家/地区，以便向他们显示适当的语言和货币。localization表单可以包含两个选择器之一：国家/地区选择器 || 语言选择器
+
+Example​
+Code
+1
+2
+{{#form "localization" id="localization-form" class="localization-form"}}{{/form}}
+
+Output
+1
+2
+3
+4
+⌄
+<form class="localization-form" id="localization-form" method="post" action="/localization">
+  <input type="hidden" name="return_to" value="/" />
+
+</form>

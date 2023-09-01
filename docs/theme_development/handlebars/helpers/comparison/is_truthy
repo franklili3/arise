@@ -1,0 +1,19 @@
+is_truthy​
+如果给定的值是truthy，返回true。使用falsey库进行比较
+
+Params​
+val {any}
+returns {Boolean}
+Example​
+Code
+1
+2
+3
+4
+{{#if (is_truthy true)}}
+  This will be rendered
+{{/if}}
+
+Output
+1
+  This will be rendered

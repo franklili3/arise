@@ -1,0 +1,23 @@
+collections_all​
+collections_all 模板呈现产品系列列表页面，其中列出了商店的所有产品系列。该页面位于 /collections-all 商店 URL。
+
+image.png
+
+位置​
+collection_all模板位于主题的模板目录中：
+
+└── theme
+    ├── layout
+    ├── templates
+    |   ...
+    |   ├── collection_all.json
+    |   ...
+    ...
+
+内容​
+您可以在collections_all模板或模板内的部分中包含以下内容：
+
+sortations_page 对象
+sortations_page 对象​
+您可以访问 Handlebars sortations_page 对象以显示页面的详细信息
+

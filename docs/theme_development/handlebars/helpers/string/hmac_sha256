@@ -1,0 +1,21 @@
+hmac_sha256​
+将字符串转换为使用哈希消息认证码（HMAC）的SHA-256哈希。
+
+消息的密钥作为参数提供给helper。
+
+参数​
+str {String} 输入需要的字符串，必需。
+secret {String} 密钥，必需。如果未提供，将返回空字符串。
+returns {String} 返回字符串。
+用法​
+{{ hmac_sha256 str secret }}
+
+例子​
+Code
+1
+2
+{{ hmac_sha256 'ShoplineIsAwesome!' 'secret_key' }}
+
+Output
+1
+9b8e10038d6e6d68c1d98f291bb2e9a8e81b869ad362ed2ac13aa425f9df4a79

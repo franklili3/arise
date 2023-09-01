@@ -1,0 +1,33 @@
+get​
+使用属性路径（a.b.c）从上下文中获得一个值或嵌套值。作为一个普通的helper或块状helper。
+
+参数​
+prop {String}: 要获取的属性，可选择使用点符号来表示嵌套属性。
+context {Object}: 语境对象。
+returns {String}
+用法​
+{{get "a.b.c" context}}
+
+例子​
+Code
+Data
+1
+2
+3
+{{ assign 'product_id' (get 'id' product) }}
+{{ product_id }}
+
+Output
+1
+6786188247105
+Code
+Data
+1
+2
+3
+{{ assign 'src' (get 'featured_image.src' product) }}
+{{ src }}
+
+Output
+1
+files/science-beakers-blue-light-new.jpg

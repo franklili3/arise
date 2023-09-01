@@ -1,0 +1,20 @@
+truncate_words​
+将字符串截短到给定数量的单词。
+
+参数​
+str1 {String} 输入字符串，必需
+count {Number} 单词计数，必需
+[suffix] {String} 截取后的后缀字符串，可选，默认为 "..."
+returns {String} 返回字符串
+使用​
+{{ truncate_words str1 count [suffix] }}
+
+例子​
+Code
+1
+2
+{{ truncate_words "foo bar baz" 1 }}
+
+Output
+1
+foo bar baz…

@@ -1,0 +1,87 @@
+customer​
+当前商店的 客户。 当 customer 登录到他们的帐户时，可以在全局范围内直接访问客户对象。它还在以下上下文中定义：
+
+模板 customers/account
+模板 customers/addresses
+模板 customers/order
+挂载到 checkout.customer
+挂载到 gift_card.customer
+挂载到 order.customer
+在上述情况之外，如果客户未登录账号，则 customer 对象返回 null。
+
+属性​
+
+accepts_marketing
+boolean
+
+addresses
+array of address
+
+
+addresses_count
+number
+
+default_address
+address
+
+
+email
+string
+
+first_name
+string
+
+last_name
+string
+
+has_account
+boolean
+
+id
+string
+
+name
+string
+
+orders
+array of order
+
+
+orders_count
+number
+
+phone
+string
+
+tags
+array of string
+
+tax_exempt
+boolean
+
+total_spent
+number
+从模板获取
+customers/account
+customers/addresses
+customers/order
+customer
+从Object获取
+checkout.customer
+order.customer
+检查当前是否有 customer 对象​
+在非上面定义的模板中使用 customer 对象的时候,应该先判断下 customer 对象是否存在。
+
+Code
+Data
+1
+2
+3
+4
+{{#if customer }}
+  Hello, {{ customer.first_name }}!
+{{/if}}
+
+Output
+1
+  Hello, Cornelius!

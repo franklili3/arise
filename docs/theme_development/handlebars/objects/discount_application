@@ -1,0 +1,27 @@
+discount_application​
+有关折扣的信息。
+
+了解如何在主题中显示折扣，请参阅Discounts.
+
+属性​
+
+target_selection
+string 枚举
+
+target_type
+string 枚举
+
+title
+string
+
+total_allocated_amount
+number
+
+value
+string
+
+value_type
+string 枚举
+从Object获取
+cart.discount_applications
+discount_application

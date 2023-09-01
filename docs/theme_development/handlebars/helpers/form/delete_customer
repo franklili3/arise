@@ -1,0 +1,117 @@
+delete_customer​
+生成 注销账号 表单
+
+表单输入​
+输入项	输入类型	字段名	是否必填	备注
+验证码	text	customer[verifycode]	必填	
+例子​
+Code
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+{{#form 'delete_customer' id="delete-customer"}}
+  <div class="verifycode">
+    <input type="text" name="customer[verifycode]" placeholder="verifycode" />
+    <button class="verifycode-button">send</button>
+  </div>
+
+  <div class="submit">
+    <input class="submit-button" type="submit" value="delete account">
+  </div>
+{{/form}}
+
+Output
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+⌄
+⌄
+⌄
+<form method="get" id="delete-customer">
+
+  <div class="verifycode">
+    <input type="text" name="customer[verifycode]" placeholder="verifycode" />
+    <button class="verifycode-button">send</button>
+  </div>
+
+  <div class="submit">
+    <input class="submit-button" type="submit" value="delete account">
+  </div>
+
+</form>
+配合使用​
+以上代码需要结合下面的脚本一起使用
+
+class DeleteCustomer {
+  constructor() {
+    this.form = document.querySelector('#delete-customer');
+    this.form.addEventListener('submit', this.onSubmitHandler.bind(this));
+    this.verifyCodeButton = this.form.querySelector('.verifycode-button');
+    this.verifyCodeButton.addEventListener(
+      'click', this.onSendVerifyCodeHandler.bind(this)
+    );
+    this.deleteCustomer = new window.Shopline.customerAccount.DeleteCustomer(this.form)
+  }
+  // 发送邮箱或短信验证码逻辑
+  onSendVerifyCodeHandler(e) {
+    e.preventDefault();
+    if (this.verifyCodeButton.getAttribute('aria-disabled') === 'true') return;
+    this.verifyCodeButton.setAttribute('aria-disabled', true);
+    this.deleteCustomer.sendVerifyCode()
+      .then(response => {
+        if (response.errorMessage) {
+          this.verifyCodeError = true;
+          // 处理发送失败异常场景
+        }
+      })
+      .finally(() => {
+        if (!this.verifyCodeError) {
+          this.verifyCodeButton.removeAttribute('aria-disabled');
+        }
+      })
+  }
+  // 删除逻辑
+  onSubmitHandler(e) {
+    e.preventDefault();
+    this.deleteCustomer.submit()
+      .then(response => {
+        window.location.href = '/user/signIn';
+      })
+      .catch(error => {
+        // 处理失败异常场景
+        console.log(error)
+      })
+  }
+}
+window.Shopline.loadFeatures(
+  [
+    {
+      name: 'customer-account-api',
+      version: '0.2'
+    }
+  ],
+  function(error) {
+    if (error) {
+      throw error;
+    }
+    new DeleteCustomer();
+  }
+);
+

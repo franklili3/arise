@@ -1,0 +1,80 @@
+for​
+为数组中的每个项渲染一个表达式。
+
+您可以使用for循环最多进行50次迭代。如果您需要迭代超过50个项，请使用paginate tag将项分割成多个页面。
+
+提示
+每个for循环都有一个关联的forloop object，其中包含有关循环的信息。
+
+参数​
+list {Array} - 要进行迭代的列表
+hash.limit {Number} 限制迭代的次数
+hash.offset {Number} 指定从第几个元素开始迭代（基于1-based索引）
+hash.reversed {Boolean} 使用reversed参数以逆序迭代。
+用法​
+{{#for array as |item|}}
+  表达式
+{{else}}
+  空
+{{/for}}
+
+例子​
+Code
+Data
+1
+2
+3
+4
+5
+6
+{{#for collection.products as |product|}}
+  {{product.title}}
+{{else}}
+  此集合中没有产品。
+{{/for}}
+
+Output
+1
+
+limit​
+Code
+Data
+1
+2
+3
+4
+{{#for collection.products limit=2 as |product|}}
+  {{product.title}}
+{{/for}}
+
+Output
+1
+
+offset​
+Code
+Data
+1
+2
+3
+4
+{{#for collection.products offset=2 as |product|}}
+  {{product.title}}
+{{/for}}
+
+Output
+1
+
+reversed​
+Code
+Data
+1
+2
+3
+4
+{{#for collection.products reversed=true as |product|}}
+  {{product.title}}
+{{/for}}
+
+Output
+1
+

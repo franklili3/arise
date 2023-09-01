@@ -1,0 +1,74 @@
+概述​
+Layout 是主题的基础，所有的 templates 都是通过它呈现的。
+Layout 是 html 文件，允许您在单个位置包含应在多种页面类型上重复的内容。例如，布局是在<head>元素中包含您可能想要的任何内容以及页眉和页脚的好地方。
+
+您可以编辑默认 theme.html 布局，也可以创建多个自定义布局文件以满足您的需求。您可以在模板级别指定要使用的布局，或者是否完全使用布局。
+
+在 JSON 模板中，用于呈现页面的布局是使用属性指定的 layout 字段。
+在 html 模板中，用于呈现页面的布局是使用 layout helper 指定的。
+
+位置​
+Layout 文件位于 layout主题目录中：
+
+└── theme
+    ├── layout
+    |   ├── theme.html
+    |   ...
+    ├── templates
+    ...
+
+架构​
+因为布局文件是主题的基础，所以在大多数情况下它们应该遵循标准 HTML 文档的结构。大多数布局文件还包含以下 Handlebars 对象：
+
+content_for_header
+content_for_layout
+content_for_footer
+<!DOCTYPE html>
+<html>
+  <head>
+    ...
+    {{ content_for_header }}
+    ...
+  </head>
+  <body>
+    ...
+    {{ content_for_layout }}
+    ...
+    {{ content_for_footer }}
+  </body>
+ </html>
+
+内容​
+布局允许您在单个位置包含跨多个页面类型重复的内容。例如，布局可能包括页眉和页脚部分以及SEO 元数据。
+布局文件是.html文件，因此可以使用标准 HTML 和 Handlebars 构建内容。
+
+布局可以访问任何全局 Handlebars 对象，并且可以包含以下 Handlebars 对象
+
+content_for_header
+content_for_layout
+content_for_footer
+警告
+这些对象在 theme.html 中必须包含，如果未包含对这些对象的引用，则您无法使用代码编辑器或 Shopline CLI 等工具保存或更新文件。
+
+content_for_header​
+content_for_header 对象从 Shopline 输出脚本，用于 Shopline 分析、Shopline apps 等。您需要在<head>和</head>HTML标签之间添加对该对象的引用。
+
+您不应该尝试修改或解析content_for_header对象。如果content_for_header改变了，那么您的Handlerbar 的行为就会改变。对content_for_header的修改会导致 Shopline 和其他具有官方支持的集成路径的分析程序中的分析信息中断。
+
+content_for_layout​
+content_for_layout对象动态地输出每个 template 的内容。您需要在<body>和</body>HTML标签之间添加对该对象的引用。
+
+content_for_footer​
+content_for_footer对象从 Shopline 输出脚本，用于 Shopline 分析、Shopline apps 等。您需要在<body>和</body>HTML标签之间靠近 </body>的地方添加对该对象的引用。
+
+您不应该尝试修改或解析content_for_footer对象。如果content_for_footer改变了，那么您的Handlerbar 的行为就会改变。对content_for_footer的修改会导致 Shopline 和其他具有官方支持的集成路径的分析程序中的分析信息中断。
+
+使用​
+在处理布局文件时，通过在 <body> 标签中输出 template数据，可以帮助为特定模板创建 CSS 规则。例如：
+
+<body class="template--{{ template }}">
+	...
+</body>
+
+template 在不同页面有着不同的值，具体可以参考 template 全局对象。
+

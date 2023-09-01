@@ -1,0 +1,45 @@
+linklists​
+商店中的所有“菜单”。
+
+您可以通过使用菜单的handle 从 linklists对象中访问特定的菜单。
+
+Code
+Data
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+<!-- Main menu -->
+{{#each linklists.main-menu.links as |link|}}
+  {{{ link_to link.title link.url }}}
+{{/each}}
+
+<!-- Footer menu -->
+{{#each linklists.footer.links as |link|}}
+  {{{ link_to link.title link.url }}}
+{{/each}}
+
+Output
+1
+2
+3
+4
+5
+6
+7
+<!-- Main menu -->
+<a href="/">Home</a>
+<a href="/collections_all">Catalog</a>
+<a href="/pages/contact">Contact</a>
+
+<!-- Footer menu -->
+<a href="/search">Search</a>
+从模板获取
+Global
+linklists

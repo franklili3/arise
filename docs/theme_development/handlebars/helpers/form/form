@@ -1,0 +1,28 @@
+form​
+生成一个HTML <form> 标签，包括任何需要的 <input> 标签，以提交表单到一个特定的端点。
+
+因为 Shopline 主题中有许多不同的表单类型，表单标签需要一个类型。根据表单类型的不同，可能需要一个额外的参数。你可以指定以下表单类型：
+
+activate_customer_password
+cart
+contact
+create_customer
+customer_address
+customer_login
+customer
+delete_customer
+localization
+new_comment
+product
+reset_customer_password
+storefront_password
+参数​
+form_type {String} 所需表格类型的名称。
+content {String} 表单内容。
+[hash] {Object} 表单 html属性，可选。
+returns {String} html
+用法​
+{{#form 'form_type'}}
+  content
+{{/form}}
+

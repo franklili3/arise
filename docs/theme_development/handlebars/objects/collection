@@ -1,0 +1,74 @@
+collection​
+店铺的商品分类
+属性​
+
+all_products_count
+number
+
+all_tags
+number
+
+all_types
+array of string
+
+all_vendors
+array of string
+
+current_type
+string
+
+current_vendor
+string
+
+default_sort_by
+string from a set of values
+
+description
+string
+
+featured_image
+image
+
+
+filters
+array of filter
+
+
+handle
+string
+
+id
+string
+
+image
+image
+
+
+products
+array of product
+
+
+products_count
+number
+
+published_at
+string
+
+sort_by
+string
+
+sort_options
+array of sort_option
+
+
+tags
+array of string
+
+title
+string
+
+url
+string
+从模板获取
+collection
+collection

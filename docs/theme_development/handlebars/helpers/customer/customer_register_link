@@ -1,0 +1,17 @@
+customer_register_link​
+生成指向客户注册页面的 HTML 链接
+
+参数​
+str {String} 字符串，必填
+returns {String} HTML 字符串
+例子​
+{{ customer_register_link str }}
+
+Code
+1
+2
+{{{ customer_register_link 'Create an account' }}}
+
+Output
+1
+

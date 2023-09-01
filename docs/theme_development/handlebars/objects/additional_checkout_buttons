@@ -1,0 +1,12 @@
+额外结账按钮​
+如果商店有任何使用离站结账的支付提供商，如 PayPal Express Checkout，将返回 true。
+
+使用额外结账按钮来检查这些支付提供商是否存在，并用 content_for_additional_checkout_buttons 来显示相关的结账按钮。要了解如何使用这些对象的更多信息，请参考快速结账。
+
+{{#if additional_checkout_buttons}}
+  {{{content_for_additional_checkout_buttons}}}
+{{/if}}
+
+从模板获取
+Global
+additional_checkout_buttons

@@ -1,0 +1,14 @@
+sort_option​
+商品列表页和搜索结果页的商品排序选项。
+
+属性​
+
+name
+string
+
+value
+string
+从Object获取
+collection.sort_options
+search.sort_options
+sort_option

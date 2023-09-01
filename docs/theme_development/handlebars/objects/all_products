@@ -1,0 +1,20 @@
+all_products​
+商店中的所有产品。
+
+注意
+all_products 对象每页有 20 个唯一 handle 的限制。如果您需要超过 20 个产品，请考虑使用集合。
+
+您可以使用 all_products 按其 handle 访问产品。如果找不到该产品，则返回 null。
+
+Code
+Data
+1
+2
+{{ all_products.love-potion.title }}
+
+Output
+1
+Love Potion
+从模板获取
+Global
+all_products

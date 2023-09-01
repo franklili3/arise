@@ -1,0 +1,28 @@
+image_url​
+返回图片的 CDN URL。
+
+您可以在以下对象以及它们的 src 属性上使用 image_url helper：
+
+article collection image line_item product variant
+
+注意
+无论指定的尺寸如何，图像的大小都不能超过其原始尺寸。
+
+参数​
+Object {Object}
+[hash.width] {Number} 可选。如果只指定了宽度，则根据图像的尺寸自动计算高度。
+[hash.height] {Number} 可选。如果只指定了高度，则根据图像的尺寸自动计算宽度。
+returns {String} CDN URL
+用法​
+{{ image_url object [width] [height] }}
+
+例子​
+Code
+Data
+1
+2
+{{ image_url product width=450 }}
+
+Output
+1
+https://d2n979dmt31clo.cloudfront.net/image/store/3300003667/1627468591820/82530-215-E9BB91-493x_450x.png?w=493&h=700

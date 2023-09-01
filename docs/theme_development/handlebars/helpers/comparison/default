@@ -1,0 +1,41 @@
+default​
+为以下值之一的任何变量设置默认值：
+
+null
+false
+空字符串
+参数​
+value {Any} 输入，必需
+default {Any} 默认值，必需
+[hash.allow_false] {Boolean} 是否允许false；可选，默认为true
+[hash.allow_empty_str] {Boolean} 允许空字符串，可选，默认为true
+result {Any}
+用法​
+{{default value default [allow_false=false] [allow_empty_str=false] }}
+
+例子​
+Code
+Data
+1
+2
+{{ default product.selected_variant.url product.url }}
+
+Output
+1
+/products/health-potion
+allow_false​
+默认情况下，default helper 的值将替代 false 值。您可以使用 allow_false 参数来允许变量返回 false 而不是默认值。
+
+Code
+Data
+1
+2
+3
+4
+{{ assign 'display_price' false }}
+
+{{ default display_price true allow_false=true }}
+
+Output
+1
+false

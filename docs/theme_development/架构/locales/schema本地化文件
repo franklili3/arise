@@ -1,0 +1,154 @@
+Schema 本地化文件​
+Schema 多语言文件是以 .schema.json 结尾的 JSON 文件。它们托管多语言字符串给到 schema 的各种设置属性，以便可以将主题编辑器中的内容转换为商店的活动语言。
+
+位置​
+Schema 的本地化文件被放在主题代码的 locales目录下：
+
+└── theme
+    ...
+    ├── config
+    └── locales
+      ├── es.schema.json
+      ...
+
+Schema​
+Schema 本地化文件包含如下的名称结构，它们也遵循一个基本的组织结构：
+
+类别：翻译的顶级类别
+组：类别中翻译的第二级分组
+描述：代表各个翻译的第三级
+{
+  "my_category": {
+    "my_group": {
+      "my_description": "translation text",
+      ...
+    },
+    ...
+  },
+  ...
+}
+
+Tip 在命名翻译描述时，尽量描述性足以给出翻译上下文。例如，blogs.article_comment.submit_button_text提供比 更多的上下文blogs.article_comment.submit。
+
+名称结构​
+本地化文件命名必须遵循标准的 IETF 语言标记命名法，其中第一个小写字母代码表示语言，后面以 .schema.json结尾。例如：
+
+语言	名称格式
+English	en.schema.json
+Spanish	es.schema.json
+French	fr.schema.json
+比较例外的是中文-简体、中文-繁体，它们分别是：
+
+语言	名称格式
+中文-简体	zh-hans-cn.schema.json
+中文-繁体	zh-hant-tw.schema.json
+内容​
+Schema 本地化文件允许你创建以下设置属性的翻译：
+
+Parent	Attribute
+All settings	info label
+settings_schema.json
+block
+Section schema	name
+select	group
+html
+number
+text
+textarea
+video_url	placeholder
+range	unit
+header
+paragraph	content
+presets	name
+category
+使用​
+可以使用如下的代码格式访问 schema 翻译：
+
+t:translation_category.translation_group.translation_name
+
+使用 blog 举例，我们有如下的 locales/en.schema.json本地化文件：
+
+{
+  "sections": {
+    "blog": {
+      "name": "Blog"
+    }
+  }
+}
+
+下面是 sections/blog.html的 section 文件：
+
+{{#schema}}
+{
+  "name": "t:sections.blog.name",
+  ...
+}
+{{/schema}}
+
+下面是一个比较综合的例子：
+
+{
+  "sections": {
+    "blog": {
+      "name": "Blog",
+      "presets": {
+        "presets__0": {
+          "category": "Content display",
+          "name": "Blog"
+        }
+      },
+      "settings": {
+        "title": {
+          "label": "Title"
+        },
+        "color_scheme": {
+          "label": "Color",
+          "info": "Adjust blog color scheme",
+          "options__0": {
+            "label": "None"
+          },
+          "options__1": {
+            "label": "Color 1"
+          }
+        }
+      }
+    }
+  }
+}
+
+{{#schema}}
+{
+  "name": "t:sections.blog.name",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "t:sections.blog.settings.title.label",
+      "default": "Blog"
+    },
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "t:sections.blog.settings.color_scheme.label",
+      "default": "none",
+      "options": [
+        {
+          "value": "none",
+          "label": "t:sections.blog.settings.color_scheme.options__0.label",
+        },
+        {
+          "value": "1",
+          "label": "t:sections.blog.settings.color_scheme.options__1.label",
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.blog.presets.presets__0.name",
+      "category": "t:sections.blog.presets.presets__0.category"
+    }
+  ]
+}
+{{/schema}}
+

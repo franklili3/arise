@@ -1,0 +1,10 @@
+form_errors​
+由表单helper创建的表单中的错误分类字符串。
+
+属性​
+
+messages
+string
+从Object获取
+form.errors
+form_errors

@@ -1,0 +1,102 @@
+阿拉伯语rtl实现​
+术语​
+rtl = right to left（从右往左）
+
+ltr = left to right（从左往右）
+
+前置知识​
+基本方向，一个根本性的重要概念​
+在 HTML 中，基本方向要么由使用该属性的最近的父元素显式设置，要么在没有任何此类 dir 属性的情况下，从文档的默认方向（从左到右）继承。这是重要的一点：方向性运行在页面上的显示顺序取决于主要的基本方向。
+
+示例如下：
+
+相同的方向在 ltr 上下文中运行：bahrain مصر kuwait
+
+相同的方向在 rtl 上下文中运行：kuwait مصر bahrain
+
+了解基本方向的概念后，我们需要知道，阿拉伯语的阅读习惯是从右到左，那么对应的输入习惯也是从右到左。阿拉伯语是rtl语言，所以这一部分只需要交给unicode双向算法处理即可，它会帮我们自动处理。
+
+综上可得：文字内容无需rtl，布局需要rtl。
+
+举个例子​
+有个用阿拉伯语编辑的商品标题是：“本文的序顺常正段一是这”，那商家在输入框输入的就是 “本文的序顺常正段一是这” 而不是 “这是一段正常顺序的文本”。客户端只需要拿来渲染即可，不需要做逆向输出。
+
+实现思路​
+步骤一：在主题文件layout/theme.html的html标签写入dir属性，主题代码通过 request.document_direction object写入对应的值，这样做是为了让整个页面的dom元素都继承文本的基本方向。示例如下：
+
+<html dir="{{request.document_direction}}"></html>
+
+步骤二：主题构建包时，借助RTLCSS框架自动分析CSS文件需要适配rtl的css属性，从而构建出两份css文件，一份是正常布局下（ltr）的css文件，另一份是rtl布局下的css文件。示例如下：
+
+ltr css文件
+
+.example {
+  display: inline-block;
+  padding: 5px 10px 15px 20px;
+  margin: 5px 10px 15px 20px;
+  border-width: 1px 2px 3px 4px;
+}
+
+rtl css文件
+
+.example {
+  display: inline-block;
+  padding: 5px 20px 15px 10px;
+  margin: 5px 20px 15px 10px;
+  border-width: 1px 4px 3px 2px;
+}
+
+步骤三：主题代码通过 request.document_direction object判断引入ltr还是rtl的css文件。示例如下：
+
+{{#if request.document_direction '===' 'rtl'}}
+  <link rel="stylesheet" href="{{asset_url 'example.rtl.css'}}" />
+{{else}}
+  <link rel="stylesheet" href="{{asset_url 'example.css'}}" />
+{{/if}}
+
+需要额外关注的场景​
+1.内联的css样式无法通过RTLCSS框架自动化处理，只能通过依赖request.document_direction object判断自行处理，所以建议样式尽量在css文件外联引入。示例如下：
+
+<style>
+{{#if request.document_direction '===' 'rtl'}}
+  .example{
+    padding: 5px 20px 15px 10px;
+  }
+{{else}}
+  .example{
+    padding: 5px 10px 15px 20px;
+  }   
+{{/if}}
+</style>
+
+2.处理具有方向性的svg icon图标
+
+由于方向性箭头点击切换具有方向性的业务逻辑，所以需自行判断是否在rtl场景要额外处理。
+
+在ltr 上下文中运行时：
+
+example icon
+
+在rtl 上下文中运行时：
+
+example icon
+
+实际期望在rtl 上下文中运行时：
+
+example icon
+
+推荐方案：针对该icon元素设置css镜像处理
+
+.icon{
+  transform: matrix(-1, 0, 0, 1, 0, 0);
+}
+
+3.处理价格货币相关
+
+参考市面上的网站和产品期望价格货币不受rtl影响，所以针对价格货币展示相关的强制设置ltr，可用css direction unicode-bidi属性处理
+
+.price{
+  direction: ltr;
+  unicode-bidi: isolate;
+}
+

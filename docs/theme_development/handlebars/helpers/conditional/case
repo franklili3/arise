@@ -1,0 +1,89 @@
+case​
+根据特定变量的值渲染特定表达式。
+
+参数​
+variable {Any} 输入值，必填
+firstValue {Any} 枚举值，必填
+secondValue {Any} 枚举值，选填
+returns {Any}
+用法​
+{{#case variable }}
+  {{#when first_value}}
+    first_expression
+  {{/when }}
+  {{#when second_value}}
+    second_expression
+  {{else}}
+    third_expression
+  {{/when}}
+{{/case}}
+
+例子​
+Code
+Data
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+{{#case product.type}}
+  {{#when 'Health'}}
+    This is a health potion.
+  {{/when}}
+  {{#when 'Love'}}
+    This is a love potion.
+  {{else}}
+    This is a potion.
+  {{/when}}
+{{/case}}
+
+Output
+1
+    This is a health potion.
+多个值​
+{{#case variable }}
+  {{#when firstValue second_value third_value}}
+    first_expression
+  {{/when }}
+  {{#when fourth_value fifth_value sixth_value}}
+    second_expression
+  {{else}}
+    third_expression
+  {{/when}}
+{{/case}}
+
+一个 when 标记可以接受多个值。如果提供了多个值，当变量与标签内的任何一个值相匹配时，表达式会被返回。以空格分隔的列表形式提供这些值。
+
+Code
+Data
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+{{#case product.tags}}
+  {{#when 'Love' 'Luck'}}
+    This is a love or luck potion.
+  {{/when}}
+  {{#when 'Strength' 'Health'}}
+    This is a strength or health potion.
+  {{else}}
+    This is a potion.
+  {{/when}}
+{{/case}}
+
+Output
+1
+    This is a potion.

@@ -1,0 +1,31 @@
+link_to​
+生成 HTML<a>标签。
+
+参数​
+str {String} 输入字符串，必填
+url {String} 链接地址，必填
+[attribute] {Object} <a> 标签支持的属性
+returns {String} html 字符串
+用法​
+{{ link_to str url [attribute] }}
+
+例子​
+Code
+1
+2
+{{{ link_to 'Shopline' 'https://www.shopline.com' }}}
+
+Output
+1
+<a href="https://www.shopline.com">Shopline</a>
+HTML 属性​
+你可以通过包括一个与属性名称相匹配的参数，以及所需的值来指定HTML属性。
+
+Code
+1
+2
+{{{ link_to 'Shopline' 'https://www.shopline.com' title='A link to Shopline' class='link-class' }}}
+
+Output
+1
+<a class="link-class" title="A link to Shopline" href="https://www.shopline.com">Shopline</a>

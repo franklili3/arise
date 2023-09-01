@@ -1,0 +1,70 @@
+显示商品推荐​
+商品推荐是向客户展示与当前商品相关或经常与当前商品一起购买的商品的好方法。这使客户能够了解他们可能感兴趣的商品，并有可能增加商家的销售额。
+
+在本教程中，您将学习如何在主题中显示商品推荐。
+
+资源​
+要实施商品推荐，您将使用以下内容：
+
+推荐 object
+Product Recommendations API
+实现商品推荐​
+在这个实现中，section 内容通过遍历推荐对象中的商品属性返回的每个商品来构建通用展示。然而，当 section 内容最初呈现时，这个对象并没有被填充，因此你需要使用JavaScript通过商品推荐API的部分响应来获取填充后的部分内容。
+
+提示 建议通过 Handlebars routes object 获取 URL。
+
+例子​
+<!-- sections/product-recommendations.html -->
+<product-recommendations
+  class="product-recommendations"
+  data-url="{{routes.product_recommendations_url}}?section_id={{section.id}}&product_id={{product.id}}&limit=4"
+>
+  <h2>{{title}}</h2>
+  {{#and (isTruthy recommendations.performed) (boolean recommendations.products_count ">" 0)}}
+  <ul>
+    {{#forIn recommendations.products}}
+      <li>
+        <a href="{{ product.url }}">
+          <img
+            src="{{ image_url product.featured_image width=300 height=300 }}"
+          />
+          <p>{{ product.title }}</p>
+          <p>{{ money product.price }}</p>
+        </a>
+      </li>
+    {{/forIn}}
+  </ul>
+  {{/and}}
+</product-recommendations>
+{{#schema}}
+{
+  "name": "Product recommendations"
+}
+{{/schema}}
+
+class ProductRecommendations extends HTMLElement {
+  connectedCallback() {
+    const handleIntersection = (entries, observer) => {
+      if (!entries[0].isIntersecting) return;
+      observer.unobserve(this);
+      fetch(this.dataset.url)
+        .then((response) => response.text())
+        .then((text) => {
+          const html = document.createElement('div');
+          html.innerHTML = text;
+          const recommendations = html.querySelector('product-recommendations');
+          if (recommendations && recommendations.innerHTML.trim().length) {
+            this.innerHTML = recommendations.innerHTML;
+          }
+        })
+        .catch((err) => {
+          console.error('[product recommedations - error]', err);
+        });
+    };
+    new IntersectionObserver(handleIntersection.bind(this), {
+      rootMargin: '0px 0px 400px 0px',
+    }).observe(this);
+  }
+}
+customElements.define('product-recommendations', ProductRecommendations);
+

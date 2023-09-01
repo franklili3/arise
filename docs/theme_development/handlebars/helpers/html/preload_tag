@@ -1,0 +1,30 @@
+preload_tag​
+生成一个HTML<link>标签，其rel属性为preload，以优先加载一个给定的Shoplin托管的资产。该资产的URL也被添加到链接头，rel属性为preload。
+
+参数​
+url {String} cdn url 链接，必填
+[attribute] {Object} options.hash 传入 html link 标签的属性，可选，不能重载 rel 属性
+returns {String} 返回 html 字符串
+用法​
+{{ preload_tag url [attribute] }}
+
+例子​
+Code
+1
+2
+{{ preload_tag '/some_font.woff' as='font' }}
+
+Output
+1
+<link href="/some_font.woff" rel="preload" as="font">
+HTML 属性​
+你可以通过添加一个与属性名称相匹配的参数来指定HTML属性，以及所需的值。
+
+Code
+1
+2
+{{ preload_tag '/some_font.woff' as='font' media='mobile' type='font/woff' }}
+
+Output
+1
+<link href="/some_font.woff" rel="preload" type="font/woff" media="mobile" as="font">

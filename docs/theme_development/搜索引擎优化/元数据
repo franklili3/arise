@@ -1,0 +1,34 @@
+将 SEO 元数据添加到您的主题​
+您可以使用 HTML 和 Handlebars 在主题中包含搜索引擎优化 (SEO) 元数据。需要考虑三个主要方面：
+
+标题标签
+元描述
+规范网址
+<head> 元素中应包含上述 SEO 元数据的代码。
+
+例如：
+
+  <head>
+    <title>
+    {{page_title}}
+    {{~#if current_tags}} &ndash; tagged "{{join current_tags ','}}"{{~/if}}
+    {{~#if current_page "!=" 1}} &ndash; Page {{current_page}}{{~/if}}
+    {{~#not (contains page_title shop.name)}} &ndash; {{shop.name}}{{~/not}}
+  </title>
+  {{#if page_description}}
+    <meta name="description" content="{{page_description}}" />
+  {{/if}}
+  <link rel="canonical" href="{{canonical_url}}" />
+</head>
+
+提示 另一个在主题中包含元数据的例子，可以参考Seed的实现。
+
+标题标签​
+您可以包含一个<title>元素，供搜索引擎从中读取页面标题。大多数页面的标题都可以在管理员中设置，您可以使用 Handlebars page_title 对象访问此标题。
+
+元描述​
+您可以包含一个<meta>元素，供搜索引擎从中读取页面描述。大多数页面的描述都可以在管理中设置，您可以使用 Handlebars page_description 对象访问此描述。
+
+规范网址​
+您可以使用全局 Handlebars canonical_url 对象为给定页面指定规范 URL 。
+

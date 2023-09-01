@@ -1,0 +1,31 @@
+video_tag​
+为给定的视频生成HTML <video> 标签。
+
+参数​
+Media {Object} 媒体对象。
+image_size {String} 以像素指定视频海报图像的尺寸。
+HTML attributes {String} video_tag 支持所有HTML5视频属性。
+用法​
+{{#each product.media as |media|}}
+  {{#if media.media_type '==' 'video'}}
+    {{ video_tag media }}
+  {{/if}}
+{{/each}}
+
+例子​
+Code
+Data
+1
+2
+{{ video_tag media autoplay=true }}
+
+Output
+1
+2
+3
+4
+⌄
+<video playsinline="playsinline" preload="metadata" autoplay="true" poster="http://sl.com/sl.png">
+  <source src="http://sl.com/sl.mp4">
+  </source><img src="http://sl.com/sl.png">
+</video>

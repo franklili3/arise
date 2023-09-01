@@ -1,0 +1,40 @@
+source_tag​
+生成给定的 image_url 的HTML <source>标签。
+
+默认情况下，width 和 height 属性会根据图片URL的尺寸和宽高比添加到 <source> 标签中。然而，你可以使用宽度和高度参数来覆盖这些属性。如果只提供了一个参数，那么只会添加那个属性。
+
+参数​
+image_url {String} image_url helper
+[hash.width] {Number} 指定 <source> 标签的 width 属性。你可以将参数设为 null 以防止添加该属性。
+[hash.height] {Number} 指定 <source> 标签的 height 属性。你可以将参数设为 null 以防止添加该属性。
+[hash.sizes] {String} 使用 HTML sizes 属性 指定源尺寸。
+[hash.widths] {String} 使用 HTML sizes 属性 指定源尺寸。
+[hash.srcset] {String} 默认情况下，Shopline 会生成一个 srcset。然而，你可以创建你自己的 srcset。srcset 参数优先于宽度参数。除非你想通过将参数设置为 null 来移除该属性，否则不应使用 srcset 参数。
+[HTML attributes] {String} 你可以通过添加匹配属性名称的参数，并添加所需的值，来指定 HTML sizes 属性。
+returns {String} <source> 标签
+用法​
+{{ source_tag (image_url object) }}
+
+例子​
+Code
+Data
+1
+2
+3
+4
+5
+<picture>
+  {{ source_tag (image_url image) }}
+  <img src="default.png">
+</picture>
+
+Output
+1
+2
+3
+4
+⌄
+<picture>
+  <source srcset="https://img.myshopline.com/sl_352x.png?w=1200&h=600 352w, https://img.myshopline.com/sl_832x.png?w=1200&h=600 832w, https://img.myshopline.com/sl_1200x.png?w=1200&h=600 1200w" width="1200" height="600">
+  <img src="default.png">
+</picture>

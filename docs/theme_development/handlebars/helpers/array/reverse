@@ -1,0 +1,33 @@
+reverse​
+颠倒数组中项目的顺序。
+
+参数​
+value {Array}: 数组，必填。
+returns {Array}: 颠倒顺序后的数组。
+用法​
+{{reverse array}}
+
+例子​
+Code
+Data
+1
+2
+3
+4
+5
+6
+Original order:
+{{ join (map collection.products 'title') ', ' }}
+
+Reverse order:
+{{ join (map (reverse collection.products) 'title') ', ' }}
+
+Output
+1
+2
+3
+4
+Original order:
+Draught of Immortality, Glacier ice, Crocodile tears, Dandelion milk
+
+Reverse order:

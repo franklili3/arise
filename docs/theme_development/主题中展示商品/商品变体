@@ -1,0 +1,94 @@
+支持商品变体​
+商品最多可分为三个选项，这些选项的单个组合就是规格。例如，如果意见T恤的尺寸为S、M和L，颜色为Black、White和Red，那么S/Black就是该商品的变体。
+
+在本教程中，您将了解如何在主题中支持商品变体。
+
+资源​
+要支持商品变体，您将使用一下内容：
+
+product object
+variant object
+实现商品变体​
+要支持主题中的变体，您需要实现以下组件：
+
+变体深度链接处理：一个变体可以直接被链接到，所以你应该确保在产品链接中引用一个变体时，"选定的 "变体的产品信息被更新。
+变体选择器：你应该建立至少一个变体选择器，让客户轻松浏览产品的可用变体。选择一个变体应该更新产品信息。
+你可能想把这些组件添加到一个可以包含在 JSON 商品模板或 Html 商品模板中的 Section
+
+变体深度链接处理​
+变体深层链接是包含?sku=[sku-id]查询参数的商品链接，其中[sku-id]是关联变体的ID。这允许您直接链接到变体。您可以将此功能添加到可包含在 JSON 商品模板或 Html 商品详情模板中的Section。
+
+当变体被深度链接时，你可以通过 product object 的 selected_variant属性访问哪个变体被链接。然而，一个商品链接不会总是包含一个深层链接的变体。在这些情况下，你可以通过selected_or_first_available_variant属性默认为选定的、第一个可用的、或第一个变体。
+
+在你确定要显示的变体后，你需要确保以下产品元素能够反映它。
+
+商品媒体
+商品价格
+变体选择器
+例子​
+下面的例子使用product.selected_or_first_available_variant分配了一个默认变量，根据该变量填充了一个基本的媒体和价格显示，并在基本变量选择器中选择了该变量。
+
+{{ assign 'current_variant' product.selected_or_first_available_variant }}
+{{ assign 'featured_media' current_variant.featured_media }}
+<!-- Product media -->
+{{#case current_variant.featured_media }}
+  {{#when 'image' }}
+    <div class="product-single__media"
+      style="padding-top: {{ times (divided_by 1 featured_media.aspect_ratio) 100 }}%;"
+      data-media-id="{{ featured_media.id }}"
+    >
+      {{ image_tag (image_url featured_media width=2048) }}
+    </div>
+  {{/when}}
+  {{#when 'external_video'}}
+    <div class="product-single__media"
+      style="padding-top: {{ times (divided_by 1 featured_media.aspect_ratio) 100 }}%;"
+      data-media-id="{{ featured_media.id }}"
+    >
+      {{ external_video_tag featured_media }}
+    </div>
+  {{/when}}
+  {{#when 'video'}}
+    <div class="product-single__media" data-media-id="{{ featured_media.id }}">
+      {{ video_tag featured_media controls="controls"}}
+    </div>
+  {{else}}
+    <div class="product-single__media"
+      style="padding-top: 100%;"
+      data-media-id="{{ featured_media.id }}"
+    >
+      {{ media_tag featured_media }}
+    </div>
+  {{/when}}
+{{/case}}
+<!-- Product price -->
+<div class="price">
+  <span class="price-reg">{{ money current_variant.price }}</span>
+  {{#if current_variant.compare_at_price '>' current_variant.price }}
+    <span class="price-sale"><s>{{ money current_variant.compare_at_price }}</s></span>
+  {{/if}}
+</div>
+<!-- Variant selector -->
+<select name="id">
+  {{#with this as |global|}}
+    {{#each product.variants as |variant| }}
+      <option value="{{ variant.id }}"
+        {{#if variant '==' global.current_variant }}selected="selected"{{/if}}
+      >
+        {{ variant.title }} - {{ money variant.price }}
+      </option>
+    {{/each}}
+  {{/with}}
+</select>
+
+变体选择器​
+你可以使用一个单一的变体选择器，每个选项代表一个变体。然而，由于产品可以有多达五个产品选项，你可能想在用户界面中分别展示这些选项。为了实现这一点，你可以创建上一节所述的单一变体选择器作为一个隐藏的主选择器，并为每个选项创建一个额外的选择器。然后，当一个选项选择器被改变时，你可以使用JavaScript来更新主选择器。
+
+无论您使用哪种方法来选择变体，您都需要确保在选择新变体时，产品媒体和价格会更新以反映该变体。
+
+变体选择器应该被添加到可以包含在JSON产品模板或Html模板中的部分。它们也可以包含在产品网格或产品快速查看片段中，以允许客户在其他页面上查看变体，如集合。
+
+请参阅 Seed 中的以下文件以获取另一个示例实现：
+
+product-variant-picker.html snippet
+global.js asset

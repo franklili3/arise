@@ -1,0 +1,100 @@
+支持产品媒体​
+商家可以将媒体添加到他们的产品中，例如图像、视频以及 YouTube 视频。
+在本教程中，您将学习如何在主题中支持产品媒体。
+
+资源​
+product 对象的 media 属性
+media helper
+实现产品媒体​
+产品媒体通常展示在产品页面上。但是，您可能希望在主题的其他区域显示产品媒体，因此在snippet中构建媒体显示，以便可以重复使用。
+
+要显示产品媒体，您可能遍历product对象的media属性并应用关联的媒体helper，具体取决于媒体类型。
+
+例子​
+如果您想在产品页面上输出产品媒体，并且您的产品页面内容托管在一个product.html部分中，那么您可能会执行以下操作：
+
+创建一个名为media.html托管您的媒体显示的片段。
+在你的product.html section 中渲染media.html
+<!-- sections/product.html -->
+{{#each product.media as |media|}}
+  {{ snippet 'media' media=media }}
+{{/each}}
+
+<!-- snippets/media.html -->
+{{#case media.media_type}}
+  {{#when 'image'}}
+    <div style="padding-top: {{ times (divided_by 1 media.aspect_ratio) 100 }}%;" data-media-id="{{ media.id }}">
+      {{ image_tag (image_url media width=2048 height=2048) }}
+    </div>
+  {{/when}}
+  {{#when 'external_video'}}
+    <div class="product-single__media"
+      style="padding-top: {{ times (divided_by 1 media.aspect_ratio) 100 }}%;"
+      data-media-id="{{ media.id }}"
+    >
+      {{ external_video_tag media }}
+    </div>
+  {{/when}}
+  {{#when 'video'}}
+    <div class="product-single__media" data-media-id="{{ media.id }}">
+      {{ video_tag media controls="controls"}}
+    </div>
+  {{else}}
+    <div class="product-single__media"
+      style="padding-top: 100%;"
+      data-media-id="{{ media.id }}"
+    >
+      {{ media_tag media }}
+    </div>
+  {{/when}}
+{{/case}}
+
+上面示例中的每种媒体类型都包装在一个具有自定义和数据属性的<div>元素中。
+
+提示
+在主题中支持媒体的另一个例子，你可以参考 Seed 在 main-product.html section 和product-thumbnail.html snippet 中的实现。
+
+使用媒体预览图像​
+每种媒体类型都有一个preview_image属性。这在以下场景中可能很有用：
+
+产品缩略图
+应用 image_url helper 于 media 对象，返回 preview_image URL。
+
+产品缩略图​
+如果您的主题显示产品上每个媒体源的缩略图，那么您可以利用preview_image媒体对象的属性来显示每个媒体源的缩略图。
+
+例如：
+
+{{#if product.media.size '>' 1 }}
+  <div class="thumbnails-wrapper">
+    {{#each product.media as |media|}}
+      <a data-thumbnail-id="{{ media.id }}">
+        {{ image_tag (image_url media.preview_image width=110 height=110) }}
+      </a>
+    {{/each}}
+  </div>
+{{/if}}
+
+上面的示例添加了一个属性，该属性旨在与上面的通用媒体循环示例中包含data-thumbnail-id的属性结合使用。data-media-id这为您提供了一种将缩略图与其媒体显示相关联的简单方法。
+
+使用参数控制视频功能​
+Shopline 托管的视频在用 handlebars video_tag 或 media_tag helper 渲染时可以设置所有HTML5视频属性。例如：
+
+autoplay - 是否在加载后自动播放视频。
+loop - 是否循环播放视频。
+muted - 是否将视频的音频静音。
+controls - 用户是否可以控制视频播放。
+每个参数都是 false 默认的，但是您可以将它们设置为生效的值，如下所示：
+
+<!-- 自动播放视频 -->
+{{ video_tag media autoplay=true }}
+<!-- 自动循环播放视频 -->
+{{ video_tag media autoplay=true loop=true }}
+<!-- 自动静音循环播放视频 -->
+{{ video_tag media autoplay=true loop=true muted=true }}
+<!-- 自动静音循环播放视频，并且允许用户控制回放 -->
+{{ video_tag media autoplay=true loop=true muted=true controls=true }}
+
+提示
+您可以使用 external_video_url helper 控制外部托管视频的这些相同行为。但是，可用参数取决于视频网站。
+

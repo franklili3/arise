@@ -1,0 +1,8 @@
+page_description​
+当前页面的元描述。
+
+page_description对象可用于为搜索引擎列表和社交媒体预览提供简短的页面描述。
+
+从模板获取
+Global
+page_description

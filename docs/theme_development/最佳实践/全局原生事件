@@ -1,0 +1,12 @@
+全局原生事件​
+onload​
+在使用例如 onload 的全局原生事件的时候，请尽量避免以下的使用方式
+
+window.onload = function (event) {}
+
+这种方式很可能会导致其他的代码出现问题，比如插件的代码如果也使用了同样的方式，则会导致代码冲突
+
+正确的做法是
+
+window.addEventListener('load', function (event) {})
+

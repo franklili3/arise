@@ -1,0 +1,21 @@
+pages​
+商店上的所有页面。
+
+您可以通过pages对象使用页面的handle来访问特定页面。
+
+Code
+Data
+1
+2
+3
+{{ pages.contact.title }}
+{{ pages.about-us.title }}
+
+Output
+1
+2
+Contact
+About us
+从模板获取
+Global
+pages

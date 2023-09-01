@@ -1,0 +1,64 @@
+sort​
+对给定的array. 如果传递了一个对象数组，您可以选择将一个key 作为第二个参数进行排序。
+
+参数​
+array {Array|String} 要排序的数组。
+props {String}: 要排序的属性名。
+returns {Array} 排序后的数组。
+用法​
+{{sort array 'props'}}
+
+例子​
+您可以指定一个数组项属性来对数组项进行排序。
+
+Code
+Data
+1
+2
+3
+4
+5
+6
+{{ assign 'products' (sort collection.products 'price') }}
+
+{{#each products as |product|}}
+  {{ product.title }}
+{{/each}}
+
+Output
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+Whole bloodroot
+Viper venom
+Potion bottle
+Potion beats
+Love Potion
+Komodo dragon scale
+Invisibility potion
+Health potion
+Ground mandrake root
+Glacier ice
+Gift Card
+Forest mushroom
+Dried chamomile
+Draught of Immortality
+Dandelion milk
+Crocodile tears
+Glacier ice
+Draught of Immortality

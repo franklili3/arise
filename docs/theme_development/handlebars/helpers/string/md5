@@ -1,0 +1,18 @@
+MD5​
+将字符串转化为 MD5 哈希。
+
+参数​
+str {String} 输入所需字符串，必填。
+returns {String} 返回字符串。
+用法​
+{{ md5 str }}
+
+例子​
+Code
+1
+2
+{{ md5 'hello world' }}
+
+Output
+1
+5eb63bbbe01eeed093cb22bb8f5acdc3

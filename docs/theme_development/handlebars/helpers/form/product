@@ -1,0 +1,67 @@
+product​
+生成 product 表单
+
+参数​
+form_type {String} form 的类型，固定为 product
+product {Object} 产品对象
+表单输入​
+输入项	输入类型	字段名	是否必填	备注
+变体id	text	id	必填	
+数量	number	quantity	必填	必须为正整数
+例子​
+Code
+Data
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+{{#form "product" product id="productFrom" class="productFrom"}}
+  <div style="margin-bottom:10px;">
+    <input type="number" required step="1" form="product-form-{{section.id}}" name="quantity" min='1' max='999' value='1'/>
+  </div>
+
+  <div style="margin-bottom:10px;">
+    <input type="id" required value="" />
+  </div>
+  <button style="margin-bottom:10px;" class='btn btn-primary' type='submit'>{{ t 'products.product_list.add_to_cart' }}</button>
+  {{ payment-button }}
+{{/form}}
+
+Output
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+⌄
+⌄
+⌄
+<form method="post" action="/api/carts/ajax-cart/addSingle.js" id="productFrom" class="shopline-product-form productFrom">
+  <input type="hidden" name="returnTo" value="/cart">
+  <div style="margin-bottom:10px;">
+    <input type="number" required step="1" form="product-form-" name="quantity" min='1' max='999' value='1' />
+  </div>
+
+  <div style="margin-bottom:10px;">
+    <input type="id" required value="" />
+  </div>
+  <button style="margin-bottom:10px;" class='btn btn-primary' type='submit'>products.product_list.add_to_cart</button>
+
+
+</form>

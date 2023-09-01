@@ -1,0 +1,103 @@
+自定义 robots.txt​
+该robots.txt文件告诉搜索引擎可以或不能在网站上抓取哪些页面。它包含这样做的规则组，每个组具有三个主要组成部分：
+
+用户代理，记录规则组适用于哪个爬虫。例如，adsbot-google。
+规则本身，它记录了爬虫可以或不能访问的特定 URL。
+一个可选的站点地图 URL。
+提示 要了解有关robots.txt规则集组件的更多信息，请参阅Google 的文档。
+
+Shopline 会生成 robots.txt 适用于大多数商店的默认文件。但是，您可以在管理后台自定义 robots.txt
+
+在本教程中，您将了解如何自定义robots.txt。
+
+要求​
+robots.txt 使用以下步骤进行编辑
+
+进入 admin 管理后台 -> 偏好设置 -> Robots.txt 管理 -> 前往设置
+进入 Robots.txt 编辑器
+资源​
+该robots.txt仅支持以下handlebars对象：
+
+robots
+group
+rule
+user_agent
+sitemap
+自定义robots.txt​
+您可以进行以下自定义：
+
+向现有组添加新规则
+从现有组中删除规则
+添加自定义规则
+提示 下面的示例使用 Handlebars 的空白控制来保持标准格式。
+
+虽然您可以使用纯文本规则替换所有模板内容，但强烈建议尽可能使用提供的 Handlebars 对象。默认规则会定期更新，以确保始终应用 SEO 最佳实践。
+
+向现有组添加新规则​
+如果要向现有组添加新规则，则可以调整 Handlebars 以输出默认规则以检查关联组并包含您的规则。
+
+例如，您可以使用以下命令阻止所有爬虫访问带有 URL 参数的页面?q=：
+
+{{#each robots.default_groups as |group|}}
+  {{~ group.user_agent }}
+  {{~#each group.rules as |rule| ~}}
+    {{ rule }}
+  {{~/each~}}
+  {{~#if group.user_agent.value '==' '*'~}}
+    {{ 'Disallow: /*?q=*' }}
+  {{~/if~}}
+  {{~#if group.sitemap~}}
+    {{ group.sitemap }}
+  {{~/if~}}
+{{/each}}
+
+从现有组中删除规则​
+如果要从现有组中删除默认规则，则可以调整用于输出默认规则的Handlebars以检查该规则并跳过它。
+
+例如，您可以使用以下命令删除阻止爬虫访问页面的规则/policies/：
+
+{{#each robots.default_groups as |group|}}
+  {{~ group.user_agent }}
+  {{~#each group.rules as |rule| ~}}
+    {{ rule }}
+  {{~/each~}}
+  {{~#if group.user_agent.value '==' '*'~}}
+    {{ 'Disallow: /*?q=*' }}
+  {{~/if~}}
+  {{~#unless (and (boolean rule.directive == 'Disallow') (and ( boolean rule.value == '/policies/')))~}}
+    {{ rule }}
+  {{~/unless~}}
+  {{~#if group.sitemap~}}
+    {{ group.sitemap }}
+  {{~/if~}}
+{{/each}}
+
+添加自定义规则​
+如果要添加不属于默认组的新规则，则可以在 Handlebars 之外手动输入规则以输出默认规则。
+
+这些自定义规则的常见示例是：
+
+阻止某些爬虫
+允许某些爬虫
+添加额外的站点地图网址
+阻止某些爬虫​
+如果爬虫不在默认规则集中，则您可以手动添加规则来阻止它。
+
+例如，以下指令将允许您阻止discobot爬虫：
+
+User-agent: discobot
+Disallow: /
+
+允许某些爬虫​
+与屏蔽某些爬虫类似，您也可以手动添加规则以允许搜索引擎爬取子目录或页面。
+
+例如，以下指令将允许discobot爬虫：
+
+User-agent: discobot
+Allow: /
+
+添加额外的站点地图网址​
+以下示例（[sitemap-url]站点地图 URL 在哪里）将允许您包含一个额外的站点地图 URL：
+
+Sitemap: [sitemap-url]
+

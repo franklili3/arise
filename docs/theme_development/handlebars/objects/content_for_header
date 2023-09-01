@@ -1,0 +1,13 @@
+content_for_header​
+动态返回Shopline所需的所有脚本。
+
+在<head>和</head>HTML标签之间的布局文件中包含content_for_header对象。
+
+你不应尝试修改或解析content_for_header对象，因为其内容可能发生变化，这可能会改变你的代码的行为。
+
+注意
+content_for_header对象在theme.html中是必需的。
+
+从模板获取
+Global
+content_for_header

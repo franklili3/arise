@@ -1,0 +1,19 @@
+articles​
+商店博客中的所有文章。
+
+您可以使用 articles 来通过其 handle 访问文章。
+
+Code
+Data
+1
+2
+3
+  {{ assign 'article' articles.potion-notions }}
+  {{{ link_to article.title article.url }}}
+
+Output
+1
+  <a href="/blogs/potion-notions/new-potions-for-spring">New potions for spring</a>
+从模板获取
+Global
+articles

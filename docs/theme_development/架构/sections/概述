@@ -1,0 +1,71 @@
+概述​
+Sections 是 HTML 文件，允许您创建可重用的内容模块，这些模块可以由商家定制。它们还可以包括允许商家添加、删除和重新排列 section 内容的 blocks。
+
+例如，您可以创建一个带文本的图片 sections，并排显示图像和文本，并为商家提供选择图像、设置文本和选择显示顺序的选项。
+
+可以使用 JSON templates 将 sections 动态添加到页面中，使商家能够灵活地定制页面布局。JSON 模板中包含的部分可以支持应用程序块，这使商家可以选择在部分中包含应用程序内容，而无需编辑主题代码。
+
+也可以渲染静态地 sections，这可以为商家提供静态内容的上下文定制选项。
+
+默认情况下，任何模板都可以使用 sections，但是您可以限制哪些模板可以在 section schema 中访问
+
+下图显示了主要的主题体系结构组件，其中 sections 以蓝色突出显示，blocks 以红色突出显示:
+image.png
+
+位置​
+Section 文件位于主题的 sections 目录下:
+
+└── theme
+    ...
+    ├── templates
+    ├── sections
+    ...
+
+内容​
+Section 可以包含三种主要类型的内容：
+
+类型	描述	是否必须
+主内容	您可能想要包含在 section 的任何 HTML 或 Handlebars 内容。
+与其他 Handlebars 主题文件以及以下特定于 section 的对象一样，Sections 具有对全局对象、HTML 标签和 Handlebars helper 的相同访问权。
+- section 对象 - 包含 section 的属性和设置值
+- block 对象 - 包含单个 section block 的属性和设置值
+除了全局对象之外，在 section 之外创建的变量在 section 内是不可访问的。
+section 和 block 对象，以及在 section 中创建的变量，在它们各自的 section 之外是不可用的。唯一的例外是，当您引用代码片段中的 section 和 block 对象时，代码段是在您引用的 section 中呈现的。	否
+Schema	Sections 支持特定于 section 的 {{#schema}} 的 Handlebars 标记，此标记用于定义 section 的属性和设置，具体请查看 Section schema	是
+使用​
+处理部分时，您应该熟悉以下内容：
+
+如何渲染一个 section
+如何将 section 与主题编辑器集成
+支持应用程序块
+渲染 section​
+您可以通过以下方式之一渲染 section：
+
+在 JSON templates 中使用 section
+使用 section helper 静态渲染 section
+提示 如果要在模板中呈现部分，请使用 JSON 模板。JSON 模板为商家提供了更广泛的自定义选项，并提高了主题编辑器的性能。
+
+静态渲染 section​
+您可以使用 Handlebars section helper 静态渲染 section。
+
+例如，如果你有一个/sections/header.html文件，其中包含你的主题的标题内容，那么你可能想在theme.html 中包含该部分，以便在所有使用该布局的页面上呈现标题。
+
+{{ section 'header' }}
+
+Note 您可以在多个主题文件中包含静态呈现的部分。但是，该部分仅存在一个实例。如果您在一个位置更改部分设置，则更改将应用于呈现该部分的所有位置。
+
+将 Section 与主题编辑器集成​
+当商家通过主题编辑器自定义 section 时，这些部分的 HTML 会直接动态添加、删除或重新渲染到现有 DOM 上，而无需重新加载整个页面。但是，在页面加载时运行的任何关联 JavaScript 都不会再次运行。
+
+此外，您必须确保在选择 section 或 block 时，该 section 或 block 在选择时变为可见并保持可见。例如，幻灯片 section 应在选择 section 时滚动到视图中，滑动到选定的 block（幻灯片），并在选择该 block 时暂停。
+
+为了帮助识别主题编辑器操作，如 section 和 block 选择或重新排序，您可以使用主题编辑器发出的 JavaScript 事件。
+
+您可能还想阻止特定代码在主题编辑器中运行。为此，您可以使用 Handlebars 和 JavaScript 变量来检测主题编辑器。
+
+提示 Section 文件必须在其架构中定义预设，以支持使用主题编辑器添加到 JSON 模板。没有预设的 section 文件应该手动包含在 JSON 文件中，并且不能使用主题编辑器删除。
+
+支持应用程序块​
+应用程序块允许应用程序开发人员为商家创建块以将应用程序内容添加到他们的主题中，而无需直接编辑主题代码。
+要了解有关如何使您的主题与应用程序块兼容的更多信息，请参阅应用程序块。
+

@@ -1,0 +1,23 @@
+stylesheet_tag​
+为一个给定的资源URL生成一个HTML<link>标签。该标签有以下参数：
+
+属性	值
+rel	stylesheet
+type	text/css
+media	all
+参数​
+url {String} cdn url 链接，必填
+[hash.media] {String} 传入 media 属性，可选
+returns {String} html 字符串
+用法​
+{{ stylesheet_tag url [media=str] }}
+
+例子​
+Code
+1
+2
+{{ stylesheet_tag (asset_url 'base.css') }}
+
+Output
+1
+<link href="https://cdn.myshopline.com/base.css" rel="stylesheet" type="text/css" media="all">

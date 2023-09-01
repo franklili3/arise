@@ -1,0 +1,18 @@
+capitalize​
+将字符串中的第一个单词首字母大写。
+
+参数​
+str {String} 输入字符串，必填
+returns {String} 返回字符串
+用法​
+{{ capitalize str }}
+
+例子​
+Code
+1
+2
+{{ capitalize 'hello world' }}
+
+Output
+1
+Hello world

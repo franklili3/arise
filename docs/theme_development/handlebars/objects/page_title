@@ -1,0 +1,8 @@
+page_title​
+当前页面的页面标题。
+
+page_title 对象可以用来为搜索引擎列表和社交媒体预览指定页面的标题。
+
+从模板获取
+Global
+page_title

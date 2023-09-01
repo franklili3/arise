@@ -1,0 +1,45 @@
+paginate​
+对数组进行分页
+
+参数​
+array - 要分页的数组
+hash.by {Number} 每页数量，必填
+returns {Object} 分页对象
+用法​
+{{#paginate array by=page_size}}
+  {{#each array as |item|}}
+    {{item}}
+  {{/each}}
+{{/paginate}}
+
+例子​
+Code
+Data
+1
+2
+3
+4
+5
+6
+{{#paginate collection.products by=5}}
+  {{#each collection.products as |product|}}
+    {{ product.title }}
+  {{/each}}
+{{/paginate}}
+
+Output
+1
+2
+3
+4
+5
+    Draught of Immortality
+    Glacier ice
+    Crocodile tears
+    Dandelion milk
+    Draught of Immortality
+paginate object​
+在块上下文中，可以通过 paginate 辅助函数访问分页对象
+
+注意：分页对象在块上下文外部不可用。 更多详细示例可以在Seed主题代码中找到。
+

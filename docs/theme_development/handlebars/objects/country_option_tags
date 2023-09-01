@@ -1,0 +1,17 @@
+country_option_tags​
+在Shopline管理后台的运费页面，为每个包含在运费区域内的国家和地区创建一个<option>标签。
+
+每个 <option> 都设置了一个名为 data-provinces 的属性，包含一个JSON编码的该国家或地区的子区域数组。如果一个国家没有任何子区域，那么它的 data-provinces 属性将设置为空数组。
+
+提示
+要返回商店运费区域内包含的所有国家和地区，请使用all_country_option_tags。
+
+您可以将country_option_tags对象包装在<select>标签中，以构建一个国家选项选择器。
+
+<select name="country">
+  {{{ country_option_tags }}}
+</select>
+
+从模板获取
+customers/addresses
+country_option_tags

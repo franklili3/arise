@@ -1,0 +1,46 @@
+unless​
+如果表达式返回 false 则将渲染代码块。
+
+参数​
+condition
+语法​
+{{#unless condition }}
+  expression
+{{/unless}}
+
+例子​
+Code
+1
+2
+3
+4
+5
+6
+7
+{{ assign 'a' 1 }}
+{{ assign 'b' 2 }}
+
+{{#unless (if a '>' b)}}
+  This will be rendered
+{{/unless}}
+
+Output
+1
+This will be rendered
+Code
+Data
+1
+2
+3
+4
+5
+6
+{{#unless product.available }}
+  This product is available!
+{{else}}
+  This product is sold out!
+{{/unless}}
+
+Output
+1
+  This product is sold out!

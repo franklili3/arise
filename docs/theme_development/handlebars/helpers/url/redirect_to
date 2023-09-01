@@ -1,0 +1,19 @@
+redirect_to​
+生成一个带市场的重定向链接
+
+参数​
+url {String} url, 必填
+returns {String} 返回 html 字符串
+用法​
+{{ redirect_to url }}
+
+例子​
+Code
+Data
+1
+2
+{{ redirect_to '/products/handle' }}
+
+Output
+1
+/zh/products/handle

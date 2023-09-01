@@ -1,0 +1,21 @@
+font​
+字体选择器设置中的字体。
+
+您可以在 Handlebars 资源或样式标签内使用 font 对象，将字体设置值应用于主题 CSS。
+
+属性​
+
+fallback_families
+string
+
+family
+string
+
+style
+string
+
+system
+boolean
+
+weight
+number

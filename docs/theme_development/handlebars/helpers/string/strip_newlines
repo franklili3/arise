@@ -1,0 +1,35 @@
+strip_newlines​
+从字符串中剔除所有新行字符（换行符）。
+
+参数​
+str {String} 输入的字符串，必需
+return {Array} 返回字符串
+用法​
+{{ strip_newlines str }}
+
+例子​
+Code
+Data
+1
+2
+3
+4
+5
+6
+{{!-- 带有换行 --}}
+{{{ product.description }}}
+
+{{!-- 移除换行 --}}
+{{{ strip_newlines product.description }}}
+
+Output
+1
+2
+3
+4
+5
+<h3>Are you low on health? Well we've got the potion just for you!</h3>
+<p>Just need a top up? Almost dead? In between? No need to worry because we have a range of sizes and strengths!</p>
+
+<h3>Are you low on health? Well we've got the potion just for you!</h3>
+<p>Just need a top up? Almost dead? In between? No need to worry because we have a range of sizes and strengths!</p>

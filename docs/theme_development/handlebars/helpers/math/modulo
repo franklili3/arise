@@ -1,0 +1,19 @@
+modulo​
+返回一个数除以给定数的余数。
+
+参数​
+a {Number} 输入一个数字，必填
+b {Number} 输入一个数字，必填
+returns {Number} 返回一个数字
+用法​
+{{ modulo a b }}
+
+例子​
+Code
+1
+2
+{{ modulo 12 5 }}
+
+Output
+1
+2

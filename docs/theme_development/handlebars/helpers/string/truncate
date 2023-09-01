@@ -1,0 +1,29 @@
+truncate​
+将字符串截短至指定数量的字符。
+
+参数​
+str1 {String} 输入字符串，必需
+limit {Number} 长度，必需
+[suffix] {String} 截断后的后缀字符串，可选
+returns {String} 返回字符串
+用法​
+{{ truncate str1 limit [suffix] }}
+
+例子​
+Code
+1
+2
+{{ truncate "foo bar baz" 7 }}
+
+Output
+1
+foo bar
+后缀​
+Code
+1
+2
+{{ truncate "foo bar baz" 7 '...' }}
+
+Output
+1
+foo ...

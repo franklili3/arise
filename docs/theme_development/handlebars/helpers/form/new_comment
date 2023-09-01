@@ -1,0 +1,122 @@
+new_comment​
+生成博客文章新建评论表单
+
+参数​
+form_type {String} form 的类型，固定为 localization
+article {Object} 文章对象
+表单输入​
+输入项	输入类型	字段名	是否必填	备注
+邮箱	email	comment[author]	必填	表示评论作者名称
+标签	text	comment[email]	必填	表示评论作者邮箱地址
+标签	text	comment[body]	选填	表示评论内容
+例子​
+Code
+Data
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+{{#form 'new_comment' article}}
+  {{#if form.posted_successfully}}
+    <div>提交成功</div>
+  {{/if}}
+
+  {{#if form.errors}}
+    <div>{{ form.errors.messages }}</div>
+  {{/if}}
+
+  <div class="name">
+    <label for="name">Name</label>
+    <input type="text" name="comment[author]" value="{{ form.author }}">
+  </div>
+
+  <div class="email">
+    <label for="email">Email</label>
+    <input type="email" name="comment[email]" value="{{ form.email }}">
+  </div>
+
+  <div class="comment">
+    <label for="comment">Comment</label>
+    <textarea name="comment[body]">{{ form.body }}</textarea>
+  </div>
+
+  <div class="submit">
+    <input type="submit" value="Post">
+Output
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+⌄
+⌄
+⌄
+⌄
+⌄
+<form method="post" action="/api/site/form/create/comment/43242123" id="comment_form" class="comment-form" accept-charset="UTF-8">
+  <input type="hidden" name="form_type" value="new_comment" />
+
+
+
+  <div class="name">
+    <label for="name">Name</label>
+    <input type="text" name="comment[author]" value="">
+  </div>
+
+  <div class="email">
+    <label for="email">Email</label>
+    <input type="email" name="comment[email]" value="">
+  </div>
+
+  <div class="comment">
+    <label for="comment">Comment</label>
+    <textarea name="comment[body]"></textarea>
+  </div>
+
+  <div class="submit">
+    <input type="submit" value="Post">
+  </div>
+
+</form>

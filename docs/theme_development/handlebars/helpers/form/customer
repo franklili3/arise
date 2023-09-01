@@ -1,0 +1,85 @@
+customer​
+生成 邮件订阅 表单
+
+表单输入​
+输入项	输入类型	字段名	是否必填	备注
+邮箱	email	contact[email]	必填	
+标签	text	contact[tags]	选填，多个用,连接，例：home_page,footer	
+例子​
+Code
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+{{#form "customer" id="customer-subscribe-form" class="customer-form"}}
+  {{#if form.posted_successfully}}
+    <div>提交成功</div>
+  {{/if}}
+
+  {{#if form.errors.messages}}
+    <div>{{ form.errors.messages }}</div>
+  {{/if}}
+
+  <input type="hidden" name="contact[tags]" value="home_page,footer">
+  <div class="email">
+    <label for="contact[email]">订阅邮箱</label>
+    <input type="email" name="contact[email]" placeholder="请输入邮箱" />
+  </div>
+
+  <div class="submit">
+    <input class="submit-button" type="submit" value="订阅">
+  </div>
+{{/form}}
+
+Output
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+⌄
+⌄
+⌄
+<form method="post" action="/api/user/front/form/subscribe" id="customer-subscribe-form" class="customer-form">
+
+  <input type="hidden" name="form_type" value="customer">
+
+
+  <input type="hidden" name="contact[tags]" value="home_page,footer">
+  <div class="email">
+    <label for="contact[email]">订阅邮箱</label>
+    <input type="email" name="contact[email]" placeholder="请输入邮箱" />
+  </div>
+
+  <div class="submit">
+    <input class="submit-button" type="submit" value="订阅">
+  </div>
+
+</form>

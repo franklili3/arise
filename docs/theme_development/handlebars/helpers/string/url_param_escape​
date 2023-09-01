@@ -1,0 +1,18 @@
+url_param_escape​
+逃避在字符串中对URL参数不安全的任何字符。
+
+参数​
+str {String} 输入字符串，必需
+returns {String} 返回字符串
+用法​
+{{ url_param_escape str }}
+
+例子​
+Code
+1
+2
+{{ url_param_escape '<p>Health & Love potions</p>' }}
+
+Output
+1
+%3Cp%3EHealth%20%26%20Love%20potions%3C/p%3E

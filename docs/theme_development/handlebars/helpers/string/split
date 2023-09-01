@@ -1,0 +1,19 @@
+split​
+根据给定的分隔符将字符串分割成子字符串数组。
+
+参数​
+str1 {String} 输入字符串，必需
+separator {String} 分隔符，必需
+return {Array} 返回字符串数组
+用法​
+{{ split str1 separator }}
+
+例子​
+Code
+1
+2
+{{ split "a,b,c" "," }}
+
+Output
+1
+a,b,c

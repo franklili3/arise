@@ -1,0 +1,21 @@
+handleize​
+将字符串转换为handle。
+
+备注
+handleize helper 也被别名为 handle。
+
+参数​
+str {String} 输入所需的字符串，必须。
+returns {String} 返回字符串。
+使用​
+{{ handleize str }}
+
+例子​
+Code
+1
+2
+{{ handleize '100% M & Ms!!!' }}
+
+Output
+1
+100-m-ms

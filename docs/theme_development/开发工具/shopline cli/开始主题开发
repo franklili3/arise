@@ -1,0 +1,34 @@
+开始主题开发​
+Shopline CLI 是一个命令行界面工具，可帮助您构建 Shopline 主题。
+本文档介绍了如何使用 Shopline CLI进行主题开发。
+
+准备工作​
+成功安装 CLI。
+确保您有一个开发者店铺，进行开发调试。
+确保您已连接到互联网。大多数 Shopline CLI 命令需要互联网连接才能运行。
+登录认证​
+使用shopline login登录 CLI 到指定店铺。
+
+在终端输入您要登录的商店
+shopline login --store example.myshopline.com
+
+在弹出的浏览器窗口，输入账号密码并登录。
+创建一个新主题​
+使用shopline theme init <THEME-NAME> 在本地创建新主题。此命令会从我们的开放 Git 仓库中，克隆 Arise 示例主题代码，并创建其副本。
+
+shopline theme init theme-demo
+
+执行后会在当前目录创建新文件夹，您输入的主题名称会作为目录名称。
+
+使用已存在的主题开发​
+可以使用 shopline theme pull在本地下载线上已经存在的主题。运行此命令前需要您登录到店铺后进行操作。
+此命令会提示您需要从列出的店铺下所有主题列表中选择要下载的主题，使用 --themeId 标志指定要下载的主题到本地。
+若指定的主题是在线上运行的版本，此命令会基于线上主题版本创建一份副本，并下载到本地
+
+shopline theme pull --themeId <THEME_ID>
+
+推送主题到店铺​
+可以使用 shopline theme push命令上传本地的主题文件到 Shopline，覆盖远程的版本。使用 --themeId标志将主题上传到远程，并覆盖指定主题。
+
+shopline theme push --themeId <THEME_ID>
+

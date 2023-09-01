@@ -1,0 +1,174 @@
+性能优化​
+商家在为店铺选择主题时，性能是一个重要的考虑指标，它能直接影响到业务的转化率和搜索引擎排名
+当您构建或自定义主题时，应考虑到性能，在提供功能支持的同时，优化主题以提高性能，才能提供更好的用户体验，帮助商家进行业务转化。
+在模版上架主题商城前，开发者需要进行性能跑分测试，同时，首页、商品详情页、商品列表页的平均 lighthouse 性能得分必须至少为 60。
+
+优化资源加载​
+基于 Shopline 服务器托管资源​
+静态资源应尽可能由官方 CDN 服务接管，这样可以保证静态资源使用相同域名，避免不必要的 HTTP 连接，同时官方 CDN 服务会默认使用 HTTP2.0 协议来防止资源加载阻塞。
+开发主题模版时，可以将静态资源添加到 /assets文件夹中，通过配合 asset_url helper 来获取 cdn url 进行使用。
+
+缩小 JavaScript、Css 资源体积​
+内容压缩​
+主题内的资源文件完全由官方 CDN 服务托管，使用 asset_url helper 可以获取 CDN URL 进行使用，但是 CDN 服务并不会对您的资源做任何处理，在上传主题包资源前，您可以将包含的静态资源（样式、脚本、图片）进行压缩，压缩资源内容能减少文件体积，加快资源加载速度。
+
+按需加载资源​
+所有主题均需要支持商家去自定义配置页面展示内容，您提供的主题功能可能很强大，包含数十个可用组件，但是商家单个页面使用的组件可能仅有 10 个，如果您将所有组件使用到的资源聚合在一起，那么页面将加载大量无用资源，您可以按组件维度对资源进行划分，这样可以保证页面不引入无用资源：
+
+<body>
+  <script src="section1.js" defer></script>
+  <link rel="stylesheet" href="section1.css">
+  <section id="section1">section1</section>
+  <script src="section2.js" defer></script>
+  <link rel="stylesheet" href="section2.css">
+  <section id="section2">section2</section>
+</body>
+
+优化图片资源​
+延迟加载非首屏图片​
+仅在页面需要使用的时候才加载图片，可以使用占位图片，直到用户向下滚动到具体位置才进行加载。这样有助于减少无用资源的加载，提高页面加载速度。
+您可以直接使用浏览器原生能力loading="lazy"属性去设置 Img 标签：
+
+<img src="https://s2cdn.myshopline.com/fe-files/2022/03/02/850723/logo.svg" loading="lazy" />
+
+也可以使用 lazysizes 来实现图片懒加载：
+
+<script src="lazysizes.min.js"></script>
+<img data-src="image.jpg" class="lazyload" />
+
+使用响应式图片​
+图片响应式指的是根据设备分辨率、设备像素比等来加载正确图像，并且图片体积尽可能的小，视觉效果足够高清。达到加载速度和显示质量的平衡。
+您可以使用两个新属性 srcset 和 sizes 来提供更多的额外资源图片和提示，帮助浏览器选择正确的一个资源：
+
+<img srcset="elva-fairy-320w.jpg 320w,
+             elva-fairy-480w.jpg 480w,
+             elva-fairy-800w.jpg 800w"
+     sizes="(max-width: 320px) 280px,
+            (max-width: 480px) 440px,
+            800px"
+     src="elva-fairy-800w.jpg" alt="Elva dressed as a fairy">
+
+您也可直接使用官方提供的 image_responsive helper 来快捷配置这些属性：
+
+<img {{{get 'responsiveAttr' (image_responsive 'elva-fairy-800w.jpg' pcSize='1/6' mSize='1/2') }}}>
+
+如果您使用了 lazysizes 作为图片懒加载控制器的话，也可以直接使用 lazysizes 提供的能力：
+
+<img class="lazyload" src="elva-fairy-800w.jpg" sizes="auto">
+
+预连接到所需要的来源​
+在主题中，对于已知来源的资源请求，您可以通过 preconnct、dns-prefetch 来提前跟资源建立连接，这样可以加快资源的加载速度。
+以官方主题为例，会提前发起图片资源连接，来提高图片资源加载速度：
+
+<link rel="dns-prefetch" href="https://cdn.myshopline.com">
+<link rel="preconnect" href="https://cdn.myshopline.com">
+
+注意：预连接不宜设置过多，只针对关键资源的域名设置，过多的预连接会对浏览器造成连接压力。
+
+预加载关键资源​
+打开网页时，浏览器会从服务器请求 HTML 文档，解析内容，并为引用资源发起单独请求。对于一些关键页面资源，您可以使用 preload 来预加载资源。
+以图片为例，您可以通过在 head 中设置图片的 preload 提前加载图片，这样可以缩短图片从加载到渲染的耗时：
+
+<head>
+  <link rel="preload" as="image" href="important-lcp.png" >
+</head>
+<body>
+  ...
+  <img src="important-lcp.png" loading="lazy">
+  ...
+</body>
+
+优化页面渲染​
+消除阻塞资源​
+避免渲染阻塞的样式​
+浏览器渲染页面时，会强依赖样式表，在 css 没有加载、解析和执行完成之前，浏览器不会在页面上进行绘制，同时，在 css 之后使用的 JavaScript 也将中断执行。这意味着页面性能会严重受到阻塞渲染的样式影响。
+您可以通过异步加载样式的形式来避免渲染阻塞：
+
+<link rel="preload" href="styles.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="styles.css"></noscript>
+
+异步加载样式表只能针对非关键资源，异步加载关键资源样式会导致页面出现闪动，造成严重的页面布局偏移
+
+避免解析器阻塞脚本​
+在浏览器渲染页面之前，必须经过 HTML 解析，解析器阻塞脚本会中断这个过程：当浏览器遇到解析器阻塞脚本时，它必须停止一切并只专注于该脚本，直到脚本被加载、解析和执行，然后才能进行后续的操作。
+这会影响 First Contentful Paint 和 Largest Contentful Paint 等指标。您可以通过在脚本标签上使用 defer或 async属性来避免这种情况。
+
+<script src="script1.js" defer></script>
+<script src="script2.js" async></script>
+
+内联关键资源​
+在浏览器渲染页面时，存在一部分首屏幕渲染时使用到的资源（样式、脚本、字体），我们称为关键资源；非首屏幕使用的页面资源我们统称为非关键资源，对于非关键的资源，您可以参考上文提及的 避免渲染阻塞的样式、避免解析器阻塞脚本 进行优化。
+关键资源无法像非关键资源一样通过异步加载的方式来避免阻塞，不过您可以通过资源内联的方式来降低关键资源对浏览器页面渲染过程的影响。
+以样式为例，您可以将首屏幕使用的样式分离出来，以内联资源的方式进行使用，这样可以避免 css 文件加载的耗时：
+
+<style type="text/css">
+.accordion-btn {background-color: #ADD8E6;color: #444;cursor: pointer;padding: 18px;width: 100%;border: none;text-align: left;outline: none;font-size: 15px;transition: 0.4s;}.container {padding: 0 18px;display: none;background-color: white;overflow: hidden;}h1 {word-spacing: 5px;color: blue;font-weight: bold;text-align: center;}
+</style>
+
+考虑使用系统字体​
+系统字体是已经安装在用户设备上的字体。直接使用系统字体可以避免依赖外部字体文件，这消除了浏览器在渲染字体前需要等待字体文件下载的时间，使得主题性能更好。
+如果您选择使用系统字体，那么用于呈现文本的字体将取决于用户的操作系统。共有三种通用系统字体类型。以下是这些类型中的字体示例：
+
+mono- Menlo、Consolas、Monaco、Liberation Mono 和 Lucida 控制台
+sans-serif- BlinkMacSystemFont、Segoe UI、Roboto、Ubuntu 和 Helvetica Neue
+serif- Iowan Old Style、Apple Garamond、Baskerville、Times New Roman、Droid Serif、Times 和 Source Serif Pro
+避免页面布局偏移​
+页面布局偏移会给使用者带来不好的用户体验，同时也是 Google Web 性能指标 中的一个重要指标，出现大范围的布局偏移时会导致 lighthouse 评分严重下降。
+网页中的内容经常出现预料之外的移动多数是由于一些异步加载的资源或者是动态添加DOM元素到当前页面上造成的，罪魁祸首可能是：
+
+尺寸未知的图片或视频
+实际呈现比其原有大小更大或更小的字体
+可以动态调整自身大小的第三方广告或者页面小组件
+...
+以商家上传的图片资源为例，您可以通过 img_size helper 获取图片的宽高比，通过提前设置图片 DOM 的大小来规避抖动问题：
+
+<style>
+  .wrapper {
+    position: relative;
+    width:100%;
+    height:0;
+  }
+  .img {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+  }
+</style>
+<div class="wrapper" style="padding-bottom:{{ get 'ratio' (img_size banner1.url) }}%;">
+  <img class="img" src="{{ banner1.url }}">
+</div>
+
+不考虑兼容性的情况下，可以考虑使用 aspect-ratio css 属性来控制图片宽高比。
+
+优化 JavaScript​
+减少 JavaScript 的使用​
+考虑仅使用 HTML 和 CSS 来实现您的主题。主题的基本功能是做内容展示，并不需要用到 JavaScript。理想情况下，主题在禁用 JavaScript 后还能保证内容的正常展示。JavaScript 应该充当渐进增强的角色，并且仅在没有 HTML 或 CSS 解决方案的情况下使用。
+CSS 解析和渲染比 JavaScript 快得多，所以只要有可能，您应该使用 CSS 特性来实现交互。参考：5 种可以被 CSS 替代的 JavaScript 实现。
+
+减少对外部框架和库的依赖​
+如果您需要使用 JavaScript，请考虑避免引入第三方框架、库和依赖项目，尽可能的使用浏览器原生能力和 DOM API，避免因 JavaScript 库的使用导致脚本体积过大、加载时间变慢，使得用户体验变差。常见的 React、Angular、Vue 等框架以及 JQuery 等库都有较大的性能成本。
+避免为老旧浏览器做兼容而引入过多 polyfill 库（如 async/await 支持），您可以使用 browserslist 定位出市场份额 > 1% 的浏览器进行兼容。
+
+性能对站点的影响​
+对转化率的影响​
+网站性能对转化率有巨大影响，这种影响是可以衡量的。多项研究表明：网页加载速度越快，用户越有可能对该网页执行期望的操作。
+image.png
+网页应以多快速度加载？根据 skilled.co，47% 的客户希望网页在 2 秒或更短时间内完成加载。同样来自 skilled.co 的数据，AI 医疗保健软件公司 mPulse Mobile 的测试发现：
+
+页面加载时间为 2.4 秒以内时，其转化率为 1.9％
+3.3 秒时，转化率为 1.5％
+4.2 秒时，转化率为不到 1.1％
+超过 5.7 秒时，转化率为 0.6％
+其他公司也获得类似的结果：
+
+沃尔玛发现，页面加载时间每减少 1 秒，转化数就会增加 2％
+COOK 通过将页面加载时间减少 0.85 秒，使转化数提高了 7％
+Mobify 发现，首页加载时间每减少 100 毫秒，转化率就会提高 1.11％
+这些转化上的增强看似很小，但对网站产生的收入有着巨大影响。例如，一个电子商务网站每年产生 1000 万美元销售额，如果网站加载时间缩短一秒后转化率提高 2％（如沃尔玛案例研究所示），这表示其收入会增加 200,000 美元。
+
+对搜索引擎排名的影响​
+当用户使用搜索引擎进行搜索时，搜索引擎会生成一个网站列表，这些网站从最有可能到最不可能满足查询的顺序排列。该列表通常分为一系列结果页面（或SERP），列出可以回答用户查询的网站，通常每个SERP有10个结果。大多数用户只会浏览搜索结果的第一页，然后选择优化搜索并重试。因此，大多数SEO专家的目标是让他们管理的网站进入他们所针对的查询的前10个搜索结果中。
+一个网站在搜索引擎结果排名中的高低取决于许多因素，包括它与查询的相关程度以及搜索算法认为该网站的权威程度。通过优化网站进行搜索，网站所有者可以确保其内容在搜索排名中显示的尽可能高，从而使用户更有可能点击。
+image.png
+在欧美地区，谷歌主导了搜索引擎市场，因此，谷歌的算法在很大程度上决定了SEO最佳实践。2010年，谷歌宣布将网站速度纳入其搜索排名，从那时起，网站性能变得越来越有影响力，而性能优化现在已成为SEO优化的很大一部分。
+

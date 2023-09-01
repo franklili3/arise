@@ -1,0 +1,35 @@
+video​
+有关作为 product media 或 file_reference 元字段 上传的视频的信息。
+TIP
+使用video_tag helper在 HTML <video> 标签中输出视频。
+
+属性​
+
+alt
+string
+
+aspect_ratio
+number
+
+duration
+number
+
+id
+number
+
+media_type
+string
+
+postion
+number
+
+preview_image
+image
+
+
+sources
+array of video_source
+
+从Object获取
+product.media
+video

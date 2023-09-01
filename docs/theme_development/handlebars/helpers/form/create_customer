@@ -1,0 +1,187 @@
+create_customer​
+生成一个创建新客户账户的表格。
+
+表单输入​
+输入项	输入类型	字段名	是否必填	备注
+邮箱	email	customer[email]	商家开启邮箱注册时必填	
+手机号	phone	customer[phone]	商家开启手机号注册时必填	手机号格式为: 国际封闭电话号码, 例如大陆手机号码：15600000000
+区号	text	customer[code]	商家开启手机号注册时必填	区号为国际电话区号，例如大陆手机区号：86
+密码	password	customer[password]	必填	
+验证码	text	customer[verifycode]	商家开启身份验证时必填	
+姓氏	text	customer[firstName]	选填	
+名字	text	customer[lastName]	选填	
+生日	date	customer[birthday]	选填	
+性别	number	customer[gender]	选填	
+邮箱订阅	checkbox	customer[acceptsEmailMarketing]	选填	
+例子​
+Code
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+{{#form 'create_customer'}}
+  <div class="account">
+    <label for="email">{{ t 'user.username' }}</label>
+    <input type="text" name="customer[email]" placeholder="{{ t 'user.username' }}" />
+  </div>
+
+  <div class="password">
+    <label for="password">{{ t 'user.password' }}</label>
+    <input type="password" name="customer[password]" placeholder="{{ t 'user.password' }}" />
+  </div>
+
+  {{#if form.registerConfig.checkTag}}
+    <div class="verifycode">
+      <input type="text" name="customer[verifycode]" placeholder="{{ t 'user.code' }}" />
+      <button class="verifycode-button">{{ t 'user.send' }}</button>
+    </div>
+  {{/if}}
+
+  {{#if form.registerConfig.firstNameCheck}}
+    <div class="first-name">
+      <label for="first-name">{{ t 'user.firstName' }}</label>
+Output
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+⌄
+⌄
+⌄
+⌄
+⌄
+⌄
+<form method="get">
+
+  <div class="account">
+    <label for="email">user.username</label>
+    <input type="text" name="customer[email]" placeholder="user.username" />
+  </div>
+
+  <div class="password">
+    <label for="password">user.password</label>
+    <input type="password" name="customer[password]" placeholder="user.password" />
+  </div>
+
+
+
+
+
+  <div class="age">
+    <label for="age">user.age</label>
+    <input type="text" name="attribute[age]" placeholder="user.age" />
+  </div>
+
+  <div class="accepts-marketing">
+    <input type="checkbox" name="customer[acceptsEmailMarketing]" value="true">
+    <label for="accepts-marketing">Subscribe to email marketing</label>
+  </div>
+
+  <div class="submit">
+    <input class="submit-button" type="submit" value="user.signUp">
+  </div>
+
+</form>
+配合使用​
+以上代码需要结合下面的脚本一起使用
+
+class Register {
+  constructor() {
+    this.form = document.querySelector('#create-customer-form');
+    this.form.addEventListener('submit', this.onSubmitHandler.bind(this));
+    this.verifyCodeButton = this.form.querySelector('.verifycode-button');
+    this.verifyCodeButton.addEventListener(
+      'click', this.onSendVerifyCodeHandler.bind(this)
+    );
+    this.register = new window.Shopline.customerAccount.Register(this.form)
+  }
+  // 发送邮箱或短信验证码逻辑
+  onSendVerifyCodeHandler(e) {
+    e.preventDefault();
+    if (this.verifyCodeButton.getAttribute('aria-disabled') === 'true') return;
+    this.verifyCodeButton.setAttribute('aria-disabled', true);
+    this.register.sendVerifyCode()
+      .then(response => {
+        if (response.errorMessage) {
+          this.verifyCodeError = true;
+          // 处理发送失败异常场景
+        }
+      })
+      .finally(() => {
+        if (!this.verifyCodeError) {
+          this.verifyCodeButton.removeAttribute('aria-disabled');
+        }
+      })
+  }
+  // 注册逻辑
+  onSubmitHandler(e) {
+    e.preventDefault();
+    this.register.submit()
+      .then(response => {
+        window.location.href = '/user/center';
+      })
+      .catch(error => {
+        // 处理注册失败异常场景
+      })
+  }
+  }
+  // 初始化用户登录注册 JS SDK
+  window.Shopline.loadFeatures(
+  [
+    {
+      name: 'customer-account-api',
+      version: '0.2'
+    }
+  ],
+  function(error) {
+    if (error) {
+      throw error;
+    }
+    new Register();
+  }
+  );
+

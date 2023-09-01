@@ -1,0 +1,18 @@
+base64_url_safe_decode​
+以 URL 安全的 Base64 格式 解码字符串。
+
+参数​
+str {String} 输入所需的字符串。
+returns {String} 返回字符串。
+用法​
+{{ base64_url_safe_decode str }}
+
+例子​
+Code
+1
+2
+{{{ base64_url_safe_decode 'PHA-b2s_PC9wPg==' }}}
+
+Output
+1
+<p>ok?</p>

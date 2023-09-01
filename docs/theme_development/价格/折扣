@@ -1,0 +1,102 @@
+折扣​
+可以在订单项级别或购物车、结帐或订单级别应用折扣。这意味着它们直接应用于特定的订单项，或应用于整个购物车或订单。
+
+在本教程中，您将学习如何在主题中显示折扣。
+
+要求​
+您已经创建了购物车模板或客户/订单模板。
+
+资源​
+要在您的主题中显示折扣，您将使用一下内容：
+
+discount_application object
+discount_allocation object
+line_item object
+discount_application object​
+discount_application对象在购物车、结账或订单层面注册了折扣。根据你实现折扣显示的位置，你将通过相关的父对象访问相关的折扣应用。
+
+对于 cart 模板：
+
+cart.discount_applications
+cart.cart_level_discount_applications
+对于 customers/order 模板：
+
+order.discount_applications
+order.cart_level_discount_applications
+手动折扣码只能在结账时使用，因此无法通过 cart.discount_applications.
+
+discount_allocation object​
+discount_allocation对象将一个discount_application与一个订单项联系起来。 你可以使用line_item.line_level_discount_allocations访问与一个订单项相关的所有折扣分配数组。
+
+line_item object​
+要完成价格展示，需要用到line_item对象的price和discount属性，包括：
+
+original_price
+original_line_price
+final_price
+final_line_price
+line_level_total_discount
+实现折扣显示​
+因为折扣可以应用于订单项或整个购物车或订单，所以您应该在两个地方显示折扣信息：
+
+单独的商品行
+订单总计部分
+本教程中的例子使用购物车模板。然而，你可以调整这些例子，通过在使用购物车对象的地方使用订单对象，将折扣添加到客户/订单模板中。
+
+你可以直接在 Html 模板中实现这些组件，也可以在 JSON 模板的某个 section 实现。
+
+订单项折扣​
+如果折扣适用于特定订单项，则应与这些项目一起显示。要显示订单项的折扣，您需要在显示中包含以下内容：
+
+订单项价格
+订单项折扣
+订单项价格​
+如果对订单项应用了折扣，那么您应该用删除线显示原始价格，以及新的折扣价。可以使用 Handlebars line_item 对象的以下属性访问其中的每一个：
+
+original_price
+original_line_price
+final_price
+final_line_price
+订单项折扣​
+如果某个订单项已应用折扣，则应显示应用的每个折扣及其关联的折扣金额或总折扣金额。可以通过 Handlebars line_item对象的 line_level_discount_allocations 属性访问特定于订单项的折扣，并且可以通过该 line_level_total_discount 属性访问总订单项折扣。
+
+例子​
+以下是输出价格和折扣显示的示例：
+
+{{#each cart.items as |line_item| }}
+  {{#if line_item.original_price '>' line_item.final_price }}
+    <s>{{ money line_item.original_price }}</s>
+  {{/if}}
+  {{ money line_item.final_price }}
+  {{#if line_item.line_level_discount_allocations.size '>' 0 }}
+    Discounts:
+    <ul>
+      {{#each line_item.line_level_discount_allocations as |discount_allocation| }}
+        <li>
+          {{ discount_allocation.discount_application.title }}-{{ money discount_allocation.amount }}
+        </li>
+      {{/each}}
+    </ul>
+  {{/if}}
+{{/each}}
+
+另外一个显示订单项折扣的例子，可以参考Seed的实现。
+
+购物车折扣（Seed主题未实现购物车级别的折扣，cart.cart_level_discount_applications）​
+小计是应用订单项折扣后的订单项总额，总计是应用购物车折扣后的购物车总额。如果折扣适用于整个购物车，那么它应该显示在小计和总计之间。
+
+购物车级别的折扣可以通过 cart 或者 order 的 cart_level_discount_applications 属性访问
+
+Subtotal: {{ money cart.items_subtotal_price }}
+{{#if cart.cart_level_discount_applications.size '>' 0 }}
+  Discounts:
+  <ul>
+    {{#each in cart.cart_level_discount_applications as |discount_application|}}
+      <li>
+        {{ discount_application.title }}-{{ discount_application.money total_allocated_amount }}
+      </li>
+    {{/each}}
+  </ul>
+{{/if}}
+Total: {{ money cart.total_price }}
+

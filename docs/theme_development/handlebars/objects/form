@@ -1,0 +1,11 @@
+form​
+form helper 创建的表单信息。
+
+Properties​
+
+errors
+form_errors
+
+
+posted_successfully
+boolean

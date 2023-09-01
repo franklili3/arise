@@ -1,0 +1,24 @@
+安装​
+本指南想您展示如何在 Windows、macOS 上安装 Shopline CLI。您可以使用计算机的命令行从受支持的包管理之一安装 Shopline CLI。
+
+要求​
+要安装和运行 Shopline CLI，您需要在计算机上安装以下内容：
+
+Git
+Nodejs
+安装 Shopline CLI​
+首先在您的计算机上安装 Shopline CLI。您可以在 Windows、macOS上安装 Shopline CLI。
+
+npm install --global @shoplinedev/cli
+
+或者
+
+yarn global add @shoplinedev/cli
+
+验证安装​
+你还可以用这个命令来检查其版本是否正确：
+
+shopline --version
+
+该命令返回一个版本号。
+

@@ -1,0 +1,74 @@
+window.Shopline​
+可以通过 JavaScript 在 window.Shopline 中获取店铺数据，含有以下属性：
+
+window.Shopline.currency​
+店铺货币
+
+window.Shopline.designMode​
+是否为编辑器/预览模式，和 request.design_mode 一致
+
+window.Shopline.customer​
+客户对象，仅在客户已登录时定义，同 customer 对象
+
+{
+  id: "xxxxx" // 客户 ID
+}
+
+window.Shopline.handle​
+店铺 handle
+
+window.Shopline.isLogin​
+客户是否已登录
+
+window.Shopline.locale​
+前台当前语种，同 request.locale，优先级如下：
+
+●语言选择器未开启
+使用店铺默认语言
+
+●开启语言选择器
+clientLang query > 语言选择器选择的语言 > 浏览器语言 （须开启首选浏览器语言） > 店铺默认语言
+
+window.Shopline.merchantId​
+商家 ID
+
+window.Shopline.storeId​
+店铺 ID
+
+window.Shopline.theme​
+当前店铺主题模板全局配置，同 config/settings_data.json 中的 current.theme，访问方式：theme.settings.xxx
+
+window.Shopline.themeId​
+店铺当前应用的主题模板 ID
+
+window.Shopline.themeName​
+店铺当前应用的主题模板名称
+
+window.Shopline.themeVersion​
+店铺当前应用的主题模板版本号
+
+window.Shopline.updateMode​
+店铺当前应用的主题模板是否被商家是否代码编辑器改动过
+
+window.Shopline.uri​
+当前客户访问路径信息，同 request.uri
+
+// request url: xxx.com/collections/test-id?page=1
+{
+  alias: "Home", // 页面别名，同 templateAlias
+  params: { // url path 参数
+    uniqueKey: "test-id"
+  },
+  path: "collections/:uniqueKey", // url path 规则
+  query: { // url query 参数
+    page: "1",
+    orderSeq: 'xxxx', // 订单信息
+    keyword: 'xxxx', // 关键字信息
+  },
+  url: "/collections/test-id?page=1" // url
+}
+
+window.Shopline.event​
+主题模板事件的事件总线
+使用详情参考 主题事件
+

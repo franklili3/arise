@@ -1,0 +1,64 @@
+settings_data.json​
+settings_data.json包含的是主题编辑器中所有的配置的值，不仅仅是 settings_schema.json 的。
+
+例如，您可以使用以下主题设置来允许商家为页面背景选择颜色：
+
+// settings_schema.json
+{
+  "name": "Colors",
+  "settings": [
+    {
+      "id": "color_page_background",
+      "type": "color_picker",
+      "label": {
+        "en": "Background",
+        "zh-hans-cn": "背景"
+      },
+      "default": "#FFFFFF"
+    }
+  ]
+}
+
+这时，settings_data.json就多了一个 color_page_background 变量：
+
+// settings_data.json
+...
+"color_page_background": "#FFFFFF"
+...
+
+每当 color_page_background在主题编辑器中的值发生更改时，settings_data.json都会使用新值进行更新。
+
+目录​
+settings_data.json 文件存放在 config 目录下：
+
+├── config
+   ├── settings_schema.json
+   └── settings_data.json
+
+结构​
+settings_data.json 文件有两个父对象：
+
+属性	描述
+current	包含主题编辑器中所有配置的值
+persets	包含每个主题风格的对象，每个对象格式与current类似
+例如：
+
+{
+  "current": {
+    "color_page_bg": "#FFFFFF",
+    ...
+  },
+  "presets": {
+    "preset-name": {
+       "color_page_bg": "#000000",
+       ...
+    }
+  }
+}
+
+用法​
+操作 settings_data.json 文件前，应该先理解主题风格。
+
+主题风格​
+主题可以有很多的风格，每一个风格代表的是presets里的每一个对象，当切换风格是，只需要把其中一个对象覆盖current，就完成了风格切换。
+

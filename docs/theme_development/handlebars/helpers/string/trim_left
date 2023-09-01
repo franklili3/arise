@@ -1,0 +1,18 @@
+trim_left​
+移除字符串左侧的制表符、空格和换行符（所有空白）。
+
+参数​
+str {String} 输入字符串，必需
+return {Array} 返回字符串
+用法​
+{{ trim_left str }}
+
+示例​
+Code
+1
+2
+{{ trim_left " ABC " }}
+
+Output
+1
+

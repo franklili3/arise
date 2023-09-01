@@ -1,0 +1,46 @@
+字体配置​
+您可以通过以下方式向主题添加字体：
+
+在全局配置 setting_schema.json中添加 type 为 font_picker 的配置项，并通过谷歌字体库选择字体。
+使用自定义字体或者其他第三方解决方案。
+由于字体是单独的文件资源，需要在浏览器渲染时由浏览器下载，这会影响商店的整体性能。
+
+将谷歌字体添加到主题​
+1. 添加 font_picker 控件类型的配置，允许商家在主题编辑器中选择字体。此控件返回值是含有字体名字字符串。​
+2. 获取谷歌字体 CSS 样式​
+访问 font_picker 控件的返回值，只是单纯的字体名字的字符串；还需要通过谷歌字体API获取字体资源 CSS 样式。例如：
+
+https://fonts.googleapis.com/css?family=Bodoni%20Moda
+
+会返回如下 CSS 样式：
+
+/* latin-ext */
+@font-face {
+  font-family: 'Bodoni Moda';
+  font-style: normal;
+  font-weight: 400;
+  src: url(https://fonts.gstatic.com/s/bodonimoda/v7/aFT67PxzY382XsXX63LUYL6GYFcan6NJrKp-VPjfJMShrpsGFUt8oU7a8Il4snrJcwDiodAY.woff) format('woff');
+  unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Bodoni Moda';
+  font-style: normal;
+  font-weight: 400;
+  src: url(https://fonts.gstatic.com/s/bodonimoda/v7/aFT67PxzY382XsXX63LUYL6GYFcan6NJrKp-VPjfJMShrpsGFUt8oU7a8Id4snrJcwDioQ.woff) format('woff');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+💡 为了提高字体访问效率，我们对全局配置 setting_schema.json 中使用的 font_picker 类型的配置进行了优化，我们会在 SSR 阶段通过谷歌 API 对这些配置的字体尝试获取 CSS 样式并注入到 head 标签中，如下图所示。以满足主题 CSR 阶段能尽快请求字体资源文件。image.png
+
+3. 引用所选的字体文件​
+引用所选字体以展示任何特定的 CSS 样式，例如 font-family、font-weight 和 font-style
+
+.title1 {
+    font-family: Old Standard TT;
+    font-style: normal;
+    font-weight: 400;
+    letter-spacing: 0em;
+    line-height: 1.4;
+}
+

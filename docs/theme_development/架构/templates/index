@@ -1,0 +1,24 @@
+index​
+index template 商店的主页，位于根 url (/)。主页通常是顾客对商家商店的第一印象，因此 index templet 应包括多功能的选项，以便商家讲述他们的故事。
+
+image.png
+
+位置​
+404模板位于主题的模板目录中：
+
+└── theme
+    ├── layout
+    ├── templates
+    |   ...
+    |   ├── 404.json
+    |   ...
+    ...
+
+使用​
+使用 index 模板时，您应该熟悉 JSON 和 Html index 模板之间的区别。
+
+JSON 与 Html​
+JSON 和 Html 索引模板都允许商家使用主题编辑器添加和删除部分。尽管 Html 索引模板具有此功能，但在大多数情况下，您应该使用 JSON 模板 ( index.json) 作为索引模板。JSON 模板与 Html 模板相比具有以下优势：
+
+JSON 模板为商家添加、删除和重新排序部分（包括应用部分）提供了更大的灵活性。
+JSON模板存储自己的数据，最大限度地减少了settings_data.json 中的数据量，提高了主题编辑器的性能。

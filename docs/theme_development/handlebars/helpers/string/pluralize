@@ -1,0 +1,23 @@
+pluralize​
+根据给定的数字输出字符串的单数或复数形式。
+
+注意
+复数形式helper应用英语的复数规则来确定输出哪个字符串。你不应该在非英语字符串上使用此helper，因为这可能导致复数形式错误。
+
+参数​
+num {数字} 输入一个数字，必需
+singular {字符串} 单数形式，必需
+plural {字符串} 复数形式，必需
+returns {字符串} 返回字符串
+用法​
+{{ pluralize str singular plural }}
+
+例子​
+Code
+1
+2
+{{ pluralize 3 'item' 'items' }}
+
+Output
+1
+items
