@@ -1,0 +1,23 @@
+使用入门​
+1、安装方式​
+输入以下命令下载安装 App Bridge 包。
+
+npm install @shoplinedev/appbridge或者yarn add @shoplinedev/appbridge
+
+2、初始化​
+通过调用以下 API 先初始化客户端
+
+名称	描述	返回值
+createApp	初始化客户端	void
+参数说明
+
+名称	描述	类型
+appKey	应用 appkey	string
+host	shopline amdin host	string
+示例代码
+
+import Client, { shared } from '@shoplinedev/appbridge'
+const app = Client.createApp({
+  appKey,
+  host: shared.getHost()
+})

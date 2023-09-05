@@ -1,0 +1,357 @@
+概述​
+Metafields 是一种将扩展信息添加到 SHOPLINE 资源（例如商品、博客、订单等）上的数据扩展方式。 Metafields可用于为 SHOPLINE 店铺创建并展示额外的变量，以及存储特定的信息（如规格、尺寸表、可下载文档、发布日期、图像或部件号等）实现对店铺功能或样式的定制。 商家和应用开发者可以从 SHOPLINE 商家管理后台或 Metafields OpenAPI，查询和编辑元字段中存储的元数据，另外你还可以使用 HandleBar 访问主题中的元字段。
+
+Metafields 的组成部分​
+资源对象（OwnerResource）：元字段所归属的资源类型，或称为"所有者资源类型"。例如商品（products）、自定义页面（pages）等。
+所有者资源 ID（OwnerId）：元字段所归属的资源对象ID，例如商品A的ID：1605898661
+命名空间（ Namespace）：一组元字段的容器。通过命名空间对元字段进行分组，可防止商家的元字段与具有相同键名的其他元字段发生冲突。
+秘钥（Key）：该元字段的键值。
+数据类型（Type）：元字段存储的数据类型，例如单行文本、URL、整数等。
+值（Value）：要存储在元字段中的数据。无论元字段的数据类型如何，该值始终存储为字符串。
+名称（Name）：元字段的名称。
+描述（Description）：该元字段定义的描述信息。
+Metafield 的资源类型​
+按 Metafields 资源对象类型在店铺中的层级，可以分为店铺级、店铺下第一级、店铺下第二级这三种资源层级，每个层级包含的所有者资源类型分别是：
+
+店铺级
+直接归属店铺（shop）的资源，可以对店铺下直接归属的 metafield 进行分页查询、详情查询、总数查询、新增、更新、删除操作，你不需要显示传入所有者资源类型（OwnerResource）
+
+店铺下第一级
+店铺下级资源，如：orders、products、customers、collections、blogs、articles、customers、pages、locations，可以对这些资源的 Metafields 进行分页查询、详情查询、总数查询、新增、更新、删除操作，你需要显示传入所有者资源类型（OwnerResource）
+
+店铺下第二级
+店铺下级资源的再往下一层级资源，如：variants，可以对这些资源的 Metafields 进行分页查询、详情查询、总数查询、新增、更新、删除操作，你需要显示传入所有者上一级资源类型（p_resource）和当前层级资源类型（resource）
+
+数据类型（Type）​
+常规数据类型​
+每个元字段和元字段定义都有一个类型，它定义了可以存储的数据类型。 目前，SHOPLINE 元字段和元字段定义可以具有下表中包含的数据类型：
+
+类型		类型名称	说明	示例
+文本	单行文本	single_line_text_field	单行文本，目前所有的 value 限制最大500K	添加发货备注、公告或清洗说明
+多行文本	multi_line_text_field	多行文本，目前所有的 value 限制最大500K	添加发货备注、公告或清洗说明
+颜色	颜色	color	string 格式，支持 #RRGGBB格式的 RGB 值。	产品款式颜色，如：#FFF123
+数字	整数	number_integer	仅支持输入整数，支持设置整数值的输入范围，整数值的范围是 -4,611,686,018,427,387,904 到 4,611,686,018,427,387,903。	如：520
+小数	number_decimal	支持输入整数+小数 支持设置小数值的输入范围，小数值的范围是 +/-9999999999999.999999999，小数点前最多包含 13 位数字，之后最多包含 9 位数字	如：1314.520
+URL	URL	url	支持 HTTP、HTTPS 和 URL。创建元字段定义时，可以将 URL 限制为特定域名。 值列表中可使用 URL 字段。	如：https://www.shopline.com
+日期和时间	日期	date	支持采用 ISO 8601 格式且不包含时区的日期值。	添加产品到期日期、订单配送日期或客户出生日期，如：2022-05-28
+日期和时间	date_time	支持采用 ISO 8601 格式的日期值和采用 UTC 时间的时间值。	如：2022-01-01T12:30:00
+true 或 false	true 或 false	boolean	布尔类型 ，创建一个复选框，用于选择条件是 true 还是 false。	添加是否提供某个选项，例如产品是否可以雕刻 ，如： true
+度量	重量	weight	支持整数和小数值。重量使用公制或英制度量单位，kg, g, lb,oz	添加产品或配料的重量，例如糖的克数，如： { "value": 2.5, "unit": "kg" }
+尺寸	dimension	支持整数和小数值。尺寸使用 公制或英制度量单位。mm,cm,m,inch,foot,code	添加包装箱高度或产品长度，如围巾的长度： { "value": 25.0, "unit": "cm" }
+体积	volume	支持整数和小数值。体积使用公制或英制度量单位 一个值和一个体积单位。有效单位值：ml, cl, l, m3(立方米), us_fl_oz, us_pt, us_qt, us_gal, imp_fl_oz, imp_pt, imp_qt, imp_gal	添加水杯的体积容量，如： { "value": 20.0, "unit": "ml" }
+评分	评分	rating	支持小数值，暂时不支持配置评分范围	为产品添加用户评分，示例：5
+资金	资金	money	一个数字金额，具有与商店货币相匹配的货币代码。	如：{\"amount\":\"10\",\"currency_code\":\"USD\"}
+JSON	JSON	json	JSON 可序列化的值。这可以是对象、数组、字符串、数字、布尔值或空值。	{ "ingredient": "flour", "amount": 0.3}
+参考（引用）数据类型​
+引用元字段使你能够存储对 SHOPLINE 资源的引用。
+
+类型	类型名称	说明	示例
+参考：自定义页面	page_reference	对在线商店自定义页面的引用。	gid://shopline/Page/123
+参考：商品	product_reference	对在线商店中商品的引用。	gid://shopline/Product/123
+参考：商品款式	variant_reference	对在线商店中商品款式的引用。	gid://shopline/ProductVariant/123
+参考：文件	file_reference	对在线商店中文件的引用。	gid://shopline/File/123
+参考：商品分类	collection_reference	对在线商店中商品分类的引用。	gid://shopline/Collection/123
+列表数据类型​
+列表元字段使你能够在单个元字段中存储多个值。可以存储在元字段列表中的最大值数为 128。该值必须作为 JSON 数组提供。 /备注：目前编辑器及Handbar中还不支持使用列表数据类型。 B端支持以下列表类型：
+
+类型	类型名称	说明	示例
+单行文本（列表）	list.single_line_text_field	单行文本列表。	[\"示例文本\",\"示例文本2\"]
+颜色（列表）	list.color	十六进制颜色代码列表。	["#FFF123","#E6E6FA","#00FF00" ]
+整数（列表）	list.number_integer	整数列表。	[ "2","3"]
+小数（列表）	list.number_decimal	数字列表。	[ "10.4","20.5","30.6"]
+日期（列表）	list.date	日期列表。	[ "2022-01-01", "2022-05-05"]
+日期和时间（列表）	list.date_time	日期和时间列表。	[ "2022-01-01T12:30:00","2022-05-01T12:30:00" ]
+重量（列表）	list.weight	重量单位值列表。	[{\"unit\":\"kg\",\"value\":\"10\"},{\"unit\":\"g\",\"value\":\"12\"}]
+尺寸（列表）	list.dimension	尺寸单位值列表。	[{\"unit\":\"mm\",\"value\":\"5\"},{\"unit\":\"m\",\"value\":\"10.1\"}]
+体积（列表）	list.volume	重量单位值列表。	[{\"unit\":\"ml\",\"value\":\"10.2\"},{\"unit\":\"cl\",\"value\":\"15.9\"}]
+评分（列表）	list.rating	评分列表。	[{\"value\":\"1\"},{\"value\":\"3\"},{\"value\":\"5\"}]
+URL（列表）	list.url	URL列表。	[\"https://www.shopline.com/\",\"https://www.shopline.com/\",\"https://www.shopline.com/\"]"
+参考自定义页面（列表）	list.page_reference	对在线商店自定义页面的引用。	["gid://shopline/Page/123","gid://shopline/Page/1234"]
+参考商品（列表）	list.product_reference	对在线商店中商品的引用。	["gid://shopline/Product/123","gid://shopline/Product/1234"]
+参考商品款式（列表）	list.variant_reference	对在线商店中商品款式的引用。	["gid://shopline/Variant/123","gid://shopline/Variant/1234"]
+参考文件（列表）	list.file_reference	对在线商店中文件的引用。	["gid://shopline/File/123","gid://shopline/File/1234"]
+参考商品分类（列表）	list.collection_reference	对在线商店中商品分类的引用。	["gid://shopline/Collection/123","gid://shopline/Collection/1234"]
+管理元字段定义​
+已定义元字段​
+如果需要将相同：所有者资源类型（OwnerResource）、命名空间（ Namespace）、键标识（Key）、数据类型（Type）的 Metafields 进行统一分类管理，你可以使用定义 Metafields 相关接口来进行操作：
+
+新增 metafield 定义
+更新 metafield 定义
+删除 metafield 定义
+查询metafield 定义
+当然，你还可以在商家管理后台进行操作：【设置】->【元字段】-> 选择所有者资源类型（OwnerResource）image.png
+
+image.png
+
+Metafield 定义为了对商家管理后台 Admin 的操作、和应用APP操作进行区别，提供操作权限隔离级别。
+
+Access权限值设置为空​
+当用户在商家管理后台创建，或者通过OpenAPI创建元字段定义时，access字段为空，且 Namespace无需APP标识，此场景下创建的元字段定义，商家可进行操作（如更新、删除、查询metafields定义）、所有应用APP也可以操作该元字段定义（如更新、删除、查询metafields定义）；
+
+Access权限传入权限值​
+定义在接口的 access 下的 admin 字段中，传入权限值，如MERCHANT_READ_WRITE、MERCHANT_READ、PRIVATE。
+
+MERCHANT_READ_WRITE 店铺可写，即当你通过OpenAPI创建后元字段定义传入
+后续被该应用可通过更新 metafield 定义、删除 metafield 定义、查询metafield 定义 接口操作该metafields定义
+商家也可以在管理后台操作该元字段定义（如更新、删除、查询metafields定义）
+其他应用不可以操作该元字段定义（如更新、删除、查询metafields定义）
+MERCHANT_READ 店铺可读，即当你通过OpenAPI创建后
+后续被该应用可通过更新 metafield 定义、删除 metafield 定义、查询metafield 定义 接口操作该metafields定义
+商家只能对该元字段定义可读（查询操作），不能进行删除定义和Metafields赋值
+其他应用不可以操作该元字段定义（如更新、删除、查询metafields定义）
+PRIVATE 应用私有，只能通过OpenAPI创建，当你的应用调用新增 metafield 定义创建 metafield 定义后
+后续该 metafield 定义只能被该应用通过更新 metafield 定义、删除 metafield 定义、查询metafield 定义 接口进行操作。
+其他说明：
+
+新增 metafield 定义和更新 metafield 定义接口，请求payload中的 Namespace字段必须为：$app:{ Namespace} 格式。 其中 $app 为固定字符，表示由应用创建，{Namespace}为占位符，你需要将其替换为你实际的 Namespace，例如你的 Namespace为：helloworld，此时你需要传入：$app
+。 Response 中的 Namespace 格式为：app--$appid--$namespace，其中 $appid 和 $namespace 为占位符，例如 appId 为：123时，此时 Namespace 的值为：app--123--helloworld。
+创建具有Access权限元字段后，该应用在使用更新 metafield 定义OpenAPI时，可将操作变更该元字段定义的access权限值 ，如将access 变更为MERCHANT_READ_WRITE、或MERCHANT_READ
+后续 SHOPLINE 会考虑在 Access 权限枚举值中，新增 PUBLIC_READ ，商家和其他应用程序均可读取这些Metafields定义和值。
+未定义元字段​
+不具有定义的元字段在 SHOPLINE 中通常是由APP开发者通过MetafieldsSet OpenAPI创建的。 商家可能希望存储与其产品、订单或客户相关的特定信息，而这些信息在 SHOPLINE 的默认数据模型中没有相应的字段。为了满足这些特定需求，商家可以创建未定义的元字段来存储自定义数据。 当使用MetafieldsSet OpenAPI 批量写入元字段时，如果通过资源对象（OwnerResource）、命名空间（ Namespace）、秘钥（Key）字段，没有找到对应的已定义的元字段，那么将会写入未定义的元字段。 需要注意的是，未定义的元字段目前只能通过MetafieldsSet OpenAPI处理数据，因为 SHOPLINE 平台在管理后台暂时不提供界面或功能来操作这些未定义元字段。商家可以依靠开发者的帮助来实现所需的自定义功能，并确保正确地管理和使用这些未定义的元字段。
+
+Metafield 批量操作​
+当很多Metafields数据量写入的场景时，你可以使用 MetafieldsSet OpenAPI 接口。该接口支持传入 Metafields 数组，一次性支持最多25个元字段。当数组中的 Metafield 还不存在时，会执行 insert 操作，当数组中 metafield 已经存在时，会执行 update 操作。 SHOPLINE 不保证对传入的 metafields 数组的 insert 和 update 操作都能成功，因此在响应中使用 Metafields 和 fail_metafields 字段分别表示操作成功和操作失败的数据，在操作失败的 fail_metafields 中包含了 errors 字段，用来描述错误原因。
+
+OpenAPI使用示例​
+管理元字段定义​
+创建元字段定义​
+OpenAPI地址：https://developer.myshopline.com/docsv2/ec20/cdb180dc069f7d8d6877c0cdffe96f73/zNazo7Sh
+
+curl --location 'https://meiguobingfeng.myshopline.com/admin/openapi/v20230901/metafield_definition.json' \
+--header 'Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJhcHBLZXkiOiI0ODAyOTNjNWUwZjQ3MmFkNDE0Zjk4MzYyNWUzYzIyY2ViZTZmZTY0Iiwic2VsbGVySWQiOiIyMDAwMjY1MTg3Iiwic3RvcmVJZCI6IjE2NzgxODE0OTU2OTMiLCJ2ZXJzaW9uIjoiVjIiLCJkb21haW4iOiJodHRwczovL3NsLW9wZW4tdXMtcHJlLm15c2hvcGxpbmUuY29tIiwidGltZXN0YW1wIjoxNjg0ODE4NDA3NjA2LCJpc3MiOiJ5c291bCIsImV4cCI6MTc3OTQyNjQwN30.QNX58U0jI7Xx0vamCkAj0oWkH2XwXSBC_hDCXg6ugRzrE9C7tojVnX1qaWxRlIhFGcempdv2WorMfhVBjP-TAw' \
+--header 'Content-Type: application/json' \
+--data '{
+    "definition":{
+        "access":{
+            "admin":"MERCHANT_READ"
+        },
+        "name":"Product",
+        "namespace":"$app:cl_nor",
+        "key":"cst4",
+        "description":"A list of ingredients used to make the product.",
+        "type":"color",
+        "owner_resource":"customers"
+    }
+}'
+
+查询元字段定义​
+OpenAPI地址：https://developer.myshopline.com/docsv2/ec20/cdb180dc069f7d8d6877c0cdffe96f73/BCb1Gayh
+
+curl --location 'https://goodgoods.myshopline.com/admin/openapi/v20230901/metafield_definition.json?id=24458654651' \
+--header 'Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJhcHBLZXkiOiJmMjdkNjk4NGM3NTY3ODBiYzBlNDI3MGEwNmM2MGM0ZTY0MDUzZmMyIiwic2VsbGVySWQiOiI0MjAwMTA0MzMzIiwic3RvcmVJZCI6IjE2Nzg4NTA5NzQ2NTEiLCJ2ZXJzaW9uIjoiVjIiLCJkb21haW4iOiJodHRwOi8vb3AtZGV2LmR1b3dhbi5jb20iLCJ0aW1lc3RhbXAiOjE2ODQ2NjA1NzM0MjEsImlzcyI6Inlzb3VsIiwiZXhwIjoxNzc5MjY4NTczfQ.eMQZUcftMSlLOerkQKVywhviZCEH1_vGqWjoynGb56-qaoKqifd7VndZX3MRJbUpi7yNERGX77IpD-ud3kO9Xg' \
+--header 'Cookie: n_u=cb535e0b966f6a7bdeedb19af7970d69'
+
+更新元字段定义​
+OpenAPI地址：https://developer.myshopline.com/docsv2/ec20/cdb180dc069f7d8d6877c0cdffe96f73/77IgysqE
+
+curl --location 'https://meiguobingfeng.myshopline.com/admin/openapi/v20230901/metafield_definition.json?id=72007665693' \
+--header 'Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJhcHBLZXkiOiI0ODAyOTNjNWUwZjQ3MmFkNDE0Zjk4MzYyNWUzYzIyY2ViZTZmZTY0Iiwic2VsbGVySWQiOiIyMDAwMjY1MTg3Iiwic3RvcmVJZCI6IjE2NzgxODE0OTU2OTMiLCJ2ZXJzaW9uIjoiVjIiLCJkb21haW4iOiJodHRwczovL3NsLW9wZW4tdXMtcHJlLm15c2hvcGxpbmUuY29tIiwidGltZXN0YW1wIjoxNjg0ODE4NDA3NjA2LCJpc3MiOiJ5c291bCIsImV4cCI6MTc3OTQyNjQwN30.QNX58U0jI7Xx0vamCkAj0oWkH2XwXSBC_hDCXg6ugRzrE9C7tojVnX1qaWxRlIhFGcempdv2WorMfhVBjP-TAw'
+
+删除元字段定义​
+OpenAPI地址：https://developer.myshopline.com/docsv2/ec20/cdb180dc069f7d8d6877c0cdffe96f73/ykEm6cF3
+
+curl --location --request DELETE 'https://meiguobingfeng.myshopline.com/admin/openapi/v20230901/metafield_definition.json?id=72007665693' \
+--header 'Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJhcHBLZXkiOiI0ODAyOTNjNWUwZjQ3MmFkNDE0Zjk4MzYyNWUzYzIyY2ViZTZmZTY0Iiwic2VsbGVySWQiOiIyMDAwMjY1MTg3Iiwic3RvcmVJZCI6IjE2NzgxODE0OTU2OTMiLCJ2ZXJzaW9uIjoiVjIiLCJkb21haW4iOiJodHRwczovL3NsLW9wZW4tdXMtcHJlLm15c2hvcGxpbmUuY29tIiwidGltZXN0YW1wIjoxNjg0ODE4NDA3NjA2LCJpc3MiOiJ5c291bCIsImV4cCI6MTc3OTQyNjQwN30.QNX58U0jI7Xx0vamCkAj0oWkH2XwXSBC_hDCXg6ugRzrE9C7tojVnX1qaWxRlIhFGcempdv2WorMfhVBjP-TAw' \
+--header 'Content-Type: application/json' \
+--data '{
+    "delete_all_associated_metafields":true
+}'
+
+管理元字段​
+创建元字段​
+OpenAPI地址：https://developer.myshopline.com/docsv2/ec20/cdb180dc069f7d8d6877c0cdffe96f73/YEIsskS4
+
+在店铺级新增数组类型 Metafield
+curl --location --request POST 'https://meiguobingfeng.myshopline.com/admin/openapi/v20220901/metafields.json' \
+--header 'Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJhcHBLZXkiOiI0ODAyOTNjNWUwZjQ3MmFkNDE0Zjk4MzYyNWUzYzIyY2ViZTZmZTY0Iiwic2VsbGVySWQiOiIyMDAwMjY1MTg3Iiwic3RvcmVJZCI6IjE2NzgxODE0OTU2OTMiLCJ2ZXJzaW9uIjoiVjIiLCJkb21haW4iOiJodHRwczovL3NsLW9wZW4tdXMtcHJlLm15c2hvcGxpbmUuY29tIiwidGltZXN0YW1wIjoxNjg0ODE4NDA3NjA2LCJpc3MiOiJ5c291bCIsImV4cCI6MTc3OTQyNjQwN30.QNX58U0jI7Xx0vamCkAj0oWkH2XwXSBC_hDCXg6ugRzrE9C7tojVnX1qaWxRlIhFGcempdv2WorMfhVBjP-TAw' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "metafield":{
+        "type":"list.single_line_text_field",
+        "namespace":"type=crence",
+        "key":"cktest4",
+        "value":"[\"gid://shopline/Collection/269770817636\"]",
+        "description":"chwedohfdwefewfwe",
+        "createBy":"chenlin"
+    }
+}'
+
+{
+    "metafield": {
+        "updated_at": "2023-05-25T18:16:45+08:00",
+        "owner_id": "1678181495693",
+        "namespace": "type=crence",
+        "created_at": "2023-05-25T18:16:45+08:00",
+        "description": "chwedohfdwefewfwe",
+        "id": 3074571565693,
+        "type": "list.single_line_text_field",
+        "owner_resource": "shop",
+        "value": "[\"gid://shopline/Collection/269770817636\"]",
+        "key": "cktest4"
+    }
+}
+
+查询元字段​
+OpenAPI地址：https://developer.myshopline.com/docsv2/ec20/cdb180dc069f7d8d6877c0cdffe96f73/TiEsxyYK 查询资源时，可以检索该资源id下的元字段信息。 以下示例查询某商品下关联元字段的值。
+
+curl --location --request GET 'https://meiguobingfeng.myshopline.com/admin/openapi/v20220901/metafields/3074571565693.json' \
+--header 'Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJhcHBLZXkiOiI0ODAyOTNjNWUwZjQ3MmFkNDE0Zjk4MzYyNWUzYzIyY2ViZTZmZTY0Iiwic2VsbGVySWQiOiIyMDAwMjY1MTg3Iiwic3RvcmVJZCI6IjE2NzgxODE0OTU2OTMiLCJ2ZXJzaW9uIjoiVjIiLCJkb21haW4iOiJodHRwczovL3NsLW9wZW4tdXMtcHJlLm15c2hvcGxpbmUuY29tIiwidGltZXN0YW1wIjoxNjg0ODE4NDA3NjA2LCJpc3MiOiJ5c291bCIsImV4cCI6MTc3OTQyNjQwN30.QNX58U0jI7Xx0vamCkAj0oWkH2XwXSBC_hDCXg6ugRzrE9C7tojVnX1qaWxRlIhFGcempdv2WorMfhVBjP-TAw'
+
+{
+  "body": {
+    "metafield": {
+      "created_at": "2022-12-28T09:39:35+00:00",
+      "description": "Customized Description",
+      "id": 397923258691,
+      "key": "key_123",
+      "namespace": "namespace_123",
+      "owner_id": "16015223514512351235",
+      "owner_resource": "products",
+      "type": "single_line_text_field",
+      "updated_at": "2022-12-28T09:39:36+00:00",
+      "value": "\"gid://shopline/Collection/269770817636\"
+    }
+  }
+}
+
+更新元字段​
+OpenAPI地址：https://developer.myshopline.com/docsv2/ec20/cdb180dc069f7d8d6877c0cdffe96f73/nWhOmpKg
+
+curl --location --request PUT 'https://meiguobingfeng.myshopline.com/admin/openapi/v20220901/metafields/3074571565693.json' \
+--header 'Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJhcHBLZXkiOiI0ODAyOTNjNWUwZjQ3MmFkNDE0Zjk4MzYyNWUzYzIyY2ViZTZmZTY0Iiwic2VsbGVySWQiOiIyMDAwMjY1MTg3Iiwic3RvcmVJZCI6IjE2NzgxODE0OTU2OTMiLCJ2ZXJzaW9uIjoiVjIiLCJkb21haW4iOiJodHRwczovL3NsLW9wZW4tdXMtcHJlLm15c2hvcGxpbmUuY29tIiwidGltZXN0YW1wIjoxNjg0ODE4NDA3NjA2LCJpc3MiOiJ5c291bCIsImV4cCI6MTc3OTQyNjQwN30.QNX58U0jI7Xx0vamCkAj0oWkH2XwXSBC_hDCXg6ugRzrE9C7tojVnX1qaWxRlIhFGcempdv2WorMfhVBjP-TAw' \
+--header 'Content-Type: application/json' \
+--data '{
+    "metafield":{
+        "id":3074571565693,
+        "value":{
+            "amount": "222",
+            "currency_code": "EUR"},
+        "type":"money",
+        "description":"ryueyre"
+    }
+}'
+
+删除元字段​
+OpenAPI地址：https://developer.myshopline.com/docsv2/ec20/cdb180dc069f7d8d6877c0cdffe96f73/UCbP2ZTD
+
+curl --location --request DELETE 'https://meiguobingfeng.myshopline.com/admin/openapi/v20220901/metafields/3074571565693.json' \
+--header 'Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJhcHBLZXkiOiI0ODAyOTNjNWUwZjQ3MmFkNDE0Zjk4MzYyNWUzYzIyY2ViZTZmZTY0Iiwic2VsbGVySWQiOiIyMDAwMjY1MTg3Iiwic3RvcmVJZCI6IjE2NzgxODE0OTU2OTMiLCJ2ZXJzaW9uIjoiVjIiLCJkb21haW4iOiJodHRwczovL3NsLW9wZW4tdXMtcHJlLm15c2hvcGxpbmUuY29tIiwidGltZXN0YW1wIjoxNjg0ODE4NDA3NjA2LCJpc3MiOiJ5c291bCIsImV4cCI6MTc3OTQyNjQwN30.QNX58U0jI7Xx0vamCkAj0oWkH2XwXSBC_hDCXg6ugRzrE9C7tojVnX1qaWxRlIhFGcempdv2WorMfhVBjP-TAw' \
+--header 'Content-Type: application/json'
+
+批量写入元字段​
+OpenAPI地址：https://developer.myshopline.com/docsv2/ec20/cdb180dc069f7d8d6877c0cdffe96f73/zHCaVw80
+
+批量写入 Metafield
+curl -L -X POST 'https://openapiceshidianpu.myshopline.com/admin/openapi/v20230901/metafields_set.json' \
+-H 'Content-Type: application/json' \
+-H 'Accept: application/json' \
+--data-raw '{
+  "metafields": [
+    {
+      "description": "Customized Description",
+      "key": "mfkey-1",
+      "namespace": "mftest",
+      "owner_id": "16058986610866520712462605",
+      "owner_resource": "products",
+      "type": "list.number_decimal",
+      "value": "[\"0.123\",\"22.33\"]"
+    },
+    {
+      "description": "Customized Description",
+      "key": "mfkey-2",
+      "namespace": "mftest",
+      "owner_id": "2241475414",
+      "owner_resource": "customers",
+      "type": "multi_line_text_field",
+      "value": "\"gid://shopline/Collection/269770817636\"
+    }
+  ]
+}'
+
+{
+  "body": {
+    "fail_metafields": [],
+    "metafields": [
+      {
+        "created_at": "2023-05-31T17:03:43+08:00",
+        "description": "元字段定义的描述2.",
+        "id": 3152668027083,
+        "key": "mfkey-2",
+        "namespace": "mftest",
+        "owner_id": "2241475414",
+        "owner_resource": "customers",
+        "type": "multi_line_text_field",
+        "updated_at": "2023-05-31T17:03:43+08:00",
+        "value": "这是metafields赋值内容"
+      },
+      {
+        "created_at": "2023-05-31T17:03:43+08:00",
+        "description": "元字段定义的描述1。",
+        "id": 3152668017083,
+        "key": "mfkey-1",
+        "namespace": "mftest",
+        "owner_id": "16058986610866520712462605",
+        "owner_resource": "products",
+        "type": "list.number_decimal",
+        "updated_at": "2023-05-31T17:03:43+08:00",
+        "value": "[\"0.123\",\"22.33\"]"
+      }
+    ]
+  }
+}
+
+常见使用问题​
+商品Excel手动导入GMC字段​
+本地商品表格导出
+
+商品表格导出已增加下列GMC字段列，商品维度，多款式时写在商品的第一行
+image.png
+
+GMC字段导出的数据内容从Metafields中获取，这些字段是固定的
+列	MF命名空间	MF密钥
+Google Shopping / Google Product Category	google	google_product_type
+Google Shopping / Gender	google	gender
+Google Shopping / Age Group	google	age_group
+Google Shopping / MPN	global	MPN
+Google Shopping / AdWords Grouping	google	adwords_grouping
+Google Shopping / AdWords Labels	google	adwords_labels
+Google Shopping / Condition	google	condition
+Google Shopping / Custom Product	google	custom_product
+Google Shopping / Custom Label 0	google	custom_label_0
+Google Shopping / Custom Label 1	google	custom_label_1
+Google Shopping / Custom Label 2	google	custom_label_2
+Google Shopping / Custom Label 3	google	custom_label_3
+Google Shopping / Custom Label 4	google	custom_label_4
+商品表格导入上述GMC字段时，
+不针对表格的数据做格式校验，表格内是什么值，就写入到对应的MF字段中去
+当GMC字段的列为空时，不做清空处理，不管有没有勾覆盖，空的情况都不处理，有值的时候才更新
+Metafields SEO数据优化​
+Meta Tag（TDK）价值​
+Meta Tag是描述页面内容的文本片段；Meta Tag一般包含MetaTitle、Meta Description、Meta Keywords，通常简称为"TDK"。Meta Tag不会出现在页面本身上，而只会出现在页面的源代码中。Meta Ta本质上是内容描述符，有助于告诉Google等搜索引擎网页是关于什么内容的。 商家对站内URL的Meta Tag（TDK）进行优化，有利于Google蜘蛛抓取、分析和收录、SERP自然排名等。 您可以通过OpenAPI来新增/修改/查询/删除拥有SEO信息的所有资源的SEO TDK数据。
+
+前置条件​
+熟悉Metafield，了解Metafield是如何工作的
+了解Metafield的OpenAPI
+管理SEO信息​
+您可以在商家后台管理资源的SEO信息。 例如，在商家后台创建商品后，商品详情页面的meta_title和meta_description将默认取商品的标题和描述，您有以下两个方法商品详情页面的页面标题、描述和搜索引擎关键词：
+
+通过商家后台，在资源的编辑页面编辑资源对应页面的SEO信息；
+通过Metafield的OpenAPI编辑资源对应页面的SEO信息；
+页面的meta_title和meta_description、meta_keyword存储在Metafield中“seo”的namespace，且类型为“single_line_text_field”。
+
+通过Metafield的OpenAPI编辑资源对应页面的SEO信息​
+第一步，通过Metafield的分页查询一级资源 OpenAPI，查询SEO元字段的metafieldDefinitionId；
+
+第二步，通过Metafield的编辑一级资源 OpenAPI，编辑的SEO信息，参考以下资源SEO的存储方式；
+
+namespace：seo
+key：seoTitle、seoDescription、seoKeyword
+resource：
+首页：shop（首页SEO资源使用店铺资源的Metafield查询/编辑接口）
+商品：products
+商品分类：collections
+博客集：blogs
+博客：articles
+自定义页面：pages
+类型：single_line_text_field

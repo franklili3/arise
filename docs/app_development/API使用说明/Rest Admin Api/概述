@@ -1,0 +1,122 @@
+概述​
+REST Admin API 用于提供给应用访问商店数据，因此你的应用在访问 REST Admin API 前必须先获取 店铺授权，然后再通过授权获得的 accessToken 访问指定权限范围的 REST Admin API。
+
+店铺授权​
+店铺授权分为私有应用授权、自定义应用授权、公有应用授权，其中自定义应用授权、公有应用授权采用OAUTH2 授权，当授权成功后，你可以获得包含指定 authorized scopes 的 accessToken
+
+自定义应用和公有应用
+自定义应用和公有应用的 accessToken 可以通过 OAUTH2 授权获取，过期时间是10小时，你需要检测accessToken 是否即将过期，在即将过期前你需要调用 Refresh Token 接口刷新 accessToken，accessToken 被刷新后，原 accessToken 不会立即失效，5分钟后原 accessToken 才会永久失效。 当你的应用想解除店铺授权关系时，你需要调用 Cancel Authorization 接口取消授权，取消被授权后原 accessToken会立即失效
+
+私有应用
+私有应用的 accessToken 需要在店铺 Admin 获取
+
+image.png
+
+过期时间是3年，在即将过期前你店铺的邮箱会收到来自 accessToken 即将过期提醒邮件，你需要去店铺 Admin 重新刷新 accessToken，accessToken 被刷新后，原 accessToken 不会立即失效，30分钟后原 accessToken 才会永久失效 当你的应用想解除店铺授权关系时，您需要去店铺 Admin 删除应用后原accessToken才会失效
+
+版本选择​
+ADMIN REST API 会按时间窗口滑动维持8个版本，你可以参考版本说明，在页面右上角切换合适的版本进行调用，不同版本的 ADMIN REST API 请求地址中会带有版本号，例如：调用 v20230901 版本的批量查询商品的请求地址为：https://goodgoods.myshopline.com/admin/openapi/v20230901/products/products.json，其中v20230901为版本号。
+
+接口调用​
+当你授权成功获得 accessToken，并且选定好接口版本后，你可以在你的程序中调用 ADMIN REST API， 例如：调用20230901版本的批量查询商品
+
+Request​
+curl --location --request GET 'https://goodgoods.myshopline.com/admin/openapi/v20230901/products/products.json' \
+--header 'Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJhcHBLZXkiOiI2MWUxYWQ2YWJkYmFhYmYzZTdkODRmZjcxYzQzODQwMWY3NjA4MzhjIiwic2VsbGVySWQiOiIyMDAwMjA4MDAwIiwic3RvcmVJZCI6IjE2Mjg1MDQwODE0MDEiLCJ2ZXJzaW9uIjoiVjIiLCJkb21haW4iOiJodHRwczovL3NsLW9wZW4tc2cubXlzaG9wbGluZS5jb20iLCJ0aW1lc3RhbXAiOjE2ODQyMjM3OTExNzMsImlzcyI6Inlzb3VsIiwiZXhwIjoxNzc4ODMxNzkxfQ.XDxdUIWu8yrNtAhINW9GAYEneJSOdwUqyFgNel0Q-'
+
+其中 accessToken 为：eyJhbGciOiJIUzUxMiJ9.eyJhcHBLZXkiOiI2MWUxYWQ2YWJkYmFhYmYzZTdkODRmZjcxYzQzODQwMWY3NjA4MzhjIiwic2VsbGVySWQiOiIyMDAwMjA4MDAwIiwic3RvcmVJZCI6IjE2Mjg1MDQwODE0MDEiLCJ2ZXJzaW9uIjoiVjIiLCJkb21haW4iOiJodHRwczovL3NsLW9wZW4tc2cubXlzaG9wbGluZS5jb20iLCJ0aW1lc3RhbXAiOjE2ODQyMjM3OTExNzMsImlzcyI6Inlzb3VsIiwiZXhwIjoxNzc4ODMxNzkxfQ.XDxdUIWu8yrNtAhINW9GAYEneJSOdwUqyFgNel0Q-
+
+Response(成功)​
+{
+  "products": [
+    {
+      "image": {
+        "src": "https://d2n979dmt31clo.cloudfront.net/image/store/3300003249/1609823068438/9d058cfacb8e42299460086d9",
+        "alt": "alt",
+        "id": "5785060242207917075"
+      },
+      "body_html": "product description",
+      "images": [
+        {
+          "src": "https://d2n979dmt31clo.cloudfront.net/image/store/3300003249/1609823068438/9d058cfacb8e42299460086d9",
+          "alt": "alt",
+          "id": "5785060242207917075"
+        }
+      ],
+      "created_at": "",
+      "template_path": "templates/products/detail.json",
+      "handle": "product-handle",
+      "variants": [
+        {
+          "inventory_quantity": "99",
+          "image": {
+            "src": "https://d2n979dmt31clo.cloudfront.net/image/store/3300003249/1609823068438/9d058cfacb8e42299460086d9",
+            "alt": "alt",
+            "id": "5785060242207917075"
+          },
+          "required_shipping": true,
+          "compare_at_price": "99",
+          "taxable": true,
+          "option5": "",
+          "weight": "0.2",
+          "title": "Red/L",
+          "inventory_policy": "deny",
+          "weight_unit": "kg",
+          "inventory_item_id": "5785060242375689228",
+          "price": "90",
+          "product_id": "16057850264845250791280282",
+          "option3": "",
+          "option4": "",
+          "inventory_tracker": true,
+          "option1": "Red",
+          "id": "18057850264851626133510282",
+          "option2": "",
+          "position": "1",
+          "sku": "S000000001",
+          "barcode": "T0000001"
+        }
+      ],
+      "title": "product title",
+      "tags": "IPHONE, APPLE",
+      "published_scope": "web",
+      "product_type": "NORMAL",
+      "updated_at": "",
+      "vendor": "Apple",
+      "subtitle": "Subtitle",
+      "options": [
+        {
+          "product_id": "16057850264845250791280282",
+          "values": [
+            null
+          ],
+          "values_images": "{ \"Red\" : \"https://img-va.myshopline.com/image/store/2000986376/1663054163488/Hbe20374eba504af8b3\" }",
+          "name": "Color",
+          "id": "16158068291703878544960282"
+        }
+      ],
+      "id": "16057850264845250791280282",
+      "published_at": "",
+      "product_behavior": "RISK,HIDDEN",
+      "product_category": "Electronic products",
+      "status": "active"
+    }
+  ]
+}
+
+Response(失败)​
+HTTP/1.1 401 Unauthorized
+{
+  "errors": "ACCESS_TOKEN is expired!"
+}
+
+当 Response 失败时，错误代码会通过 Http Status 返回，可以参考：Http Status Code，你需要根据不同的Http Status Code 决定是否需要重试请求。
+
+注：
+
+当你请求的接口是需要分页查询时，可以参考：分页机制
+Request 和 Response 中的时间类型字段都是按 ISO-8601 标准，在 Response 中您需要根据您的业务转换成对应的时区，你也可以根据店铺信息查询接口返回的 iana_timezone(店铺所在时区) 字段进行转换。
+调用限制​
+当出现以下场景时，我们会限制你的请求：
+
+店铺冻结、店铺打烊、店铺套餐过期
+你的请求频率超过了我们的流控控制

@@ -1,0 +1,13 @@
+概述​
+1. App Bridge 简介​
+App Bridge 提供了 UI 组件库以及通信能力，应用程序通过调用 App Bridge 能够在 SHOPLINE 后台的内部和上方呈现统一的官方组件，并与 SHOPLINE 后台的其余部分进行通信。
+例如，App Bridge 使 SHOPLINE 后台能够代表应用执行以下操作：
+
+打开 SHOPLINE 后台的某个菜单和页面。
+重定向到应用的授权页面。
+打开显示消息的 toast 提示。
+image.png
+
+2. 集成价值​
+你的应用程序应该集成 App Bridge，因为它定义了 SHOPLINE 后台统一的官方标准组件，在应用界面内，我们鼓励你使用 App Bridge 来为商家打造熟悉且一致的用户体验，这将有利于商家对你应用的综合评价。
+使用注意：应用必须为 SHOPLINE 内嵌应用，才能使用 App Bridge。

@@ -1,0 +1,138 @@
+Webhook 是一种用于应用与 SHOPLINE 店铺保持数据同步或店铺特定事件发生执行后的消息推送机制。Webhook 是持续轮询店铺数据更改的高性能方法。 当店铺特定事件发生变动，例如店铺商品更新后，SHOPLINE 会立即以 HTTP 请求的方式通知你的应用服务器，你的服务收到请求后能够及时更新，以达到数据和 SHOPLINE 一致。
+
+你需要准备：​
+你的应用服务能收到某个 Webhook 的前提是：
+
+店铺安装了你的应用
+你的应用订阅了某个 Version 的 Event
+应用订阅Event​
+在开发者中心完成开发者账号申请。
+创建一个应用。
+配置需要订阅的 Event。
+image.png
+
+Webhook推送请求格式​
+当 SHOPLINE 店铺订单、商品等实体发生变更时，SHOPLINE 会主动以 HTTP POST 的方式将消息发送到你配置的 Event 地址上。
+
+请求header​
+参数	类型	必填	描述
+X-Shopline-Topic	String	Y	事件标识，如：orders/update
+X-Shopline-Hmac-Sha256	String	Y	推送报文（body）的签名，见文档底部的签名算法
+X-Shopline-Shop-Domain	String	Y	店铺域名
+X-Shopline-Shop-Id	String	Y	店铺id
+X-Shopline-Merchant-Id	String	Y	商户id
+X-Shopline-API-Version	String	Y	事件的版本，如：v20230901
+X-Shopline-Webhook-Id	String	Y	推送报文消息唯一id，消息重新推送时保持不变
+{
+  "X-Shopline-Topic":"*****/****",//事件操作标识
+  "X-Shopline-Hmac-Sha256":"例如：XWmrwMey6OsLMeiZKwP4FppHH3cmAiiJJAweH5Jo4bM=",//签名
+  "X-Shopline-Shop-Domain":"例如：shophub.myshopline.com",//店铺域名
+  "X-Shopline-Shop-Id":"例如：1610418123456",//店铺id
+  "X-Shopline-Merchant-Id":"例如：2000001234",//商户id
+  "X-Shopline-API-Version":"例如：v20210901",//版本号
+  "X-Shopline-Webhook-Id":"例如：b54557e48a5fbf7d70bcd043" //消息id
+}
+
+请求body​
+见事件定义，如：订单更新事件，注意：你在开发者中心订阅 Event 的 Version 必须您应用服务选择接入的 Webhook 定义需要保持一致。
+
+{
+  "total_spent":"0",
+  "addresses":[
+    {
+      "zip":"",
+      "country":"",
+      "address2":"",
+      "city":"",
+      "address1":"",
+      "last_name":"",
+      "province_code":"",
+      "country_code":"",
+      "default":true,
+      "province":"",
+      "phone":"",
+      "company":"",
+      "id":"SL201UA592875161232815849",
+      "customer_id":"421475390",
+      "first_name":""
+    }
+  ],
+  "gender":"others",
+  "last_order_id":"1001",
+  "created_at":"2023-05-10T17:00:01+08:00",
+  "language":"en",
+  "verified_email":false,
+  "accepts_mobile_marketing":false,
+  "accepts_marketing_updated_at":"2023-05-10T17:00:01+08:00",
+  "orders_count":1,
+  "default_address":{
+    "zip":"",
+    "country":"",
+    "address2":"",
+    "city":"",
+    "address1":"",
+    "last_name":"",
+    "province_code":"",
+    "country_code":"",
+    "default":true,
+    "province":"",
+    "phone":"",
+    "company":"",
+    "id":"SL201UA592875161228158749",
+    "customer_id":"421453190",
+    "first_name":""
+  },
+  "updated_at":"2023-05-26T19:25:47+08:00",
+  "accepts_marketing":true,
+  "email_subscribe_flag":1,
+  "nick_name":"test1",
+  "currency":"CLP",
+  "id":"421475190",
+  "state":3,
+  "first_name":"test1",
+  "email":"test1@joyy.com",
+  "mobile_subscribe_flag":2
+}
+
+事件推送规约​
+SHOPLINE 使用 POST 方式推送事件，业务数据在请求的 BODY 中，Content-Type: application/json。
+每次事件推送都需要 ack 应答，订阅方需要按照示例格式应答。告知 SHOPLINE 处理成功，否则 SHOPLINE 会认为推送失败，进行重试。
+成功应答示例
+
+HTTP/1.1 200 OK
+
+重试策略
+首次推送5秒后未收到应答，即认为推送失败，SHOPLINE 会启动重试策略。
+如果一直没有收到响应，SHOPLINE 会在 48 小时内完成19次推送，当一个事件的消息连续 19 次重试推送失败且在重试阶段内没有其他同类消息处理成功的记录，平台将移除应用的这条订阅记录，并推送一条名为「Webhook事件订阅删除」的邮件。
+从第一次起，每次推送间隔如下：0 秒、5 秒、10 秒、30 秒、45 秒、1 分钟、2 分钟、5 分钟、12 分钟、38 分钟、1 小时、2 小时、4小时 、 4小时 、4小时 、4小时 、4小时 、4小时 、4小时
+SHOPLINE 事件推送不保证不会重复推送，订阅方必须能够正确处理重复的通知，如果已处理过，直接返回成功即可。
+保证平台的稳定以及推送可达是平台义不容辞的责任，事件推送无法保证 100% 的推送成功率，同时也希望订阅方能够主动对接补偿接口，这样能最大限度的保证平台数据得到正确处理。
+注意
+已经删除的事件订阅，不会接收到任何推送消息，直到您重新创建订阅。
+
+签名验证​
+签名算法：hmacSha256
+加签内容：请求body
+签名算法示例（java版本）：
+/**
+     * hmacSha256 
+     * @param source signContent
+     * @param secret appSecret
+     * @return
+     */
+    public static String hmacSha256(String source, String secret) {
+        if (StringUtils.isEmpty(secret) || StringUtils.isEmpty(source)) {
+            return null;
+        }
+        try {
+            Mac sha256_HMAC = Mac.getInstance("HmacSHA256");
+            SecretKeySpec secret_key = new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8), "HmacSHA256");
+            sha256_HMAC.init(secret_key);
+            byte[] bytes = sha256_HMAC.doFinal(source.getBytes(StandardCharsets.UTF_8));
+            return new String(Hex.encodeHex(bytes));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
