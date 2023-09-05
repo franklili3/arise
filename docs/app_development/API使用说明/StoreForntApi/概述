@@ -1,0 +1,54 @@
+概述​
+你可以在任何平台（H5、Native App 或 Web）上使用 Storefront API 自定义顾客页面，Storefront API 提供全方位能力，涵盖商品、订单、购物车、结账等页面的定制。你可以使用你喜欢或擅长的技术栈和前端开发框架快速构建店铺前台页面，结合 SHOPLINE 强大的后端数据及业务能力，你可以构建任何类型的无头电商模式。
+
+在本页你将了解到：​
+自定义店面的概念
+无头电商的场景及优势
+StorefrontAccesstoken 的创建方法
+Storefront API 的限流策略及状态码
+什么是自定义店面？​
+自定义店面是无头电商模式的一种方式，商店前端与后端彼此独立，前端页面及业务流程由开发者实现，电商交易链路及数据存储将由 SHOPLINE 电子商务引擎支撑与实现。 如果商家所需要的业务系统架构、业务流程及客户体验无法使用 SHOPLINE 现有的销售渠道能力、主题和应用等实现，且有以下情况时，请考虑构建自定义店面。
+
+你熟悉并擅长一种 Web 前端开发框架，但并不熟悉 HandleBars。
+你的购物体验非常独特，有别于普通的浏览商品、加入购物车、前往结账页流程，需灵活处理各种业务流程。
+你希望将 SHOPLINE 的交易能力与嵌入至你已有并运行良好的业务架构系统中。
+无头电商的场景​
+SHOPLINE Storefront API 不仅支持电商网站搭建，还可以用于其他类型的交易体验，例如移动应用程序，付费视频，游戏内购商品，知识付费等。
+
+从移动应用程序或Web应用程序（PWA）销售商品
+从 IOT 设备中售卖商品或服务
+在视频网站中售卖内容或会员
+在现有的 CMS 系统中添加购买按钮销售商品或内容
+主要优势 自定义店面具有以下优势 1、灵活度高：Storefront API 与设备、环境、平台无关，你可以使用任何编程语言构建前端页面。 2、定制化程度高：你可以构建一个可与商家业务增长和适应的解决方案。随着销售趋势及商家选品的变化，你的自定义店面可随时替换并适应市场的发展需要。
+
+StorefrontAccessToken创建​
+当店铺给应用授权了 Unauthenticated scopes 后，应用可以调用 Admin Rest 接口中的 StorefrontAccessToken创建 接口获得 StorefrontAccessToken，然后通过 StorefrontAccessToken 直接访问绑定 Unauthenticated scopes 权限的 Storefront API。
+
+访问端点​
+Storefront API 只能通过 POST 方式访问，访问端点：
+
+POST https://{storeCustomDomain}.myshopline.com/storefront/graph/v20220901/graphql.json
+
+storeCustomDomain为店铺的自定义域名，v20220901 为接口版本号，你可以根据实际情况修改端点中的版本号。
+
+限流策略​
+Storefront API 支持任意规模的交易，它能根据店铺的顾客数来动态扩增访问限额。因此，你不必担心随着你店铺的交易规模增大而造成对买家的访问的影响。 基于机器访问保护，访问 Storefront API 的 ip 必须来源于真实用户，我们提供了基于每个 ip 纬度 的 time-base 流控限制，使用漏桶算法的桶大小和漏桶速率来限制突发请求和恒定请求速率：
+
+每秒/应用/IP：1秒计算资源
+桶大小：60秒计算资源
+例如：当一个顾客第一次访问 Storefront API 时，该 ip 的第一秒最大能消耗60秒的计算资源，第一秒后就只能每秒消耗1秒的计算资源
+
+状态码和错误码​
+所有 Storefront API 请求都会返回 HTTP 状态码，详见 HTTP status code
+
+使用示例​
+curl --location --request POST 'https://openapiceshidianpu.myshopline.com/storefront/graph/v20230301/graphql.json' \
+--header 'Accept-Encoding: gzip, deflate, br' \
+--header 'Content-Type: application/json' \
+--header 'Accept: application/json' \
+--header 'Connection: keep-alive' \
+--header 'DNT: 1' \
+--header 'Origin: file://' \
+--header 'Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJ0b2tlbiI6IjU4YmYwZjFiYjA3ZWU2ZmU3ZjQzNGQxMGU0ODlhN2U0OGMwZGZiYTJ8Njc3NDd8MTY3MjM2OTcyOTYwNnwxNjcyNzEyODczMzQ0IiwiaXNzIjoieXNvdWwifQ.teC5ht0if8yZlzWUQa-oOS43ZEG5_m7KzPgijpwCYISuAIPp6D15Bxm9e_5O60Ue4JHsfbM8c1jN0koQIt3oSw' \
+--data-raw '{"query":"\n\nquery{\n  blogs(first:10){\n    pageInfo{hasNextPage,hasPreviousPage,startCursor,endCursor},\n    edges{cursor,node{id,title,author,handle,onlineStoreUrl}}\n  }\n}\n"}'
+

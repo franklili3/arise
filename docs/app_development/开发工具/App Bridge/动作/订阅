@@ -1,0 +1,33 @@
+订阅​
+1、能力介绍​
+使用 subscribe 方法可以订阅相关的动作集，当所订阅的动作被触发时，将会执行对应的消息函数。
+
+2、相关 API​
+API 列表：
+
+名称	描述	返回值
+subscribe	订阅指定动作集消息执行	void
+unsubscribe	清除指定动作集订阅事件	void
+参数说明:
+
+名称	描述	类型
+ACTION	动作集	ACTION
+callBackFunction	动作集执行完毕回调函数	Function
+特别说明：由于订阅事件全局可用，可在多处地方进行订阅，因此同一类型订阅场景，在任何一处函数中进行消费，此前订阅所有的同类型订阅事件也会被消费。
+
+ACTION 说明：
+
+ACTION	描述
+MESSAGE	打开消息
+OPEN_MODAL	打开弹窗
+MODAL_SAVE	弹窗&保存
+MODAL_CLOSE	弹窗&取消
+REDIRECT	导航跳转
+ROUTER_REDIRECT	路由导航跳转
+ROUTER_TO_SPECIFIED_PAGE	跳转至特定资源页
+3、示例代码​
+import { Modal, Message } from '@shoplinedev/appbridge'
+Message.create(app).Open({
+  messageInfo: 'successful',
+  type: 'success'
+})

@@ -1,0 +1,76 @@
+上报物流信息​
+如果您关注交易的物流信息，您可以配置物流上报URL，Shopline将在商家进行发货操作，且填写了必要的信息后，主动向您的物流上报URL发起HTTP调用，下图说明了支付应用程序和 Shopline 之间的物流上报流程如何工作：
+
+商家处理发货。
+Shopline向支付应用程序发送物流信息上报请求。
+该支付应用程序返回Shopline处理响应结果。
+请求物流上报接口​
+在需要进行物流上报时，Shopline将通过Http-Post请求您提供的物流上报Url；
+
+请求头示例​
+对应 Http Request Header
+
+pay-api-version: 1.0.0
+pay-api-idempotency-key: TESTKEYKEYKEY
+pay-api-signature: SIGNSIGNSIGN
+pay-api-timestamp: 1665632758606000
+
+字段	是否必填	含义
+pay-api-version	是	您在配置支付应用拓展时，填入的API VERSION
+pay-api-idempotency-key	是	幂等key
+pay-api-signature	是	签名值
+pay-api-timestamp	是	请求发起时的时间戳
+请求正文示例​
+对应 Http Request Body
+
+{
+  "channelOrderTransactionId": "test_d0e822d9fd27",
+  "trackingList": [
+    {
+      "trackingNo": "test_91dd2e1a7af1",
+      "site": "test_46bec7ce1c23",
+      "handler": "test_4d545f9d9966",
+      "trackingStatus": "test_5275b24a93aa",
+      "carrier": "test_1ed2b4acffcc"
+    }
+  ]
+}
+
+字段	类型	是否必填	含义
+channelOrderTransactionId	string	是	支付单的渠道流水ID
+trackingList	Array	是	
+trackingList[0].trackingNo	string	是	物流单号
+trackingList[0].site	string	是	物流网站
+trackingList[0].handler	string	否	物流信息添加人
+trackingList[0].trackingStatus	string	是	物流状态
+01: 等待揽收
+02: 取消发货
+03: 已发货
+04: 运输中
+05: 投递成功，等待用户收货
+06: 拒收，货物原路退回
+07: on hold（天气、清关等原因）
+trackingList[0].carrier	string	是	物流承运商
+响应头示例​
+Shopline 必须接收到预期的结果，才会认为当次调用是成功的，如果没有返回预期的结果，那么Shopline将在一定时间后，用同样的参数再次发起请求，直到最终拿到预期的响应或者达到最大重试次数；针对同一个物流单号的不同物流状态，Shopline可能会多次上报物流信息，支付应用应该要正确处理这些请求。
+
+对应 Http Responese Header
+
+pay-api-signature: SIGNSIGNSIGN
+
+字段	是否必填	含义
+pay-api-signature	是	签名值
+响应正文示例​
+对应 Http Responese Body
+
+{
+  "returnCode": "test_ca4e7c8fe42b",
+  "returnMessage": "test_c76c81cec909",
+  "returnMessageId": "test_139a03d91582"
+}
+
+字段	类型	是否必填	含义
+returnCode	string	是	接口状态码
+SUCCESS: 请求成功
+returnMessage	string	否	失败原因
+returnMessageId	string	否	渠道响应标识UUID，如 traceId

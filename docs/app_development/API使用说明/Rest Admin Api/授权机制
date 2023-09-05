@@ -1,0 +1,328 @@
+授权机制​
+授权要求​
+为确保开发者获取的 SHOPLINE 资源安全可靠，所有接入 SHOPLINE API的应用程序，在调用 API 时都必须先进行身份验证。
+
+认证类型​
+采用 OAuth2.0 授权
+
+授权流程​
+image.png
+
+[001~006步骤] 商家在 AppStore 安装应用时，平台会先验证登录态
+
+[007步骤] 确保商家已经登录后，平台会携带handle、sign等信息 跳转到开发者在开发者中心录入的应用地址。
+
+[008步骤] 此时应用需要自行判断此次请求是否需要授权：
+
+不需要授权时：直接打开应用（不需要授权分两种情况：「该商家已授权」或 「应用内授权方式）」）
+需要授权时：继续 009～018步骤（应用内发起授权时同样适用该流程）
+NOTE
+不重定向到授权页的应用，商家无法完成安装，视为开发者希望在应用内发起授权。
+若需要请求Open API ，需要先获取Token。
+[009步骤] 应用拼接申请授权地址向平台发起授权申请（授权拼接格式参见本页）
+
+[010-013步骤] 此时平台会根据应用的授权申请，向商家展示申请授权信息。 商家确认授权后，平台会执行安装动作并携带code、sign等信息传参至应用的回调地址（到这一步应用可以出现在商家的应用列表）
+
+[014步骤] 获取平台返回的code、sign等信息后，应用需要进行验签，验签方法参见本页，建议验签时取query路径上的所有参数。
+
+[015～018步骤] 应用完成验签后，应用需要携带code，调用申请Token 接口获取Token 平台在生成Token 并将其通过回调地址返回给开发者，授权流程结束
+
+INFO
+为了保证安全性， Token 生成后会在10小时后失效，此时开发者可以调用刷新Token 接口获取新的有效Token。
+如果因为业务原因，需要取消店铺对应用的授权，可以调用取消授权接口进行取消
+1. 商家安装时，平台请求应用​
+携带参数：
+
+参数	类型	参数位置	必填	描述
+appkey	String	query	Y	应用唯一标识
+timestamp	String	query	Y	时间戳
+sign	String	query	Y	安全签名，算法：hmacsha256，签名方式见本页签名机制
+handle	String	query	Y	店铺唯一标识，店铺域名前缀，如：zhangsan.myshopline.com的handle为：zhangsan
+lang	String	query	N	店铺当前语种，内嵌应用会返回该字段
+请求示例
+
+https://example.com?appkey=326383c947bca5e042807537743f0114a84fb709&handle=goodgoods&lang=zh-hans-cn&timestamp=1646915628733&sign=68126682300b57a855702e2839f91b9eb10d3fa57211415f4eac75b30822e14e
+
+2. 应用发起申请授权​
+地址：GET https://{handle}.myshopline.com/admin/oauth-web/#/oauth/authorize
+
+入参：
+
+参数	类型	参数位置	必填	描述
+appKey	String	query	Y	应用唯一标识
+responseType	String	query	Y	授权方式，支持 code
+scope	String	query	Y	授权范围，英文逗号拼接
+redirectUri	String	query	Y	与应用设置中的应用回调地址保持一致
+customField	String	query	N	自定义透传字段，需 url encode 编码
+请求示例：
+
+https://goodgoods.myshopline.com/admin/oauth-web/#/oauth/authorize?appKey=326383c947bca5e042807537743f0114a84fb709&responseType=code&scope=read_products&redirectUri=https%3A%2F%2Fwww.baidu.com
+
+3. 商家确认授权，应用收到回调​
+携带参数：
+
+参数	类型	参数位置	必填	描述
+appkey	String	query	Y	应用唯一标识
+timestamp	String	query	Y	时间戳
+sign	String	query	Y	安全签名，算法：hmacsha256，签名方式见本页签名机制【hMacSha256】
+handle	String	query	Y	店铺唯一标识，店铺域名前缀，如：zhangsan.myshopline.com的handle为：zhangsan
+code	String	query	Y	临时授权令牌oauthCode，10分钟有效
+lang	String	query	N	店铺当前语种，内嵌应用会返回该字段
+customField	String	query	N	自定义透传字段
+回调示例：
+
+https://example.com/callback?appkey=326383c947bca5e042807537743f0114a84fb709&code=sgef5900943de8bff669569b92d8559aca31fc6681&handle=goodgoods&lang=zh-hans-cn&timestamp=1646915628733&sign=63d5aafdf652a00cc45258bbdb9a448b021088175ce1036c6b82cabd8b9980b1
+
+4. 应用收到回调，进行验签​
+验签示例（签名机制参见本页）：
+
+public static void main(String[] args) {         
+      String secret = "359bdf838eef30a51ca5618895e75256c2838138";         
+      String msg = "appkey=326383c947bca5e042807537743f0114a84fb709&code=sgef5900943de8bff669569b92d8559aca31fc6681&handle=goodgoods&lang=zh-hans-cn&timestamp=1646915628733";         
+      System.out.println(hmacSha256(msg, secret));     
+  }
+输出结果： 63d5aafdf652a00cc45258bbdb9a448b021088175ce1036c6b82cabd8b9980b1
+
+5. 申请token​
+为保证获取token流程的健壮性，创建token期间和创建后的一段时间内，平台会对刷新Token接口加锁，开发者可以获取token后保存在本地，避免创建token后立即进行刷新的操作。
+地址：POST https://{handle}.myshopline.com/admin/oauth/token/create
+
+入参：
+
+参数	类型	参数位置	必填	描述
+appkey	String	header	Y	应用唯一标识
+sign	String	header	Y	安全签名，由开发者生成。
+算法：hmacsha256，签名方式见本页签名机制
+timestamp	String	header	Y	13位时间戳
+code	String	body	Y	【发起授权】接口回调返回的临时授权令牌，10分钟有效
+出参：
+
+参数	类型	参数位置	必填	描述
+accessToken	String	body	Y	授权令牌
+expireTime	String	body	Y	授权令牌到期时间，yyyy-MM-dd'T'HH:mm
+.SSSXXX 格式零时区时间
+scope	String	body	Y	拥有的api权限范围
+refreshToken	String	body	Y	刷新令牌（废弃）
+refreshExpireTime	String	body	Y	刷新令牌到期时间，yyyy-MM-dd'T'HH:mm
+.SSSXXX 格式零时区时间（废弃）
+请求示例：
+
+curl --location --request POST 'https://goodgoods.myshopline.com/admin/oauth/token/create' \
+--header 'Content-Type: application/json' \
+--header 'appkey: c5b827be519d16b3f35d004fb1619f484c7ba437' \
+--header 'sign: 57b04153c57be7ee95b66cb0eb9ce3794073ee242f4dabb443871b5e2a56dcea' \
+--header 'timestamp: 1622031669000' \
+--data-raw '{"code":"sgb15d6834f6cd72bc5495be6bca3752665cfaa674"}'
+
+加签示例（签名机制参见本页）：
+
+public static void main(String[] args) {         
+    String secret = "93e1cdfe049bb26d9b05003da50cb530022f4fa8";         
+    String msg = "{\"code\":\"sgb15d6834f6cd72bc5495be6bca3752665cfaa674\"}1622031669000";         
+    System.out.println(hmacSha256(msg, secret));     
+} 
+输出结果： 57b04153c57be7ee95b66cb0eb9ce3794073ee242f4dabb443871b5e2a56dcea
+
+6. 刷新token​
+AccessToken 有效期为10小时，过期后，SHOPLINE 会返回状态码：401 Unauthorized，此时可以调用刷新接口
+刷新Token接口会对调用频率进行限制，开发者应该合理控制调用频率，避免请求失败。
+请求超过限制时，返回状态码：500 REQUEST_ FREQUENTLY
+刷新接口速率限制基于应用程序和商店的组合，同一个商店的不同应用请求或者同一个应用在不同商店间的请求不会互相影响。
+地址：POST https://{handle}.myshopline.com/admin/oauth/token/refresh
+
+入参：
+
+参数	类型	参数位置	必填	描述
+appkey	String	header	Y	应用唯一标识
+sign	String	header	Y	安全签名，由开发者生成。
+算法：hmacsha256，签名方式见本页签名机制【hMacSha256】
+timestamp	String	header	Y	13位时间戳
+出参：
+
+参数	类型	参数位置	必填	描述
+accessToken	String	body	Y	授权令牌，刷新后老授权令牌可以再持续使用5分钟
+expireTime	String	body	Y	授权令牌到期时间，yyyy-MM-dd'T'HH:mm
+.SSSXXX 格式零时区时间
+scope	String	body	Y	拥有的api权限范围
+refreshToken	String	body	Y	刷新令牌（废弃）
+refreshExpireTime	String	body	Y	刷新令牌到期时间，yyyy-MM-dd'T'HH:mm
+.SSSXXX 格式零时区时间（废弃）
+请求示例
+
+curl --location --request POST 'https://goodgoods.myshopline.com/admin/oauth/token/refresh' \
+--header 'appkey: c5b827be519d16b3f35d004fb1619f484c7ba437' \
+--header 'sign: 9f240f897b8314b3062973afaae85f9b8a3c9f0f67ee24267a8e46e7329b9b14' \
+--header 'timestamp: 1622031669000' \
+--header 'Content-Type: application/json' \
+--data-raw ''
+
+加签示例（签名机制参见本页）
+
+public static void main(String[] args) {         
+    String secret = "93e1cdfe049bb26d9b05003da50cb530022f4fa8";         
+    String msg = "1622031669000";         
+    System.out.println(hmacSha256(msg, secret));     
+} 
+输出结果： 9f240f897b8314b3062973afaae85f9b8a3c9f0f67ee24267a8e46e7329b9b14
+
+7. 取消授权​
+取消授权只作用于当前操作的店铺，不会影响其他用户 AccessToken 的有效性。 应用已经上架 SHOPLINE 应用市场时，用户可以主动从平台发起删除动作取消授权。 应用未上架到 SHOPLINE 应用市场，应用也可以主动调用取消授权接口解除授权。
+
+地址：POST https://{handle}.myshopline.com/admin/oauth/authorize/cancel
+
+入参：
+
+参数	类型	参数位置	必填	描述
+appkey	String	header	Y	应用唯一标识
+sign	String	header	Y	安全签名，算法：hmacsha256，签名方式见本页签名机制【hMacSha256】
+timestamp	String	header	Y	13位时间戳
+出参：
+
+参数	类型	参数位置	必填	描述
+accessToken	String	body	Y	授权令牌
+expireTime	String	body	Y	授权令牌到期时间，yyyy-MM-dd'T'HH:mm
+.SSSXXX 格式零时区时间
+scope	String	body	Y	拥有的api权限范围
+refreshToken	String	body	Y	刷新令牌（废弃）
+refreshExpireTime	String	body	Y	刷新令牌到期时间，yyyy-MM-dd'T'HH:mm
+.SSSXXX 格式零时区时间（废弃）
+请求示例：
+
+curl --location --request POST 'https://goodgoods.myshopline.com/admin/oauth/authorize/cancel' \
+--header 'appkey: c5b827be519d16b3f35d004fb1619f484c7ba437' \
+--header 'sign: 9f240f897b8314b3062973afaae85f9b8a3c9f0f67ee24267a8e46e7329b9b14' \
+--header 'timestamp: 1622031669000' \
+--header 'Content-Type: application/json' \
+--data-raw ''
+
+加签示例（签名机制参见本页）：
+
+public static void main(String[] args) {         
+    String secret = "93e1cdfe049bb26d9b05003da50cb530022f4fa8";         
+    String msg = "1622031669000";         
+    System.out.println(hmacSha256(msg, secret));     
+} 
+输出结果：9f240f897b8314b3062973afaae85f9b8a3c9f0f67ee24267a8e46e7329b9b14
+
+签名机制​
+验签方式​
+当收到 SHOPLINE 向您的地址发起的请求后
+
+从请求中获取query的内容，query由多个field组成，每个field通过&分隔，如：
+timestamp=1646915628733&appkey=326383c947bca5e042807537743f0114a84fb709&code=sgef5900943de8bff669569b92d8559aca31fc6681&handle=goodgoods&lang=zh-hans-cn&sign=63d5aafdf652a00cc45258bbdb9a448b021088175ce1036c6b82cabd8b9980b1
+去除掉sign field：
+timestamp=1646915628733&appkey=326383c947bca5e042807537743f0114a84fb709&code=sgef5900943de8bff669569b92d8559aca31fc6681&handle=goodgoods&lang=zh-hans-cn
+按字典顺序排序：
+appkey=326383c947bca5e042807537743f0114a84fb709&code=sgef5900943de8bff669569b92d8559aca31fc6681&handle=goodgoods&lang=zh-hans-cn&timestamp=1646915628733
+为了防止伪造请求，建议通过当前时间减去timestamp的时间间隔在10分钟内
+通过hmacSha256算法加签上诉内容：
+hmacSha256(appSecret,"appkey=326383c947bca5e042807537743f0114a84fb709&code=sgef5900943de8bff669569b92d8559aca31fc6681&handle=goodgoods&lang=zh-hans-cn&timestamp=1646915628733")
+其中appSecret为您的应用密钥，得到最终的加签结果：
+63d5aafdf652a00cc45258bbdb9a448b021088175ce1036c6b82cabd8b9980b1
+对比原始请求中的sign filed内容和您的加签结果，如果相同则可认为是源自 SHOPLINE 的合法请求。
+加签方式​
+当您的程序需要向 SHOPLINE 发起请求时
+
+组装接口定义中body内容，如： {"code":"sgb15d6834f6cd72bc5495be6bca3752665cfaa674"}
+在body后面拼接上接口定义header或者query中的timestamp，如body不为空：
+{"code":"sgb15d6834f6cd72bc5495be6bca3752665cfaa674"}1646915628733
+如body为空： 1646915628733
+通过hmacSha256算法加签上诉内容： hmacSha256(appSecret, "{\"code\":\"sgb15d6834f6cd72bc5495be6bca3752665cfaa674\"}1646915628733")，
+其中appSecret为您的应用密钥，得到最终的加签结果： 63d5aafdf652a00cc45258bbdb9a448b021088175ce1036c6b82cabd8b9980b1
+把加签结果设置到接口定义header或者query中的sign field中。
+签名算法​
+java版本​
+/**
+     * hmacSha256签名算法
+     *
+     * @param source 加密文本
+     * @param secret appSecret
+     *
+     * @return 签名
+     */
+    public static String hmacSha256(String source, String secret) {
+        if (StringUtils.isEmpty(secret) || StringUtils.isEmpty(source)) {
+            return null;
+        }
+        try {
+            Mac sha256_HMAC = Mac.getInstance("HmacSHA256");
+            SecretKeySpec secret_key = new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8), "HmacSHA256");
+            sha256_HMAC.init(secret_key);
+            byte[] bytes = sha256_HMAC.doFinal(source.getBytes(StandardCharsets.UTF_8));
+            return new String(Hex.encodeHex(bytes));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+    /**
+     * TreeMap 转 query字符串
+     *
+     * @param params 参数
+     *
+     * @return query字符串
+     */
+    public static String covertParamMapToString(TreeMap<String, String> params) {
+        StringBuilder stringBuilder = new StringBuilder(128);
+        Map.Entry entry;
+        for (Iterator var3 = params.entrySet().iterator(); var3.hasNext(); stringBuilder.append(String.format("%s=%s", entry.getKey(), entry.getValue() == null
+            ? ""
+            : entry.getValue()))) {
+            entry = (Map.Entry) var3.next();
+            if (stringBuilder.length() > 0) {
+                stringBuilder.append("&");
+            }
+        }
+        return stringBuilder.toString();
+    }
+    public static void main(String[] args) {
+        String secret = "e53284b2082235285e1560368709af0116681a82";
+        String postMessage = "{\"code\":\"sg9426a633d3741a11a5bf9cfcfe05f03049406310\"}1609430400000";
+        System.out.println("post加密：" + hmacSha256(postMessage, secret));
+        TreeMap<String, String> getMessage = new TreeMap<>();
+        getMessage.put("appkey", "36d2bc4e97af056677b61c529d9e3a3f7396040d");
+        getMessage.put("code", "sg9426a633d3741a11a5bf9cfcfe05f03049406310");
+        getMessage.put("handle", "openApiTest001");
+        getMessage.put("timestamp", "1609430400000");
+        String source = ConvertParamUtils.covertParamMapToString(getMessage);
+        System.out.println("get query : " + source);
+        System.out.println("get加密：" + hmacSha256(source, secret));
+    }
+输出：
+post加密：eaedb45f0c94dec775876e23715ca02679ca30239112e0f19da5be729bb38d44
+get query : appkey=36d2bc4e97af056677b61c529d9e3a3f7396040d&code=sg9426a633d3741a11a5bf9cfcfe05f03049406310&handle=openApiTest001&timestamp=1609430400000
+get加密：fb9e66655fceeeec0daf173483b944565a2cd8a748eabc06196bd86d696b83ce
+
+PHP版本​
+<?php
+$appSecret = "e53284b2082235285e1560368709af0116681a82";
+# get请求签名
+$getQuery = array("appkey"=>"36d2bc4e97af056677b61c529d9e3a3f7396040d",
+    "code"=>"sg9426a633d3741a11a5bf9cfcfe05f03049406310",
+    "handle"=>"openApiTest001",
+    "timestamp"=>"1609430400000");
+ksort($getQuery);
+$tempArray = array();
+foreach ($getQuery as $key => $val) {
+    array_push($tempArray, "$key=$val");
+}
+$finalStr = implode("&", $tempArray);
+# appkey=36d2bc4e97af056677b61c529d9e3a3f7396040d&code=sg9426a633d3741a11a5bf9cfcfe05f03049406310&handle=openApiTest001&timestamp=1609430400000
+var_dump($finalStr);
+# fb9e66655fceeeec0daf173483b944565a2cd8a748eabc06196bd86d696b83ce
+var_dump(hash_hmac('sha256', $finalStr, $appSecret));
+#-----------------------------------------------------------------------------------------------------------------------
+$postReq = "{\"code\":\"sg9426a633d3741a11a5bf9cfcfe05f03049406310\"}";
+$timestamp = "1609430400000";
+# eaedb45f0c94dec775876e23715ca02679ca30239112e0f19da5be729bb38d44
+var_dump(hash_hmac('sha256', "$postReq$timestamp", $appSecret));
+?>
+
+Python版本​
+#python 3
+import hmac
+import hashlib
+message = '{"code":"usdd17b3f020506b5da8e19cd77fab4f2f135c3d35"}1667553986537'
+APP_SECRET = 'da987fd235c1148e75dfea133a8b7e10df509006'
+signature = hmac.new(bytes(APP_SECRET, 'utf-8'), msg=bytes(message, 'utf-8'), digestmod=hashlib.sha256).hexdigest()
+print(signature)

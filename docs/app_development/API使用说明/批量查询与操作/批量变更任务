@@ -1,0 +1,69 @@
+批量变更任务​
+使用批量变更任务接口，你可以给 SHOPLINE 提交一个批量变更操作，批量接口可包含 POST、PUT、PATCH、DELETE 接口，用来处理批量的数据变更，该操作是一个异步任务，结果不会立刻返回。 你需要在批量变更任务接口请求 playload 的 file_url 字段中设置你的变更内容文件地址，该地址必须可以在公网无需权限直接访问，否则任务会提交失败。 你提交批量的变更请求后，请求所需的时间取决于你任务的复杂度。当任务执行完毕后，结果将按照 JSONL 格式生成一份临时文件，文件有效期为12小时。你可以通过批量任务结果查询接口获取执行状态和执行结果，执行结果会在HTTP响应中通过 JSONL 文件格式的任务结果链接返回，你需要下载该链接的文件内容获取最终的任务结果数据。
+
+NOTE
+批量变更任务店铺纬度是串行的，在同一时刻，每个店铺只能拥有一个正在执行的批量变更任务，即当一个应用给某个店铺提交了一个批量变更任务后，在任务没有执行完成前，SHOPLINE 会拒收该店铺的批量变更任务，不管该任务是否来自于同一个应用。
+如果你的应用提交的批量变更任务执行完成后，你没有及时调用批量任务结果查询接口获取任务执行结果，当该任务执行完成后，其他应用又提交了一个批量变更任务，此时你的应用再去查询任务执行结果时，会返回最新任务的执行结果。因此请确保及时调用批量任务结果查询接口获取任务执行结果。
+使用限制​
+店铺只能提交一个异步变更任务，并且在处理阶段，你无法提交新的查询
+应用必须拥有 write_bulkoperation 和 read_bulkoperation 权限点
+file_url文件不能大于 10MB 并且文件的行数不能超过 10000 条
+API版本要大于等于v20220901
+场景示例​
+假如你想在 SHOPLINE 导入一批商品数据，可采用如下步骤： 确保你的应用有 write_products，read_bulkoperation，write_bulkoperation 权限点
+
+准备好 商品创建 需要的参数，你需要将每条商品创建的请求信息放在文件内，并提交一个批量变更任务
+curl --location -g --request POST 'https://{handle}.myshopline.com/admin/openapi/v20220901/bulk_operation_run_mutation_general.json' \
+--header 'Authorization: {token}' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "file_url": "https://xxx.com/products.jsonl"
+}'
+
+其中 products.jsonl 为一个的 JSONL 文件，每一行包含一个商品创建信息，下面是包含3个商品创建信息的 JSONL 文件，其中 url，method，payload 分别为商品创建 的 endpoint，method，payload。
+
+{"url":"https://goodgoods.myshopline.com/admin/openapi/v20230901/products/products.json","method":"post","payload":{"product":{"published_scope":"web","body_html":"sdf","images":[{"src":"https://img-va.myshopline.com/image/store/2000986376/1663054163488/Hbe20374eba504af8b3b088a2f5d87658h.jpg?w=1000&h=1000","alt":"sdf"}],"vendor":"sdf","subtitle":"sdf","options":[{"values_images":{"Red":"https://img-va.myshopline.com/image/store/2000986376/1663054163488/Hbe20374eba504af8b3"},"name":"Color"}],"handle":"t-shirt","variants":[{"image":{"src":"https://img-va.myshopline.com/image/store/2000986376/1663054163488/Hbe20374eba504af8b3b088a2f5d87658h.jpg?w=1000&h=1000","alt":"sdf"},"required_shipping":true,"compare_at_price":"11","taxable":true,"option5":"","weight":"1.2","inventory_policy":"deny","weight_unit":"kg","price":"10.11","option3":"","option4":"","inventory_tracker":true,"option1":"Red","option2":"","sku":"2111341123434","barcode":"1111111123434"}],"title":"sdf","product_category":"sdf","status":"active","tags":["sdf,sdf3"]}}}
+{"url":"https://goodgoods.myshopline.com/admin/openapi/v20230901/products/products.json","method":"post","payload":{"product":{"published_scope":"web","body_html":"sdf","images":[{"src":"https://img-va.myshopline.com/image/store/2000986376/1663054163488/Hbe20374eba504af8b3b088a2f5d87658h.jpg?w=1000&h=1000","alt":"sdf"}],"vendor":"sdf","subtitle":"sdf","options":[{"values_images":{"Red":"https://img-va.myshopline.com/image/store/2000986376/1663054163488/Hbe20374eba504af8b3"},"name":"Color"}],"handle":"t-shirt","variants":[{"image":{"src":"https://img-va.myshopline.com/image/store/2000986376/1663054163488/Hbe20374eba504af8b3b088a2f5d87658h.jpg?w=1000&h=1000","alt":"sdf"},"required_shipping":true,"compare_at_price":"11","taxable":true,"option5":"","weight":"1.2","inventory_policy":"deny","weight_unit":"kg","price":"10.11","option3":"","option4":"","inventory_tracker":true,"option1":"Red","option2":"","sku":"2111341123434","barcode":"1111111123434"}],"title":"sdf","product_category":"sdf","status":"active","tags":["sdf,sdf3"]}}}
+
+当 respone 返回的 Http Status Code 为 200 时，则表示任务提交成功。
+
+使用批量任务结果查询接口查询您当前店铺的任务
+curl --location -g --request GET 'https://{handle}.myshopline.com/admin/openapi/v20220901/current_bulk_operation.json?type=MUTATION_GENERAL' \
+--header 'Authorization: {token}' \
+--header 'Content-Type: application/json' \
+--data-raw ''
+
+注意：请求路径中需添加 type=MUTATION_GENERAL，表示是批量变更任务。
+
+{
+  "partialDataUrl": null,
+  "createdAt": "2023-05-24T14:53:45+08:00",
+  "expiredAt": null,
+  "reason": null,
+  "completedAt": null,
+  "errorCode": null,
+  "id": "gid://shopline/BulkOperation/XX",
+  "type": "QUERY",
+  "completedCount": 0,
+  "storeId": "xx",
+  "url": null,
+  "status": "CREATED"
+}
+
+下载与处理文件​
+当任务完成，通过 批量任务结果查询 接口返回的 url 字段获取 JSONL 格式的任务结果文件地址后，您可以直接下载该 JSONL 文件。 当任务因为某种原因导致无法查询到全部数据的时候时，查询任务此时会被中断，通过 批量任务结果查询 接口返回的 partialDataUrl 字段获取 JSONL 格式的任务部分结果文件地址后，您可以直接下载该 JSONL 文件获取到中断时已执行的变更结果，您需要解析该结果的最后一行的行号，找到 payload 中 JSONL 文件的相同行号，删除小于该行号的内容，然后再次提交批量变更任务。 url 和 partialDataUrl 的 JSONL 文件的有效期只有 12 小时，如果你没有及时的处理，本次查询的结果将会被清除。你可以用任意的编程语言去解析 JSONL 文件，每一行都是一部分有效的 JSON 数据，例如：
+
+{"product":{"image":{"src":"https://img-va.myshopline.com/image/store/2000986376/1663054163488/Hbe20374eba504af8b3b088a2f5d87658h.jpg?w=1000&h=1000","alt":"sdf","id":"5949197836163148889"},"body_html":"sdf","images":[{"src":"https://img-va.myshopline.com/image/store/2000986376/1663054163488/Hbe20374eba504af8b3b088a2f5d87658h.jpg?w=1000&h=1000","alt":"sdf","id":"5949197836163148889"}],"created_at":"2023-05-24T19:32:12+08:00","template_path":null,"handle":"t-shirt-2","variants":[{"inventory_quantity":0,"image":{"src":"https://img-va.myshopline.com/image/store/2000986376/1663054163488/Hbe20374eba504af8b3b088a2f5d87658h.jpg?w=1000&h=1000","alt":"sdf","id":"5949197836163148889"},"required_shipping":true,"compare_at_price":"11.00","taxable":true,"option5":null,"created_at":"2023-05-24T19:32:12+08:00","weight":"1.20","title":"Red","inventory_policy":"deny","updated_at":"2023-05-24T19:32:12+08:00","weight_unit":"kg","inventory_item_id":"5949197838801706542","price":"10.11","product_id":"16059491978375601928251954","option3":null,"option4":null,"inventory_tracker":true,"option1":"Red","id":"18059491978379292915831954","option2":null,"sku":"2111341123434","barcode":"1111111123434"}],"title":"sdf","tags":"sdfsdf3","published_scope":"web","product_type":"NORMAL","updated_at":"2023-05-24T19:32:12+08:00","vendor":"sdf","subtitle":"sdf","options":[{"product_id":"16059491978375601928251954","values":["Red"],"values_images":{"Red":"https://img-va.myshopline.com/image/store/2000986376/1663054163488/Hbe20374eba504af8b3"},"name":"Color","id":"16159491978379292915851954"}],"spu":null,"id":"16059491978375601928251954","published_at":"2023-05-24T19:32:12+08:00","product_behavior":"","product_category":"sdf","status":"active"}}
+{"product":{"image":{"src":"https://img-va.myshopline.com/image/store/2000986376/1663054163488/Hbe20374eba504af8b3b088a2f5d87658h.jpg?w=1000&h=1000","alt":"sdf","id":"5949197836163148889"},"body_html":"sdf","images":[{"src":"https://img-va.myshopline.com/image/store/2000986376/1663054163488/Hbe20374eba504af8b3b088a2f5d87658h.jpg?w=1000&h=1000","alt":"sdf","id":"5949197836163148889"}],"created_at":"2023-05-24T19:32:12+08:00","template_path":null,"handle":"t-shirt-2","variants":[{"inventory_quantity":0,"image":{"src":"https://img-va.myshopline.com/image/store/2000986376/1663054163488/Hbe20374eba504af8b3b088a2f5d87658h.jpg?w=1000&h=1000","alt":"sdf","id":"5949197836163148889"},"required_shipping":true,"compare_at_price":"11.00","taxable":true,"option5":null,"created_at":"2023-05-24T19:32:12+08:00","weight":"1.20","title":"Red","inventory_policy":"deny","updated_at":"2023-05-24T19:32:12+08:00","weight_unit":"kg","inventory_item_id":"5949197838801706542","price":"10.11","product_id":"16059491978375601928251954","option3":null,"option4":null,"inventory_tracker":true,"option1":"Red","id":"18059491978379292915831954","option2":null,"sku":"2111341123434","barcode":"1111111123434"}],"title":"sdf","tags":"sdfsdf3","published_scope":"web","product_type":"NORMAL","updated_at":"2023-05-24T19:32:12+08:00","vendor":"sdf","subtitle":"sdf","options":[{"product_id":"16059491978375601928251954","values":["Red"],"values_images":{"Red":"https://img-va.myshopline.com/image/store/2000986376/1663054163488/Hbe20374eba504af8b3"},"name":"Color","id":"16159491978379292915851954"}],"spu":null,"id":"16059491978375601928251954","published_at":"2023-05-24T19:32:12+08:00","product_behavior":"","product_category":"sdf","status":"active"}}
+
+失败与异常​
+当查询的时候，因为各种原因，会导致 SHOPLINE 停止运行你的任务，常见原因如下：
+
+权限不足，你提交了一个查询，但没有查询该项目的权限，需要先申请权限。
+内部异常，你提交的查询由于某种不可预测的原因，导致无法处理。
+Token过期，在你执行任务的期间，你的 access token 过期了。你可能需要用新的 token 重新提交任务。
+结果通知​
+你可以通过两种方式获取任务执行结果
+
+定时调用批量任务结果查询接口来获取任务执行进度
+当批量变更任务执行完成后，我们将提供 webhook 通知，事件为：others/update，你可以根据通知结果字段中的 status：判断任务进度，type：判断任务类型，url：获取任务结果

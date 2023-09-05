@@ -1,0 +1,311 @@
+支付应用签名逻辑​
+为了确保你的支付应用与SHOPLINE平台间的访问是安全的、未被篡改的，SHOPLINE已对整个交互流程增加了签名验证逻辑。阅读本文，你会了解到签名算法以及其使用场景。
+
+签名算法​
+算法简介​
+支付开放接口签名生成算法为 SHA1withRSA , 流程如下：
+
+公钥的维护​
+SHOPLINE公钥的获取​
+你可以支付应用的首页找到SHOPLINE平台公钥；该公钥用于对SHOPLINE发起的请求进行验签，防止第三方伪造请求；image.png
+
+支付应用公钥提交​
+你需要在支付应用拓展页面，填写支付应用方的公钥；SHOPLINE平台将使用该公钥对支付应用的响应/请求进行验签，防止第三方伪造；image.pngimage.png
+
+提示：请注意妥善保管好你的私钥，避免由于私钥泄漏导致安全故障；
+
+签名规则​
+提示：当前的签名规则存在一些问题，正在准备升级中。如需要详细了解，请咨询我们工作人员。
+
+参与签名的字段​
+请求/响应体内容中所有值不为null的字段，都需要参加签名，sign字段不会参与签名；
+
+签名串组装​
+对参数名进行字典排序，排序后用'=' 进行参数名和参数值的拼接，通常会使用'&'进行多个参数之间的拼接，即 key1=val2&key2=val2&key3=val3；
+
+特殊类型​
+当某个key对应的value为复杂类型时会有不同的处理方式：
+
+键值对象，你需要将该对象的每一个键值对按组装方式进行递归组装；同时，当前的key将会被忽略；
+列表类型，你需要将列表中的每个元素处理完后，用英文逗号,连接起来；如果列表中的元素是键值对象，该key也会被忽略；
+键值对象和列表类型在加入签名原文时，不会添加&链接符号；
+
+举例​
+原始对象
+
+{
+	"simple": 1,
+	"listSimple": ["1", "2"],
+	"object": {
+		"okey1": "value1",
+		"okey2": "value2   "
+	},
+	"listObject": [{
+			"lokey1": "1value1",
+			"lokey2": "1value2   "
+		},
+		{
+			"lokey1": "2value1",
+			"lokey2": "2value2   "
+		}
+	]
+}
+
+待签名原文
+
+lokey1=1value1&lokey2=1value2   &lokey1=2value1&lokey2=2value2   listSimple=1,2&okey1=value1&okey2=value2   &simple=1
+
+伪代码​
+// 获取待签名原文
+func buildStr(Map<K,V> map) {
+	return buildStr("", map)
+}
+func buildStr(String str, Map<K,V> map) {
+	map.sortByKey();
+	for(k,v in map) {
+  	if (v is simple) {
+  		// 处理简单类型
+    	if (str != "") {
+      	str = str + "&";
+      }
+    	str = str + key + "=" + value;
+    } else if (v is list) {
+    	// 处理列表类型
+      if (item in list is simple) {
+      	 str = str + key + "=" + value.join(",");
+      } else {
+        	for (item in list) {
+          	if (item is map) {
+            	str = buildStr(str, item);
+            }
+						// 其他类型暂未处理...
+          }
+      }
+    } else {
+    	// 处理复杂类型
+    	str = buildStr(str, (Map)v);
+    }
+  }
+	return str;
+}
+
+Demo​
+java​
+import org.apache.commons.lang3.StringUtils;
+import java.math.BigDecimal;
+import java.nio.charset.StandardCharsets;
+import java.security.KeyFactory;
+import java.security.PrivateKey;
+import java.security.PublicKey;
+import java.security.Signature;
+import java.security.spec.PKCS8EncodedKeySpec;
+import java.security.spec.X509EncodedKeySpec;
+import java.util.*;
+public class SignatureDemo {
+	public static final String SIGN_ALG_NAME = "SHA1withRSA";
+	public static final String KEY_ALG_NAME = "RSA";
+	public static void main(String[] args) {
+		String privateKey = "你的私钥";
+		String publicKey = "你的公钥";
+		Map<String, Object> params = new HashMap<>();
+		params.put("key", "value");
+		String signatureSourceString = buildSignatureSourceString(params);
+		String signature = signature(privateKey, params);
+		boolean b = checkSignWithPublicKey(publicKey, signatureSourceString, signature);
+		System.out.println("b = " + b);
+	}
+	/**
+	 *
+	 * @param privateKey  加签私钥
+	 * @param params      待加签的参数对象
+	 * @return 签名串
+	 */
+	public static String signature(String privateKey, Map<String, Object> params) {
+		String signatureSource = buildSignatureSourceString(params);
+		return signWithPrivateKey(privateKey, signatureSource);
+	}
+	/**
+	 * 生成待签名的文本
+	 * @param params 待加签的参数对象
+	 * @return 签名明文
+	 */
+	public static String buildSignatureSourceString(Map<String, Object> params) {
+		StringBuffer content = new StringBuffer();
+		append(content, params);
+		return content.toString();
+	}
+	private static void append(StringBuffer content, Map<String, Object> sourceObj) {
+		if (null == sourceObj || sourceObj.keySet().size() == 0) {
+			return;
+		}
+		List<String> keyList = new ArrayList<>(sourceObj.keySet());
+		Collections.sort(keyList);
+		for (String key : keyList) {
+			Object value = sourceObj.get(key);
+			if (value instanceof List) {
+				Object itemValue = ((List<?>) value).get(0);
+				if (isScalarValue(itemValue)) {
+					content.append(key);
+					content.append("=");
+					content.append(StringUtils.join(((List<?>) value).toArray(), ","));
+				} else {
+					for (int i = 0; i < ((List<?>) value).size(); ++i) {
+						Object item = ((List<?>) value).get(i);
+						if (item instanceof Map) {
+							append(content, (Map) item);
+						}
+					}
+				}
+			} else if (value instanceof Map) {
+				append(content, (Map) value);
+			} else if (isScalarValue(value)) {
+				if (content.length() > 0) {
+					content.append("&");
+				}
+				content.append(key);
+				content.append("=");
+				content.append(value);
+			}
+		}
+	}
+	/**
+	 * 检查值是否是 标量
+	 * @param value 值
+	 * @return 如果是 标量 能返回true,否则返回 false
+	 */
+	private static boolean isScalarValue(Object value) {
+		return value instanceof String
+				|| value instanceof Float
+				|| value instanceof Double
+				|| value instanceof Integer
+				|| value instanceof Long
+				|| value instanceof BigDecimal
+				|| value instanceof Boolean;
+	}
+	private static String signWithPrivateKey(String privateKey, String signSourceStr) {
+		try {
+			PKCS8EncodedKeySpec pkcs8EncodedKeySpec = new PKCS8EncodedKeySpec(decodeBase64(privateKey));
+			KeyFactory keyFactory = KeyFactory.getInstance(KEY_ALG_NAME);
+			PrivateKey myPrivateKey = keyFactory.generatePrivate(pkcs8EncodedKeySpec);
+			Signature signet = Signature.getInstance(SIGN_ALG_NAME);
+			signet.initSign(myPrivateKey);
+			signet.update(signSourceStr.getBytes(StandardCharsets.UTF_8));
+			byte[] signed = signet.sign();
+			return new String(org.apache.commons.codec.binary.Base64.encodeBase64(signed));
+		} catch (Exception ex) {
+			throw new RuntimeException(ex.getMessage(), ex);
+		}
+	}
+	public static boolean checkSignWithPublicKey(String publicKey, String signSourceStr, String signedStr) {
+		try {
+			X509EncodedKeySpec bobPubKeySpec = new X509EncodedKeySpec(decodeBase64(publicKey));
+			KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+			PublicKey pubKey = keyFactory.generatePublic(bobPubKeySpec);
+			byte[] signed = decodeBase64(signedStr);
+			Signature signetCheck = Signature.getInstance(SIGN_ALG_NAME);
+			signetCheck.initVerify(pubKey);
+			signetCheck.update(signSourceStr.getBytes(StandardCharsets.UTF_8));
+			return signetCheck.verify(signed);
+		} catch (Exception ex) {
+			log.warn("sign check fail, signSourceStr: {}, signedStr: {}", signSourceStr, signedStr, ex);
+			return false;
+		}
+	}
+	private static byte[] decodeBase64(String sourceStr) {
+		return org.apache.commons.codec.binary.Base64.decodeBase64(sourceStr.getBytes(StandardCharsets.UTF_8));
+	}
+}
+
+php​
+class SignatureUtilsBySHA1WithRSA {
+/**
+* 根据参数生成待签名前的明文串 
+*/
+  public static function genSignatureSourceStr($params){
+    $signSourceStr = "";
+    $params = json_decode(json_encode($params));
+    return self::append($signSourceStr, $params); 
+  }
+  public static function append(&$content, $params){
+    $emptyObj = false;
+    if(is_object($params) && count(get_object_vars($params))==0){
+      return ;
+    }
+    $params = (array)$params;
+    ksort($params);
+    foreach ($params as $key => $value) {
+      if(is_null($value)){
+        continue;
+      }
+      $prefix = empty($content) ? "" : "&";
+      if(is_scalar($value) || empty($value)){
+        $content .= $prefix.$key."=".(is_null($value) ? "" : $value);
+      }else{
+        if(is_array($value)){
+          if(empty($value)){
+            $content .= $key."=";
+          }elseif(is_scalar($value[0])){
+            $content .= $key."=".join(",", $value);
+          }else{
+            if(isset($value[0])){
+              foreach($value as $v){
+                self::append($content, $v);
+              }
+            }else{
+              self::append($content, $value);
+            }
+          }
+        }elseif(is_object($value)){
+          self::append($content, $value);
+        }else{
+          self::append($content, $value);
+        }
+      }
+    }
+    return $content;
+  }
+/**
+* 根据待签名原文 和 私钥 生成 签名串
+* @param privateKey  加签私钥
+* @param params      待加签的参数对象
+* @return 签名串
+*/
+  public static function genSignature($toSign, $privateKey){
+    $privateKey = "-----BEGIN RSA PRIVATE KEY-----\n" .
+      wordwrap($privateKey, 64, "\n", true) .
+      "\n-----END RSA PRIVATE KEY-----";
+    $key = openssl_get_privatekey($privateKey);
+    openssl_sign($toSign, $signature, $key);
+    openssl_free_key($key);
+    $sign = base64_encode($signature);
+    return $sign;
+  }
+/**
+* 根据待签名原文 和 私钥 生成 签名串
+* @param privateKey  加签私钥
+* @param params      待加签的参数对象
+* @return 签名串
+*/
+  public static function verifySignature($data, $sign, $pubKey){
+    $sign = base64_decode($sign);
+    $pubKey = "-----BEGIN PUBLIC KEY-----\n" .
+      wordwrap($pubKey, 64, "\n", true) .
+      "\n-----END PUBLIC KEY-----";
+    $key = openssl_pkey_get_public($pubKey);
+    $result = openssl_verify($data, $sign, $key, OPENSSL_ALGO_SHA1) === 1;
+    return $result;
+  }
+}
+
+使用场景​
+验签场景​
+同步请求​
+当SHOPLINE平台向支付应用发起请求时（支付、支付查询、退款、退款查询等），将会在Http请求头pay-api-signature携带签名值； 保证后续添加字段时，不会导致已接入的支付应用验签失败；支付应用方需要在接收到原始报文之后，先进行签名验证，再将数据内容结构化； SHOPLINE在发起支付请求时，会在请求体添加一个随机字段，如果先结构化再验签，是一定会验签失败的； 如果验签失败，需要当成非法请求处理，避免安全故障；
+
+加签场景​
+同步响应​
+针对SHOPLINE平台发起请求的同步响应，支付应用方需要在Http响应头pay-api-signature携带签名值； SHOPLINE平台将会对该响应进行验签，如果验签失败，将视为接口调用失败； 同样的，SHOPLINE平台将会先进行签名验证，再将数据内容格式化；
+
+异步通知​
+在 商家完成支付账号绑定（必须）、通知支付结果（可选）、通知退款结果（可选），支付应用方可以通过 Payments APP API通知SHOPLINE平台； 在调用响应的开放接口时，除了在Http请求头携带开放平台的Authorization鉴权字段外，还需额外在请求头signature中携带请求的签名值； SHOPLINE平台将会对该请求进行验签，如果验签失败，将认为是非法请求。
+

@@ -1,0 +1,22 @@
+授权​
+1、能力介绍​
+使用 Oauth 方法集允许你修改浏览器 URL，并可以在 SHOPLINE 后台跳转至授权页面。列如：商家在安装内嵌应用时，可以使用此方法重定向至授权页面。
+
+2、相关 API​
+API 列表：
+
+名称	描述	返回值
+invoke	跳转至授权页面	void
+参数说明:
+
+名称	描述	类型
+scope	权限点	string 多个权限点逗号分隔
+appKey	应用对应 appkey	string
+redirectUri	应用回调地址	string
+3、示例代码​
+import { Oauth } from '@shoplinedev/appbridge'
+Oauth.create(app).invoke({
+  scope,
+  appKey,
+  redirectUri
+})

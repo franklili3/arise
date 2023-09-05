@@ -1,0 +1,32 @@
+重定向​
+1、能力介绍​
+使用 Redirect 方法集允许你修改浏览器 URL，并可以在 SHOPLINE 后台打开特定的菜单和页面。列如：当应用内某个场景的能力需要和 SHOPLINE 后台某个特定页面一起操作时，可以使用此方法让商家跳转至SHOPLINE 后台完成特定操作。
+
+2、相关 API​
+API 列表：
+
+名称	描述	参数
+replaceTo	更换当前 window url	url
+routerTo	基于 admin 后台进行页面跳转	url
+ToAdminPage	基于admin后台进行特定页面跳转	ToAdminPage params
+ToAdminPage 参数说明：
+
+名称	描述	类型
+admin_section	特定资源页	ADMIN_SECTION
+id	资源id	string
+create	进入创建资源页	boolean
+newContext	打开新的页面	boolean
+特别说明：如果同时存在 create 跟 id，优先跳转至创建资源页。
+
+3、示例代码​
+import { Redirect } from '@shoplinedev/appbridge'
+const redirect = Redirect.create(app)
+// 重定向
+redirect.replaceTo(redirectUri)
+// 路由跳转
+redirect.routerTo(redirectUri)
+redirect.ToAdminPage(Redirect.ADMIN_SECTION.CATEGORIES, {
+  create: true,
+  id: '1000001',
+  newContext: true
+})

@@ -1,0 +1,27 @@
+HTTP 状态码​
+SHOPLINE API response 状态码和错误说明​
+当 SHOPLINE 收到对 API 的请求时，根据原始请求，可以在响应中返回许多不同的 HTTP 状态码
+
+状态码	状态码结果	详细说明
+200	ok	已成功处理该请求
+201	Created	请求已完成，并创建新资源
+202	Accepted	请求已被接受，但尚未处理
+303	See Other	GET方法重定向
+400	Bad Request	服务器无法理解该请求，通常是由于语法错误或Content-Type标头未正确设置为application/json，或者请求的参数类型不对
+401	Unauthorized	身份认证错误，包含两种情况：1. 身份凭证未提供2. 身份凭证已提供，但信息有误
+402	Payment Required	请求的商店目前被冻结，店主需要登录店铺后台并支付未结余额才能解冻店铺
+403	Forbidden	服务器拒绝响应请求
+404	Not Found	未找到你请求的资源
+406	Not Acceptable	请求的 Accept 头包含有不可接受的类型
+412	Precondition Failed	先决条件失败，请求体中包含高风险内容
+脚本内容
+422	Unprocessable Entity	请求正文格式正确，但包含语义错误，422错误可包括，但不限于：
+格式不正确的输入
+
+响应body的errors参数中会提供详细信息
+423	Locked	请求的商店目前已锁定，如：商店反复超过 API 请求限制，或者帐户存在问题，例如检测到泄露或欺诈风险，则商店将被锁定。如果你的商店被锁定，请联系与你对接的 SHOPLINE 人员
+429	Too Many Requests	请求被限流，因为应用程序已超出接口访问的频次限制
+500	Internal Server Error	SHOPLINE 发生内部错误，遇到此问题，请联系与你对接的 SHOPLINE 人员
+501	Not Implemented	请求的接口在该特定商店不可用，例如外部应用请求到了一个SHOPLINE 仅对内部应用开放的接口，这个响应也可能表明这个接口是为将来使用而保留的
+503	Service Unavailable	服务器当前不可用
+504	Gateway Timeout	请求无法及时响应导致超时，请你尝试将其分解为多个较小的请求

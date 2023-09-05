@@ -1,0 +1,20 @@
+消息​
+1、能力介绍​
+使用 Message 方法集可以在界面顶部显示消息，以提供有关操作结果的快速而简短的反馈。用于传达对不重要的操作的一般确认。例如，你可能会显示一条 toast 消息，通知商家他们最近的操作成功了。
+
+2、相关 API​
+API 列表：
+
+名称	描述	返回值
+Open	打开消息	void
+参数说明:
+
+名称	描述	类型
+messageInfo	消息内容	string
+type	消息类型	success | warning | info | error
+3、示例代码​
+import { Modal, Message } from '@shoplinedev/appbridge'
+Message.create(app).Open({
+  messageInfo: 'successful',
+  type: 'success'
+})

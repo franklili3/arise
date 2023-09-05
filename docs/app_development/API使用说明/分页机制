@@ -1,0 +1,77 @@
+分页机制​
+说明​
+SHOPLINE REST Admin API 基于游标来实现分页查询，支持分页查询的接口具备公用的入参和出参，并且同时支持 since_id 模式（主要用于第一页）及 page_info 模式（非第一页）两种模式。
+
+SHOPLINE 的 REST Admin API 在进行分页查询的时候，可能在响应的 header里面返回一个 link 字段来代表可能存在的下一页和上一页。 你需要从该字段解析得到获取翻页数据的URL。
+
+该分页规则对所有版本的 REST Admin API 都生效。
+
+参数说明​
+page_info 代表某一个确定的分页的唯一ID。在 link 响应头中获取
+limit 每页的数量限制 默认50，最多1000条
+fields 要查询的字段 默认是全部字段，多个一级字段用英文 , 分割
+如何分页​
+举个例子，假设我们需要检索 Shopline 商店中的商品，每页查询10条，查询第二页：
+
+构造如下请求：admin/openapi/{version}/products/products.json?limit=10
+从响应中获取 link 字段
+注意,如果没 link 字段,说明你已经请求到了全部的数据，无需分页。
+
+当只有下一页的时候,返回结构如下
+<https://{handle}.myshopline.com/admin/openapi/{version}/products/products.json?limit=1&page_info=eyJzaW5jZUlkIjoiMTYwNTc1OTAxNTM4OTA4Mjk1MjExMTI3ODgiLCJkaXJlY3Rpb24iOiJuZXh0IiwibGltaXQiOjF9>; rel="next"
+
+当存在上一页和下一页的时候,返回结构如下
+<https://{handle}.myshopline.com/admin/openapi/{version}/products/products.json?limit=1&page_info=eyJzaW5jZUlkIjoiMTYwNTc2NjAxNzI1MjczOTI4MDEwOTI3ODgiLCJkaXJlY3Rpb24iOiJuZXh0IiwibGltaXQiOjF9>; rel="next", 
+
+<https://{handle}.myshopline.com/admin/openapi/{version}/products/products.json?limit=1&page_info=eyJzaW5jZUlkIjoiMTYwNTc2NjAxNzI1MjczOTI4MDEwOTI3ODgiLCJkaXJlY3Rpb24iOiJwcmV2IiwibGltaXQiOjF9>; rel="previous"
+
+如有必要，在Java中，您可以通过 <([^>]+)>; rel="([^"]+)" 正则表达式进行提取page_info
+
+rel解释​
+next 代表下一页的ID
+previous 代表上一页的ID。
+当需要下一页的时候，你可以直接从link中获取到下一页的 URL。例如在上面的例子中，需要访问下一页的数据，直接从下面的数据进行解析
+
+<https://{handle}.myshopline.com/admin/openapi/{version}/products/products.json?limit=1&page_info=eyJzaW5jZUlkIjoiMTYwNTc2NjAxNzI1MjczOTI4MDEwOTI3ODgiLCJkaXJlY3Rpb24iOiJuZXh0IiwibGltaXQiOjF9>; rel="next", 
+
+<https://{handle}.myshopline.com/admin/openapi/{version}/products/products.json?limit=1&page_info=eyJzaW5jZUlkIjoiMTYwNTc2NjAxNzI1MjczOTI4MDEwOTI3ODgiLCJkaXJlY3Rpb24iOiJwcmV2IiwibGltaXQiOjF9>; rel="previous"
+
+解析得到的URL如下
+
+https://{handle}.myshopline.com/admin/openapi/{version}/products/products.json?limit=1&page_info=eyJzaW5jZUlkIjoiMTYwNTc2NjAxNzI1MjczOTI4MDEwOTI3ODgiLCJkaXJlY3Rpb24iOiJuZXh0IiwibGltaXQiOjF9
+
+现在，你可以通过上面的URL发起下一页的请求。
+
+注意，当您的URL中包含了page_info参数,此时该URL本身 除了 limit 和 fields 字段，其他任何过滤字段都将被忽略
+
+详细参数描述​
+since_id模式（主要用于第一页）​
+入参：
+
+参数	类型	参数位置	必填	描述
+since_id	String	query	否	起始资源id，不填默认从0开始，如：商品id，订单id
+limit	Long	query	否	请求每页数量，不填默认根据每个接口的定义
+出参：
+
+参数	类型	参数位置	必填	样例	描述
+link	String	header	否	<https://{handle}.myshopline.com/admin/openapi/{version}/products.json?page_info={page_info}&limit={limit}>;rel={next}
+<https://{handle}.myshopline.com/admin/openapi/{version}/products.json?page_info={page_info}&limit={limit}>;rel={previous}	
+handle：店铺唯一标识
+version：接口版本标识
+page_info：上/下一页相同请求条件的编码串
+limit：请求每页数量
+page_info模式（非第一页）​
+入参：
+
+参数	类型	参数位置	必填	描述
+page_info	String	query	否	上/下一页相同请求条件的编码串
+limit	Long	query	否	请求每页数量，不填默认根据每个接口的定义
+出参：
+
+参数	类型	参数位置	必填	样例	描述
+Link	String	header	否	<https://{handle}.myshopline.com/admin/openapi/{version}/products.json?page_info={page_info}&limit={limit}>;rel={next}
+<https://{handle}.myshopline.com/admin/openapi/{version}/products.json?page_info={page_info}&limit={limit}>; rel={previous}	
+handle：店铺唯一标识
+version：接口版本标识
+page_info：上/下一页相同请求条件的编码串
+limit：请求每页数量

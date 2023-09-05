@@ -1,0 +1,141 @@
+处理退款请求​
+为了处理退款，Shopline 将使用预定的参数协议，对您的支付应用设置的最新的退款URL发起HTTP调用，下图说明了支付应用程序和 Shopline 之间的退款流程如何工作：
+
+image.png
+
+商家要求退款。
+SHOPLINE 向支付应用程序发送后端请求，指定退款。
+该支付应用程序处理退款。
+支付应用程序完成退款处理，并向 SHOPLIN E返回退款结果。
+SHOPLINE 更新退款状态。
+退款状态流转​
+对于通过支付应用发起的退款请求，我们期望它的退款状态流转如下：
+
+image.png
+
+请求退款接口​
+在请求退款时，Shopline将通过Http-Post请求您提供的退款Url；
+
+请求头示例​
+对应 Http Request Header
+
+pay-api-version: 1.0.0
+pay-api-idempotency-key: TESTKEYKEYKEY
+pay-api-signature: SIGNSIGNSIGN
+pay-api-timestamp: 1665632758606000
+
+字段	是否必填	含义
+pay-api-version	是	您在配置支付应用拓展时，填入的API VERSION
+pay-api-idempotency-key	是	幂等key
+pay-api-signature	是	签名值
+pay-api-timestamp	是	请求发起时的时间戳
+请求正文示例​
+对应 Http Request Body
+
+{
+  "refundTransactionId": "test_9b20051a834a",
+  "channelOrderTransactionId": "test_23ad103a2d40",
+  "amount": 60,
+  "currency": "test_999f91411796",
+  "notifyUrl": "test_6682bc9bbd0e",
+  "reason": "test_41b3cb8a59e7"
+}
+
+字段	类型	是否必填	含义
+refundTransactionId	string	是	退款流水号
+channelOrderTransactionId	string	是	支付单的渠道流水ID
+amount	integer	是	退款的金额
+currency	string	是	退款的币种
+notifyUrl	string	是	异步结果的通知URL
+reason	string	否	退款原因
+响应头示例​
+SHOPLINE 必须接收到预期的结果，才会认为当次调用是成功的，如果没有返回预期的结果，那么shopline将在一定时间后，用同样的参数再次发起请求，直到最终拿到预期的响应或者达到最大重试次数
+对应 Http Responese Header
+
+pay-api-signature: SIGNSIGNSIGN
+
+字段	是否必填	含义
+pay-api-signature	是	签名值
+响应正文示例​
+对应 Http Responese Body
+
+{
+  "refundTransactionId": "test_b2d02e4cf198",
+  "channelRefundTransactionId": "test_8bc8a9f59480",
+  "channelOrderTransactionId": "test_93d9fea7eda2",
+  "amount": 80,
+  "currency": "test_cea487102235",
+  "refundStatus": "test_c07b9a2944be",
+  "returnCode": "test_ee09856d2a50",
+  "returnMessage": "test_d7d75b56590f",
+  "returnMessageId": "test_adbad71be1c1"
+}
+
+字段	类型	是否必填	含义
+refundTransactionId	string	是	退款流水号
+channelRefundTransactionId	string	是	渠道方退款流水ID
+channelOrderTransactionId	string	是	支付单的渠道流水ID
+amount	integer	是	退款金额
+currency	string	是	退款币种
+refundStatus	string	是	退款状态
+PROCESSING: 处理中
+FAILED: 退款失败
+SUCCEEDED: 退款成功
+returnCode	string	是	接口状态码
+SUCCESS: 请求成功
+returnMessage	string	否	失败原因
+returnMessageId	string	否	渠道响应标识UUID，如 traceId
+同步退款结果​
+在接收到退款请求后，如果您不能同步处理到终态，那么后续可以通过以下两种方式，与Shopline同步退款结果，Shopline建议您两种方式同时提供：
+
+提供一个退款查询URL，那么Shopline将会在调用退款URL成功后，以一定的频率通过退款查询URL发起HTTP调用，尝试获取该笔支付的结果，直到获取到终态或者最终超时；
+主动调用我们的退款通知Webhook接口，直到返回正确的响应；
+退款查询请求头示例​
+对应 Http Request Header
+
+pay-api-version: 1.0.0
+pay-api-idempotency-key: TESTKEYKEYKEY
+pay-api-signature: SIGNSIGNSIGN
+pay-api-timestamp: 1665632758606000
+
+字段	是否必填	含义
+pay-api-version	是	您在配置支付应用拓展时，填入的API VERSION
+pay-api-idempotency-key	是	幂等key
+pay-api-signature	是	签名值
+pay-api-timestamp	是	请求发起时的时间戳
+退款查询请求参数示例​
+对应 Http Request Query
+
+refundTransactionId = SLASDJK12312131
+
+字段	是否必填	含义
+refundTransactionId	是	退款流水号
+退款查询响应头示例​
+对应 Http Response Header
+
+pay-api-signature: SIGNSIGNSIGN
+
+字段	是否必填	含义
+pay-api-signature	是	签名值
+退款查询响应正文示例​
+对应 Http Response Header Body
+
+字段	类型	是否必填	含义
+refundTransactionId	string	是	退款流水号
+channelRefundTransactionId	string	是	渠道的退款流水号
+channelOrderTransactionId	string	是	渠道支付单的渠道流水ID
+amount	integer	是	退款金额
+currency	string	是	退款币种
+refundStatus	string	是	退款状态
+PROCESSING: 处理中
+FAILED: 退款失败
+SUCCEEDED: 退款成功
+failCode	string	否	失败错误码
+failMessage	string	否	失败原因
+returnCode	string	是	接口状态码
+SUCCESS: 请求成功
+returnMessage	string	否	失败原因
+returnMessageId	string	否	渠道响应标识UUID，如 traceId
+主动通知Shopline退款结果​
+您可以通过调用退款结果通知的OpenApi接口，来主动通知Shopline退款结果；
+

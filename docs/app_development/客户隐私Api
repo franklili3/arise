@@ -1,0 +1,143 @@
+客户隐私 API​
+客户隐私 API 是一种基于浏览器的 JavaScript API，开发人员可以通过它读取和写入与买家同意被跟踪相关的 cookie。API 作为全局 window.Shopline 对象上的属性实现，可供所有 SHOPLINE 店铺访问。
+
+您可以使用 API 构建同意收集机制，例如通用数据保护条例（GDPR）合规性横幅。对于营销和分析用例，您可以在跟踪或导出有关店面访客的数据时使用 API，以涵盖 GDPR 合规性。
+
+⚠️ 注意
+要使用客户隐私 API，商家必须在其店铺管理后台设置中针对应用的目标区域限制数据收集。
+
+同意收集​
+您可以使用以下方法收集同意：
+
+window.Shopline.loadFeatures - 必须使用加载方法来确保在横幅初始化时 API 可用。
+shouldShowGDPRBanner(): boolean - 确定是否在店面显示 GDPR 横幅。
+setTrackingConsent(consent: boolean, callback: function) - 在访问者与横幅互动后，将访问者的同意设置为接受或拒绝。
+如果 API 加载失败，则横幅将不会初始化。
+
+初始化客户隐私 API​
+要初始化客户隐私 API，您需要使用 loadFeatures方法并在回调函数中初始化您的横幅。
+
+window.Shopline.loadFeatures(
+  [
+    {
+      name: 'consent-tracking-api',
+      version: '0.1'
+    }
+  ],
+  error => {
+    if (error) {
+      throw error; // 如果不执行后面的操作，这里可以提前抛出错误
+    }
+    new Banner(); // 或者在这里初始化您的横幅
+  }
+)
+
+shouldShowGDPRBanner(): boolean​
+您可以使用此方法确定是否应显示 GDPR 横幅。
+
+使用方式​
+window.Shopline.customerPrivacy.shouldShowGDPRBanner()
+
+返回值​
+此方法返回一个布尔值，指示您是否应该向访问者显示 GDPR 横幅。
+该响应汇总了访问者的位置、商家的偏好以及访问者在过去一年中是否已经提供了同意值。
+
+过去一年提供的访客同意书	欧盟访客	商家限制对欧洲客户的跟踪	布尔值
+不适用	不适用		false
+✘	✔	✔	true
+✘	✘	✔	false
+✔	✔	✔	false
+✔	✘	✔	false
+setTrackingConsent（consent: boolean, callback: function）​
+您可以使用此方法设置买家对跟踪同意请求的响应。
+
+使用方式​
+window.Shopline.customerPrivacy.setTrackingConsent(consent: boolean, callback: function)
+
+调用参数​
+参数名	类型	描述
+consent	boolean	表示买方对跟踪同意请求的响应。您可以使用横幅 UI 元素或其他类似机制获取响应。如果设置为 true，则 API 返回一个名为 trackingConsentAccepted的自定义事件。如果设置为 false则不返回自定义事件，但仍会执行回调函数。
+callback	function	在 API 设置跟踪同意后执行的函数。您可以使用此功能隐藏 UI 横幅元素或执行类似的任务。
+示例​
+以下示例请求显示了一个 JavaScript 函数，该函数设置 consent为 true并执行回调函数隐藏横幅。
+
+function handleAccept(e) {
+  window.Shopline.customerPrivacy.setTrackingConsent(true, hideBanner);
+  document.addEventListener('trackingConsentAccepted', function () {
+    console.log('trackingConsentAccepted event fired');
+  })
+}
+
+回调函数结果​
+API 执行回调函数，并可选择发出一个名为 trackingConsentAccepted的自定义事件。
+
+示例​
+成功的请求返回一个包含状态的对象：
+
+{
+  code: "SUCCESS",
+  data: true,
+  message: "OK",
+  success: true
+}
+
+如果请求有错误，则返回错误对象：
+
+{
+  error: [string]
+}
+
+访客追踪​
+您可以使用客户隐私 API 检查客户是否同意被跟踪，以及商家是否决定禁止出售访问者数据。您必须确保已初始化 API。对于访问者跟踪同意，您应该实施一种机制来侦听可以在页面上异步触发的同意收集事件，以确保您不会错误任何跟踪机会。
+
+您可以使用以下方法收集同意：
+
+window.Shopline.loadFeatures - 执行加载方法来确保 API 在店面可用。
+userCanBeTracked(): boolean - 涵盖跟踪访问者（GDPR）的场景
+如果客户隐私 API 不可用，则可以继续进行跟踪和数据发送。在检查数据的跟踪或销售是否被阻止之前，所有方法都应先检查 API 是否可用。 API 检查示例：
+
+if (!window.Shopline.customerPrivacy || window.Shopline.customerPrivacy.userCanBeTracked()) {
+  startTracking()
+}
+
+初始化客户隐私 API​
+要初始化客户隐私 API，您需要使用 loadFeatures方法确保该 API 在页面上可用。
+
+window.Shopline.loadFeatures(
+  [
+    {
+      name: 'consent-tracking-api',
+      version: '0.1'
+    }
+  ],
+  error => {
+    if (error) {
+      throw error; // 如果不执行后面的操作，这里可以提前抛出错误
+    }
+  }
+)
+
+userCanBeTracked(): boolean​
+您可以使用此方法返回店面访客是否同意被跟踪。
+
+使用方式​
+window.Shopline.customerPrivacy.userCanBeTracked();
+
+返回值​
+API 返回一个布尔值，指示是否可以跟踪用户。 该响应汇总了访问者的同意和位置，以及商家的偏好。
+
+访客同意	欧盟访客	商家限制对欧洲客户的跟踪	布尔值
+不适用	不适用	✘	false
+✔	✔	✔	true
+✔	✘	✔	true
+✘	✔	✔	false
+✘	✘	✔	false
+未申报	✔	✔	false
+未申报	✘	✔	true
+侦听同意收集​
+当在页面上收集到积极的跟踪同意时会触发一个 trackingConsentAccepted 事件。
+通过侦听此事件并在它触发时调用您的自定义开始跟踪方法，您可以避免由于缺少异步同意收集而导致的任何可能的数据丢失。
+
+document.addEventListener('trackingConsentAccepted', function () {
+  // 触发自定义方法，开始跟踪
+});

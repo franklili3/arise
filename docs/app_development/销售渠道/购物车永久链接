@@ -1,0 +1,48 @@
+购物车永久链接​
+购物车永久链接是一种能预加购商品至购物车，并将客户直接带到结账页的渠道。使用购物车永久链接可让你为客户提供多样顺畅的结账体验。
+
+在创建购物车永久链接时，你可以选择要应用的商品、结账和折扣。客户通过链接点击，将会直接跳转到加载有对应商品、结账和折扣信息的结账页，直接处理和完成结账。
+
+购物车永久链接具有持续性，顾名思义，生成后可以一直生效。你可将链接插入邮件，或应用于多种营销活动中，灵活便捷，带来更高的店铺转化。
+
+通过本文，你可以了解到如下信息：​
+创建购物车永久链接
+自定义购物车永久链接
+购物车永久链接示例
+创建购物车永久链接​
+你可以通过拼接商店的购物车页面链接，外加一个或多个商品sku_id 来手动构建购物车永久链接。 要查看完整的购物车永久链接，请参阅购物车永久链接示例。
+
+自定义购物车永久链接​
+购物车永久链接支持你自定义在 URL 链接上添加商品、结账、折扣信息，具体使用方法如下：
+
+商品信息​
+若使用购物车永久链接，必须保证链接上包含商品信息
+你需要按照此格式将商品信息添加在你的购物车URL链接后面，多个商品需要用逗号分割：http://{handle}.myshopline.com/cart/sku1_id:数量,sku2_id:数量,...
+商品sku_id可以从对应商品详情页URL获取image.png
+结账信息​
+你可选将期望客户使用的结账信息添加在链接中，可以按照此格式进行添加，多个结账信息需要用&符号进行串联：http://{handle}.myshopline.com/cart/sku1_id:数量,sku2_id:数量?checkout[email]=example@example.com&checkout[shipping_address][city]=NewYork
+所有支持的结账字段如下表格：
+添加格式	对应结账页字段
+checkout[email]	顾客下单邮件地址
+checkout[phone]	顾客下单电话
+checkout[shipping_address][name]	收货地址-姓名
+checkout[shipping_address][first_name]	收货地址-名
+checkout[shipping_address][last_name]	收货地址-姓
+checkout[shipping_address][address1]	收货地址-详细地址1
+checkout[shipping_address][address2]	收货地址-详细地址2
+checkout[shipping_address][district]	收货地址-区域
+checkout[shipping_address][city]	收货地址-城市
+checkout[shipping_address][province]	收货地址-省份
+checkout[shipping_address][country]	收货地址-国家
+checkout[shipping_address][zip]	收货地址-邮编
+折扣信息​
+你可选将折扣码添加在你的购物车URL链接后面，多个折扣码需要用逗号分割：http://{handle}.myshopline.com/cart/sku1_id:数量,sku2_id:数量?discount={discount_code1},{discount_code2}
+购物车永久链接示例​
+添加项	是否必需	场景	示例
+商品信息	必需	支持添加商品sku和数量	http://{handle}.myshopline.com/cart/sku1_id:数量,sku2_id:数量,...
+结账信息	可选	支持添加结账信息	http://{handle}.myshopline.com/cart/sku1_id:数量,sku2_id:数量?checkout[email]=example@example.com&checkout[shipping_address][city]=NewYork
+折扣信息	可选	支持添加折扣码信息	http://{handle}.myshopline.com/cart/sku1_id:数量,sku2_id:数量?discount={discount_code1},{discount_code2}
+TIPS
+链接中不支持空格
+结账信息中，标准地址数据出现匹配错误（比如省份字段应为广东，而链接上错误添加了省份为广州）则该数据将不被处理
+链接中所有支持的符号均为半角格式

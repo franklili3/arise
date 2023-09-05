@@ -1,0 +1,759 @@
+处理付款请求​
+当买家在结算流程中选中支付应用进行付款时，SHOPLINE 将使用预定的参数协议，对您的支付应用设置的最新的付款URL发起HTTP调用时，并将买家重定向到您返回的PaymentUrl；付款完成后，你需要将买家重定向回接口传递的RedirectUrl,买家将会在RedirectUrl等待最终的支付结果； 您可以用以下两种方式，将支付结果同步到 SHOPLINE：
+
+提供一个付款查询URL，那么 SHOPLINE 将会在调用付款URL后，已一定的频率通过付款查询URL发起HTTP调用，尝试获取该笔支付的结果，直到获取到终态或者最终超时（一般是24小时）；
+主动调用我们的付款通知Webhook接口，直到返回正确的响应；
+支付应用流程的工作原理​
+下图说明了支付应用程序和 SHOPLINE 之间的支付流程如何工作：
+
+跳转模式​
+image.png
+
+客户完成结帐，触发付款请求。
+SHOPLINE 向支付应用程序发送后端请求，指定要收取的金额和币种。
+该支付应用程序使用合作伙伴应用程序托管的支付页面的重定向 URL 进行响应。
+SHOPLINE 将客户重定向到重定向 URL。
+支付应用程序收集客户的支付凭证并按照后端请求中的描述处理支付。
+支付应用程序将支付结果发送到 SHOPLINE，SHOPLINE 将根据需要实施重试策略。
+SHOPLINE 使用重定向 URL 进行响应，并发送成功HTTP 状态。
+支付应用程序将客户重定向到 SHOPLINE。
+客户继续结账。
+需要注意，支付应用应当使用我们传递的支付单号做幂等处理。
+
+内嵌模式​
+image.png
+
+支付状态流转​
+对于通过支付应用发起的支付请求，我们期望它的支付状态流转如下：image.png
+
+请求付款接口​
+在请求付款时，Shopline将通过Http-Post请求您提供的付款Url；
+
+请求头示例​
+对应 Http Request Header
+
+pay-api-version: 1.0.0
+pay-api-idempotency-key: TESTKEYKEYKEY
+pay-api-signature: SIGNSIGNSIGN
+pay-api-timestamp: 1665632758606000
+pay-api-store-handle: xxx
+
+字段	是否必填	含义
+pay-api-version	是	您在配置支付应用拓展时，填入的API VERSION
+pay-api-idempotency-key	是	幂等key
+pay-api-signature	是	签名值
+pay-api-timestamp	是	请求发起时的时间戳
+pay-api-store-handle	是	店铺唯一标识，例如：store1
+请求正文示例​
+对应 Http Request Body
+
+{
+  "orderTransactionId": "test_4ea758952734",
+  "referenceOrderId": "test_ff13c864b7fc",
+  "amount": 47,
+  "currency": "test_6ecc3b427a9f",
+  "redirectUrl": "test_a273b5c641b4",
+  "notifyUrl": "test_188f3fe29ae2",
+  "billing": {
+    "personalInfo": {
+      "firstName": "test_fe18d6fc2798",
+      "lastName": "test_53fb73557da0",
+      "email": "test_e5e3dbd08790",
+      "identityType": "test_cac8c5abdbc7",
+      "identityNumber": "test_ebc761bb42ac",
+      "gender": "test_0704156bc002",
+      "phoneNumber": "test_e387bba596a8",
+      "homeTelephone": "test_a904ea96f89f",
+      "birthDay": "test_dccbf5b55cb6"
+    },
+    "address": {
+      "countryCode": "test_58ee6b67432f",
+      "state": "test_c86268fac927",
+      "stateCode": "test_bd232ee9b52a",
+      "city": "test_a8e72a4b7660",
+      "district": "test_60580c478afe",
+      "street": "test_f6ca14b11e07",
+      "street2": "test_9d168406be68",
+      "street3": "test_c9c85ef7c4b6",
+      "postcode": "test_7250544bd97d"
+    }
+  },
+  "shipping": {
+    "personalInfo": {
+      "firstName": "test_4db57f98c782",
+      "lastName": "test_d25c9b6d4a07",
+      "email": "test_089851321917",
+      "identityType": "test_2f2fcc09f376",
+      "identityNumber": "test_9b940715498a",
+      "gender": "test_5650bb1861d2",
+      "phoneNumber": "test_67507bac86dd",
+      "homeTelephone": "test_a09b85892bc2",
+      "birthDay": "test_9f05f7e481bb"
+    },
+    "address": {
+      "countryCode": "test_096475ce74d7",
+      "state": "test_c2113a8b18c9",
+      "stateCode": "test_2b8d522f55fa",
+      "city": "test_d0a6b9b780ca",
+      "district": "test_95a9222ca449",
+      "street": "test_a423b3d71c5e",
+      "street2": "test_9fb2013867b3",
+      "street3": "test_86d526908645",
+      "postcode": "test_09ffe0b8cf1b"
+    },
+    "shippingMethod": "test_7796822bf919",
+    "carrier": "test_17327dbfb7ce"
+  },
+  "products": [
+    {
+      "id": "test_fb4ef47a1a0f",
+      "name": "test_260a61ca16a8",
+      "sku": "test_5f883d1deab3",
+      "desc": "test_d0cbf7004770",
+      "quantity": 38,
+      "unitPrice": {
+        "value": 54,
+        "currency": "test_17c30bdc32b3"
+      }
+    }
+  ],
+  "amountBreakdown": {
+    "productAmount": 67,
+    "discount": 99,
+    "productTax": 49,
+    "shippingAmount": 10,
+    "shippingTax": 5,
+    "other": 94
+  },
+  "merchant": {
+    "storeWebsite": "test_b085e7df3518",
+    "configData": {}
+  },
+  "card": {
+    "cardNo": "4444444444444444",
+    "expirationMonth": "11",
+    "expirationYear": "24",
+    "cvv": "123",
+    "holderName": "test"
+  },
+  "client": {
+    "ip": "test_b556bd9ff25a",
+    "deviceType": "test_8baf6c506ef8",
+    "deviceId": "test_5a6951dcc93c",
+    "javaScriptEnabled": true,
+    "javaEnabled": false,
+    "colorDepth": "test_8f35331e86f5",
+    "screenHeight": "test_e2c2f73f00bf",
+    "screenWidth": "test_a0b636ab9ef2",
+    "timeZoneOffset": "test_f65b530dfe9c",
+    "userAgent": "test_743313c383b4",
+    "language": "test_0231f84d3825",
+    "transactionWebSite": "test_c991d72e506c",
+    "accept": "test_7b30ef6c583c"
+  }
+}
+
+字段	类型	是否必填	含义
+orderTransactionId	string	是	支付交易流水号，付款请求唯一标识，系统层面用来交互的单号
+referenceOrderId	string	是	业务订单号，建议将这个单号展示在您后台的业务单号字段；
+用户能通过这个单号，在Shopline后台关联到一笔订单，但这个单号不是Shopline订单号，不能用来查询订单详情；
+amount	integer	是	交易金额
+currency	string	是	交易金额币种
+redirectUrl	string	是	支付完成重定向URL
+notifyUrl	string	是	异步结果的通知URL，针对这一笔支付的webhook通知，可以直接请求该链接（路径参数已经包含在链接上了）；
+billing	object	否	账单
+|─personalInfo	object	是	个人信息
+  |─firstName	string	否	名字
+  |─lastName	string	是	姓氏
+  |─email	string	否	邮箱地址
+  |─identityType	string	否	身份证件类型
+  |─identityNumber	string	否	身份证件号码
+  |─gender	string	否	性别
+  |─phoneNumber	string	否	电话号码
+  |─homeTelephone	string	否	家庭电话号码
+  |─birthDay	string	否	生日,格式为 YYYY-MM-DD
+|─address	object	是	地址信息
+  |─countryCode	string	是	国家编码
+  |─state	string	否	州/省
+  |─stateCode	string	否	州/省编码
+  |─city	string	否	城市
+  |─district	string	否	区域
+  |─street	string	否	街道
+  |─street2	string	否	街道2
+  |─street3	string	否	街道3
+  |─postcode	string	否	邮政编码
+shipping	object	否	物流
+|─personalInfo	object	是	个人信息
+  |─firstName	string	否	名字
+  |─lastName	string	是	姓氏
+  |─email	string	否	邮箱地址
+  |─identityType	string	否	身份证件类型
+  |─identityNumber	string	否	身份证件号码
+  |─gender	string	否	性别
+  |─phoneNumber	string	否	电话号码
+  |─homeTelephone	string	否	家庭电话号码
+  |─birthDay	string	否	生日,格式为 YYYY-MM-DD
+|─address	object	是	地址信息
+  |─countryCode	string	是	国家编码
+  |─state	string	否	州/省
+  |─stateCode	string	否	州/省编码
+  |─city	string	否	城市
+  |─district	string	否	区域
+  |─street	string	否	街道
+  |─street2	string	否	街道2
+  |─street3	string	否	街道3
+  |─postcode	string	否	邮政编码
+|─shippingMethod	string	是	物流方式，如快递送住宅
+|─carrier	string	否	运输渠道,如顺丰、圆通
+products	array	是	商品列表
+|─	object		
+  |─id	string	是	商品编号
+  |─name	string	是	商品名称
+  |─sku	string	否	货号
+  |─desc	string	否	描述
+  |─quantity	integer	是	商品数量，非物品item数据为1
+  |─unitPrice	object	是	单价
+    |─value	integer	是	金额
+    |─currency	string	是	币种
+amountBreakdown	object	是	金额明细
+|─productAmount	integer	是	商品总金额
+|─discount	integer	是	折扣
+|─productTax	integer	是	商品总税费
+|─shippingAmount	integer	是	物流费
+|─shippingTax	integer	是	物流税费
+|─other	integer	是	其它费用
+merchant	object	是	商户信息
+|─storeWebsite	string	是	店铺网站域名
+|─configData	object	否	商户onboard的信息, 透传给渠道
+只有shopline绑定模式下才会传值
+card	object	否	内嵌模式将会传递
+|-cardNo	string	是	卡号
+|-expirationMonth	string	是	有效期月
+|-expirationYear	string	是	有效期年
+|-cvv	string	是	卡片CVV验证码
+|-holderName	string	否	持卡人姓名
+client	object	是	客户端信息
+|─ip	string	是	客户端ip
+|─deviceType	string	否	设备类型
+|─deviceId	string	否	设备id
+|─javaScriptEnabled	boolean	否	浏览器是否支持javascript
+|─javaEnabled	boolean	否	浏览器是否支持java
+|─colorDepth	string	否	浏览器显示器色深
+|─screenHeight	string	否	持卡人浏览器分辨率高度
+|─screenWidth	string	否	持卡人浏览器分辨率宽度
+|─timeZoneOffset	string	否	浏览器本地时区
+|─userAgent	string	否	浏览器 User-Agent
+|─language	string	否	浏览器语言
+|─transactionWebSite	string	否	交易网址
+|─accept	string	否	浏览器接受报文类型
+响应头示例​
+SHOPLINE 必须接收到预期的结果，才会认为当次调用是成功的，如果没有返回预期的结果，那么shopline将认为这次付款请求由于未知的原因失败了，并在结算页面给予用户提示； 对应 Http Responese Header
+
+pay-api-signature: SIGNSIGNSIGN
+
+字段	是否必填	含义
+pay-api-signature	是	签名值
+响应正文示例​
+对应 Http Responese Body
+
+{
+  "orderTransactionId": "test_6f047f6db6e3",
+  "channelOrderTransactionId": "test_0a9991a24e73",
+  "paymentUrl": "test_6b84f55b3972",
+  "returnCode": "test_6d7c098e15ff",
+  "returnMessage": "test_0b9d14bd55c3",
+  "returnMessageId": "test_c02c42012682"
+}
+
+字段	类型	是否必填	含义
+orderTransactionId	string	是	支付交易流水号，付款请求唯一标识
+channelOrderTransactionId	string	是	渠道流水ID，这笔支付在您这边的唯一标识
+paymentUrl	string	否	重定向支付应用的支付页面url
+returnCode	string	是	接口响应状态码
+SUCCESS: 请求成功
+
+只有返回SUCCESS时，我们才会认为该次请求您已经处理成功；其它值我们都认为该次请求失败；
+returnMessage	string	否	失败原因
+returnMessageId	string	否	渠道响应标识UUID，如 traceId
+针对内嵌模式：
+
+如果这笔支付需要进行3DS验证，请在paymentUrl返回3DS验证地址，我们将会将买家重定向到该页面；
+如果不需要3DS验证，请在paymentUrl返回入参传递的redirectUrl，买家将会在这个页面等待支付结果；
+同步付款结果​
+在客户成功完成付款流程后，您可以通过以下两种方式，将付款结果同步给Shopline，其中付款查询能力是必需的，当然Shopline建议您两种方式同时提供：
+
+提供一个付款查询URL，那么Shopline将会在调用付款URL后，以一定的频率通过付款查询URL发起HTTP调用，尝试获取该笔支付的结果，直到获取到终态或者最终超时（一般是24小时）；
+主动调用我们的付款通知Webhook接口，直到返回正确的响应（我们会在回调逻辑中，请求付款查询URL以获取支付状态）；
+付款查询请求头示例​
+对应 Http Request Header
+
+pay-api-version: 1.0.0
+pay-api-idempotency-key: TESTKEYKEYKEY
+pay-api-signature: SIGNSIGNSIGN
+pay-api-timestamp: 1665632758606000
+
+字段	是否必填	含义
+pay-api-version	是	您在配置支付应用拓展时，填入的API VERSION
+pay-api-idempotency-key	是	幂等key
+pay-api-signature	是	签名值
+pay-api-timestamp	是	请求发起时的时间戳
+付款查询请求参数示例​
+对应 Http Request Query
+
+orderTransactionId = SLASDJK12312131
+
+字段	是否必填	含义
+orderTransactionId	是	支付交易流水号，付款请求唯一标识
+付款查询响应头示例​
+对应 Http Response Header
+
+pay-api-signature: SIGNSIGNSIGN
+
+字段	是否必填	含义
+pay-api-signature	是	签名值
+付款查询响应正文示例​
+对应 Http Response Header Body
+
+字段	类型	是否必填	含义
+orderTransactionId	string	是	支付交易流水号，付款请求唯一标识
+channelOrderTransactionId	string	是	渠道流水
+paymentStatus	string	是	支付状态
+PROCESSING: 处理中
+SUCCEEDED: 已完成支付
+FAILED: 支付失败
+CANCELLED: 已取消支付
+EXPIRED: 已过期
+
+支付状态流转及枚举
+amount	integer	是	交易金额
+currency	string	是	交易金额币种
+failCode	string	否	失败错误码
+failMessage	string	否	失败原因
+returnCode	string	是	接口响应状态码
+SUCCESS: 请求成功
+
+只有返回SUCCESS时，我们才会认为该次请求您已经处理成功；其它值我们都认为该次请求失败；
+returnMessage	string	否	失败原因
+returnMessageId	string	否	渠道响应标识UUID，如 traceId
+主动通知Shopline支付结果​
+您可以通过调用付款结果通知的OpenApi接口，来主动通知Shopline支付结果；Shopline在接收到通知后，会通过付款查询接口，来获取支付结果，不会直接信任通知结果；
+
+附录​
+《国家地区编码》​
+国家地区编码使用ISO 3166国际标准。
+
+中文名称	英文短名称	二位代码	地区编码ISO 3166-2
+阿富汗	Afghanistan	AF	ISO 3166-2
+奥兰	Åland Islands	AX	ISO 3166-2
+阿尔巴尼亚	Albania	AL	ISO 3166-2
+阿尔及利亚	Algeria	DZ	ISO 3166-2
+美属萨摩亚	American Samoa	AS	ISO 3166-2
+安道尔	Andorra	AD	ISO 3166-2
+安哥拉	Angola	AO	ISO 3166-2
+安圭拉	Anguilla	AI	ISO 3166-2
+南极洲	Antarctica	AQ	ISO 3166-2
+安提瓜和巴布达	Antigua and Barbuda	AG	ISO 3166-2
+阿根廷	Argentina	AR	ISO 3166-2
+亚美尼亚	Armenia	AM	ISO 3166-2
+阿鲁巴	Aruba	AW	ISO 3166-2
+澳大利亚	Australia	AU	ISO 3166-2
+奥地利	Austria	AT	ISO 3166-2
+阿塞拜疆	Azerbaijan	AZ	ISO 3166-2
+巴哈马	Bahamas	BS	ISO 3166-2
+巴林	Bahrain	BH	ISO 3166-2
+孟加拉国	Bangladesh	BD	ISO 3166-2
+巴巴多斯	Barbados	BB	ISO 3166-2
+白俄罗斯	Belarus	BY	ISO 3166-2
+比利时	Belgium	BE	ISO 3166-2
+伯利兹	Belize	BZ	ISO 3166-2
+贝宁	Benin	BJ	ISO 3166-2
+百慕大	Bermuda	BM	ISO 3166-2
+不丹	Bhutan	BT	ISO 3166-2
+玻利维亚	Bolivia (Plurinational State of)	BO	ISO 3166-2
+荷兰加勒比区	Bonaire, Sint Eustatius and Saba	BQ	ISO 3166-2
+波黑	Bosnia and Herzegovina	BA	ISO 3166-2
+博茨瓦纳	Botswana	BW	ISO 3166-2
+布韦岛	Bouvet Island	BV	ISO 3166-2
+巴西	Brazil	BR	ISO 3166-2
+英属印度洋领地	British Indian Ocean Territory	IO	ISO 3166-2
+文莱	Brunei Darussalam	BN	ISO 3166-2
+保加利亚	Bulgaria	BG	ISO 3166-2
+布基纳法索	Burkina Faso	BF	ISO 3166-2
+布隆迪	Burundi	BI	ISO 3166-2
+佛得角	Cabo Verde	CV	ISO 3166-2
+柬埔寨	Cambodia	KH	ISO 3166-2
+喀麦隆	Cameroon	CM	ISO 3166-2
+加拿大	Canada	CA	ISO 3166-2
+开曼群岛	Cayman Islands	KY	ISO 3166-2
+中非	Central African Republic	CF	ISO 3166-2
+乍得	Chad	TD	ISO 3166-2
+智利	Chile	CL	ISO 3166-2
+中国	China	CN	ISO 3166-2
+圣诞岛	Christmas Island	CX	ISO 3166-2
+科科斯（基林）群岛	Cocos (Keeling) Islands	CC	ISO 3166-2
+哥伦比亚	Colombia	CO	ISO 3166-2
+科摩罗	Comoros	KM	ISO 3166-2
+刚果共和国	Congo	CG	ISO 3166-2
+刚果民主共和国	Congo (Democratic Republic of the)	CD	ISO 3166-2
+库克群岛	Cook Islands	CK	ISO 3166-2
+哥斯达黎加	Costa Rica	CR	ISO 3166-2
+科特迪瓦	Côte d'Ivoire	CI	ISO 3166-2
+克罗地亚	Croatia	HR	ISO 3166-2
+古巴	Cuba	CU	ISO 3166-2
+库拉索	Curaçao	CW	ISO 3166-2
+塞浦路斯	Cyprus	CY	ISO 3166-2
+捷克	Czechia	CZ	ISO 3166-2
+丹麦	Denmark	DK	ISO 3166-2
+吉布提	Djibouti	DJ	ISO 3166-2
+多米尼克	Dominica	DM	ISO 3166-2
+多米尼加	Dominican Republic	DO	ISO 3166-2
+厄瓜多尔	Ecuador	EC	ISO 3166-2
+埃及	Egypt	EG	ISO 3166-2
+萨尔瓦多	El Salvador	SV	ISO 3166-2
+赤道几内亚	Equatorial Guinea	GQ	ISO 3166-2
+厄立特里亚	Eritrea	ER	ISO 3166-2
+爱沙尼亚	Estonia	EE	ISO 3166-2
+斯威士兰	Eswatini	SZ	ISO 3166-2
+埃塞俄比亚	Ethiopia	ET	ISO 3166-2
+福克兰群岛	Falkland Islands (Malvinas)	FK	ISO 3166-2
+法罗群岛	Faroe Islands	FO	ISO 3166-2
+斐济	Fiji	FJ	ISO 3166-2
+芬兰	Finland	FI	ISO 3166-2
+法国	France	FR	ISO 3166-2
+法属圭亚那	French Guiana	GF	ISO 3166-2
+法属波利尼西亚	French Polynesia	PF	ISO 3166-2
+法属南部和南极领地	French Southern Territories	TF	ISO 3166-2
+加蓬	Gabon	GA	ISO 3166-2
+冈比亚	Gambia	GM	ISO 3166-2
+格鲁吉亚	Georgia	GE	ISO 3166-2
+德国	Germany	DE	ISO 3166-2
+加纳	Ghana	GH	ISO 3166-2
+直布罗陀	Gibraltar	GI	ISO 3166-2
+希腊	Greece	GR	ISO 3166-2
+格陵兰	Greenland	GL	ISO 3166-2
+格林纳达	Grenada	GD	ISO 3166-2
+瓜德罗普	Guadeloupe	GP	ISO 3166-2
+关岛	Guam	GU	ISO 3166-2
+危地马拉	Guatemala	GT	ISO 3166-2
+根西	Guernsey	GG	ISO 3166-2
+几内亚	Guinea	GN	ISO 3166-2
+几内亚比绍	Guinea-Bissau	GW	ISO 3166-2
+圭亚那	Guyana	GY	ISO 3166-2
+海地	Haiti	HT	ISO 3166-2
+赫德岛和麦克唐纳群岛	Heard Island and McDonald Islands	HM	ISO 3166-2
+梵蒂冈	Holy See	VA	ISO 3166-2
+洪都拉斯	Honduras	HN	ISO 3166-2
+香港	Hong Kong	HK	ISO 3166-2
+匈牙利	Hungary	HU	ISO 3166-2
+冰岛	Iceland	IS	ISO 3166-2
+印度	India	IN	ISO 3166-2
+印尼	Indonesia	ID	ISO 3166-2
+伊朗	Iran (Islamic Republic of)	IR	ISO 3166-2
+伊拉克	Iraq	IQ	ISO 3166-2
+爱尔兰	Ireland	IE	ISO 3166-2
+马恩岛	Isle of Man	IM	ISO 3166-2
+以色列	Israel	IL	ISO 3166-2
+意大利	Italy	IT	ISO 3166-2
+牙买加	Jamaica	JM	ISO 3166-2
+日本	Japan	JP	ISO 3166-2
+泽西	Jersey	JE	ISO 3166-2
+约旦	Jordan	JO	ISO 3166-2
+哈萨克斯坦	Kazakhstan	KZ	ISO 3166-2
+肯尼亚	Kenya	KE	ISO 3166-2
+基里巴斯	Kiribati	KI	ISO 3166-2
+朝鲜	Korea (Democratic People's Republic of)	KP	ISO 3166-2
+韩国	Korea (Republic of)	KR	ISO 3166-2
+科威特	Kuwait	KW	ISO 3166-2
+吉尔吉斯斯坦	Kyrgyzstan	KG	ISO 3166-2
+老挝	Lao People's Democratic Republic	LA	ISO 3166-2
+拉脱维亚	Latvia	LV	ISO 3166-2
+黎巴嫩	Lebanon	LB	ISO 3166-2
+莱索托	Lesotho	LS	ISO 3166-2
+利比里亚	Liberia	LR	ISO 3166-2
+利比亚	Libya	LY	ISO 3166-2
+列支敦士登	Liechtenstein	LI	ISO 3166-2
+立陶宛	Lithuania	LT	ISO 3166-2
+卢森堡	Luxembourg	LU	ISO 3166-2
+澳门	Macao	MO	ISO 3166-2
+马达加斯加	Madagascar	MG	ISO 3166-2
+马拉维	Malawi	MW	ISO 3166-2
+马来西亚	Malaysia	MY	ISO 3166-2
+马尔代夫	Maldives	MV	ISO 3166-2
+马里	Mali	ML	ISO 3166-2
+马耳他	Malta	MT	ISO 3166-2
+马绍尔群岛	Marshall Islands	MH	ISO 3166-2
+马提尼克	Martinique	MQ	ISO 3166-2
+毛里塔尼亚	Mauritania	MR	ISO 3166-2
+毛里求斯	Mauritius	MU	ISO 3166-2
+马约特	Mayotte	YT	ISO 3166-2
+墨西哥	Mexico	MX	ISO 3166-2
+密克罗尼西亚联邦	Micronesia (Federated States of)	FM	ISO 3166-2
+摩尔多瓦	Moldova (Republic of)	MD	ISO 3166-2
+摩纳哥	Monaco	MC	ISO 3166-2
+蒙古	Mongolia	MN	ISO 3166-2
+黑山	Montenegro	ME	ISO 3166-2
+蒙特塞拉特	Montserrat	MS	ISO 3166-2
+摩洛哥	Morocco	MA	ISO 3166-2
+莫桑比克	Mozambique	MZ	ISO 3166-2
+缅甸	Myanmar	MM	ISO 3166-2
+纳米比亚	Namibia	NA	ISO 3166-2
+瑙鲁	Nauru	NR	ISO 3166-2
+尼泊尔	Nepal	NP	ISO 3166-2
+荷兰	Netherlands	NL	ISO 3166-2
+新喀里多尼亚	New Caledonia	NC	ISO 3166-2
+新西兰	New Zealand	NZ	ISO 3166-2
+尼加拉瓜	Nicaragua	NI	ISO 3166-2
+尼日尔	Niger	NE	ISO 3166-2
+尼日利亚	Nigeria	NG	ISO 3166-2
+纽埃	Niue	NU	ISO 3166-2
+诺福克岛	Norfolk Island	NF	ISO 3166-2
+北马其顿	North Macedonia	MK	ISO 3166-2
+北马里亚纳群岛	Northern Mariana Islands	MP	ISO 3166-2
+挪威	Norway	NO	ISO 3166-2
+阿曼	Oman	OM	ISO 3166-2
+巴基斯坦	Pakistan	PK	ISO 3166-2
+帕劳	Palau	PW	ISO 3166-2
+巴勒斯坦	Palestine, State of	PS	ISO 3166-2
+巴拿马	Panama	PA	ISO 3166-2
+巴布亚新几内亚	Papua New Guinea	PG	ISO 3166-2
+巴拉圭	Paraguay	PY	ISO 3166-2
+秘鲁	Peru	PE	ISO 3166-2
+菲律宾	Philippines	PH	ISO 3166-2
+皮特凯恩群岛	Pitcairn	PN	ISO 3166-2
+波兰	Poland	PL	ISO 3166-2
+葡萄牙	Portugal	PT	ISO 3166-2
+波多黎各	Puerto Rico	PR	ISO 3166-2
+卡塔尔	Qatar	QA	ISO 3166-2
+留尼汪	Réunion	RE	ISO 3166-2
+罗马尼亚	Romania	RO	ISO 3166-2
+俄罗斯	Russian Federation	RU	ISO 3166-2
+卢旺达	Rwanda	RW	ISO 3166-2
+圣巴泰勒米	Saint Barthélemy	BL	ISO 3166-2
+圣赫勒拿、阿森松和特里斯坦-达库尼亚	Saint Helena, Ascension and Tristan da Cunha	SH	ISO 3166-2
+圣基茨和尼维斯	Saint Kitts and Nevis	KN	ISO 3166-2
+圣卢西亚	Saint Lucia	LC	ISO 3166-2
+法属圣马丁	Saint Martin (French part)	MF	ISO 3166-2
+圣皮埃尔和密克隆	Saint Pierre and Miquelon	PM	ISO 3166-2
+圣文森特和格林纳丁斯	Saint Vincent and the Grenadines	VC	ISO 3166-2
+萨摩亚	Samoa	WS	ISO 3166-2
+圣马力诺	San Marino	SM	ISO 3166-2
+圣多美和普林西比	Sao Tome and Principe	ST	ISO 3166-2
+沙特阿拉伯	Saudi Arabia	SA	ISO 3166-2
+塞内加尔	Senegal	SN	ISO 3166-2
+塞尔维亚	Serbia	RS	ISO 3166-2
+塞舌尔	Seychelles	SC	ISO 3166-2
+塞拉利昂	Sierra Leone	SL	ISO 3166-2
+新加坡	Singapore	SG	ISO 3166-2
+荷属圣马丁	Sint Maarten (Dutch part)	SX	ISO 3166-2
+斯洛伐克	Slovakia	SK	ISO 3166-2
+斯洛文尼亚	Slovenia	SI	ISO 3166-2
+所罗门群岛	Solomon Islands	SB	ISO 3166-2
+索马里	Somalia	SO	ISO 3166-2
+南非	South Africa	ZA	ISO 3166-2
+南乔治亚和南桑威奇群岛	South Georgia and the South Sandwich Islands	GS	ISO 3166-2
+南苏丹	South Sudan	SS	ISO 3166-2
+西班牙	Spain	ES	ISO 3166-2
+斯里兰卡	Sri Lanka	LK	ISO 3166-2
+苏丹	Sudan	SD	ISO 3166-2
+苏里南	Suriname	SR	ISO 3166-2
+斯瓦尔巴和扬马延	Svalbard and Jan Mayen	SJ	ISO 3166-2
+瑞典	Sweden	SE	ISO 3166-2
+瑞士	Switzerland	CH	ISO 3166-2
+叙利亚	Syrian Arab Republic	SY	ISO 3166-2
+中国台湾省	Taiwan, Province of China	TW	ISO 3166-2
+塔吉克斯坦	Tajikistan	TJ	ISO 3166-2
+坦桑尼亚	Tanzania, United Republic of	TZ	ISO 3166-2
+泰国	Thailand	TH	ISO 3166-2
+东帝汶	Timor-Leste	TL	ISO 3166-2
+多哥	Togo	TG	ISO 3166-2
+托克劳	Tokelau	TK	ISO 3166-2
+汤加	Tonga	TO	ISO 3166-2
+特立尼达和多巴哥	Trinidad and Tobago	TT	ISO 3166-2
+突尼斯	Tunisia	TN	ISO 3166-2
+土耳其	Turkey	TR	ISO 3166-2
+土库曼斯坦	Turkmenistan	TM	ISO 3166-2
+特克斯和凯科斯群岛	Turks and Caicos Islands	TC	ISO 3166-2
+图瓦卢	Tuvalu	TV	ISO 3166-2
+乌干达	Uganda	UG	ISO 3166-2
+乌克兰	Ukraine	UA	ISO 3166-2
+阿联酋	United Arab Emirates	AE	ISO 3166-2
+英国	United Kingdom of Great Britain and Northern Ireland	GB	ISO 3166-2
+美国	United States of America	US	ISO 3166-2
+美国本土外小岛屿	United States Minor Outlying Islands	UM	ISO 3166-2
+乌拉圭	Uruguay	UY	ISO 3166-2
+乌兹别克斯坦	Uzbekistan	UZ	ISO 3166-2
+瓦努阿图	Vanuatu	VU	ISO 3166-2
+委内瑞拉	Venezuela (Bolivarian Republic of)	VE	ISO 3166-2
+越南	Viet Nam	VN	ISO 3166-2
+英属维尔京群岛	Virgin Islands (British)	VG	ISO 3166-2
+美属维尔京群岛	Virgin Islands (U.S.)	VI	ISO 3166-2
+瓦利斯和富图纳	Wallis and Futuna	WF	ISO 3166-2
+西撒哈拉	Western Sahara	EH	ISO 3166-2
+也门	Yemen	YE	ISO 3166-2
+赞比亚	Zambia	ZM	ISO 3166-2
+津巴布韦	Zimbabwe	ZW	ISO 3166-2
+《币种及精度定义》​
+Country	Currency Name	Currency Code	币种精度	最小支付金额	金额传参
+United Arab Emirates	UAE Dirham	AED	2位小数	0.1	x100
+Afghanistan	Afghan Afghani	AFN	2位小数	0.1	x100
+Armenia	Armenian Dram	AMD	2位小数	0.1	x100
+Curaçao and Sint Maarten	Netherlands Antillian Guilder	ANG	2位小数	0.1	x100
+Angola	Kwanza	AOA	2位小数	0.1	x100
+Argentina	Argentine Peso	ARS	2位小数	0.1	x100
+Australia	Australian Dollar	AUD	2位小数	0.1	x100
+Aruba	Aruban Florin	AWG	2位小数	0.1	x100
+Azerbaijan	Azerbaijanian Manat	AZN	2位小数	0.1	x100
+Albania	Lek	ALL	2位小数	0.1	x100
+Bosnia and Herzegovina	Convertible Marks	BAM	2位小数	0.1	x100
+Barbados	Barbados Dollar	BBD	2位小数	0.1	x100
+People's Republic of Bangladesh	Taka	BDT	2位小数	0.1	x100
+Bulgaria	Bulgarian Lev	BGN	2位小数	0.1	x100
+Bahrain	Bahraini Dinar	BHD	3位小数	0.1	x 1000，且最后一位必须为零
+Burundi	Burundi Franc	BIF	整数	1	x 1，全位整数
+Bermuda	Bermudian Dollar	BMD	2位小数	0.1	x100
+Brunei	Brunei Dollar	BND	2位小数	0.1	x100
+Bolivia	Boliviano	BOB	2位小数	0.1	x100
+Brazil	Brazilian Real	BRL	2位小数	0.1	x100
+Bahamas	Bahamian Dollar	BSD	2位小数	0.1	x100
+Kingdom of Bhutan	Ngultrum	BTN	2位小数	0.1	x100
+Botswana	Pula	BWP	2位小数	0.1	x100
+Belarus	Belarussian Ruble	BYN	2位小数	0.1	x100
+Belize	Belize Dollar	BZD	2位小数	0.1	x100
+Canada	Canadian Dollar	CAD	2位小数	0.1	x100
+Democratic Republic of the Congo	Congolese France	CDF	2位小数	0.1	x100
+Switzerland and Liechtenstein	Swiss Franc	CHF	2位小数	0.1	x100
+Chile	Unidad de Fomento	CLF	整数	1	x 1，全位整数
+Chile	Chilean Peso	CLP	2位小数	0.1	x100，且最后两位必须为0
+People's Republic of China	Yuan Renminbi	CNY	2位小数	0.1	x100
+Colombia	Colombian Peso	COP	2位小数	0.1	x100
+Costa Rica	Costa Rican Colon	CRC	2位小数	0.1	x100
+Cuba	Cuban Peso	CUP	2位小数	0.1	x100
+Cuba	Cuban Convertible Peso	CUC	2位小数	0.1	x100
+Cape Verde	Cape Verde Escudo	CVE	2位小数	0.1	x100
+Czech Republic	Czech Koruna	CZK	2位小数	0.1	x100
+Djibouti	Djibouti Franc	DJF	整数	1	x 1，全位整数
+Denmark	Danish Krone	DKK	2位小数	0.1	x100
+Dominican Republic	Dominican Peso	DOP	2位小数	0.1	x100
+Algeria	Algerian Dinar	DZD	2位小数	0.1	x100
+Estonia	Kroon	EEK	2位小数	0.1	x100
+Egypt	Egyptian Pound	EGP	2位小数	0.1	x100
+Eritrea	Nakfa	ERN	2位小数	0.1	x100
+Ethiopia	Ethiopian Birr	ETB	2位小数	0.1	x100
+Eurozone	Euro	EUR	2位小数	0.1	x100
+Fiji	Fiji Dollar	FJD	2位小数	0.1	x100
+Falkland Islands	Falkland Islands Pound	FKP	2位小数	0.1	x100
+United Kingdom, Jersey, Guernsey, the Isle of Man, South Georgia and the South Sandwich Islands, the British Antarctic Territory, Tristan da Cunha	Pound Sterling	GBP	2位小数	0.1	x100
+Georgia	Lari	GEL	2位小数	0.1	x100
+Ghana	Cedi	GHS	2位小数	0.1	x100
+Gibraltar	Gibraltar Pound	GIP	2位小数	0.1	x100
+Gambia	Dalasi	GMD	2位小数	0.1	x100
+Guinea	Guinea Franc	GNF	整数	1	x 1，全位整数
+Guatemala	Quetzal	GTQ	2位小数	0.1	x100
+Guyana	Guyana Dollar	GYD	2位小数	0.1	x100
+Hong Kong	Hong Kong Dollar	HKD	2位小数	0.1	x100
+Honduras	Lempira	HNL	2位小数	0.1	x100
+Croatia	Croatian Kuna	HRK	2位小数	0.1	x100
+Haiti	Gourde	HTG	2位小数	0.1	x100
+Hungary	Forint	HUF	2位小数	0.1	x100
+Indonesia	Rupiah	IDR	2位小数	0.1	x100
+Israel	New Israeli Sheqel	ILS	2位小数	0.1	x100
+India	Indian Rupee	INR	2位小数	0.1	x100
+Iraq	Iraqi Dinar	IQD	3位小数	0.1	x 1000，且最后一位必须为零
+Iran	Iranian Rial	IRR	2位小数	0.1	x100
+Iceland	Iceland Krona	ISK	整数	1	x 1，全位整数
+Jamaica	Jamaican Dollar	JMD	2位小数	0.1	x100
+Jordan	Jordanian Dinar	JOD	3位小数	0.1	x 1000，且最后一位必须为零
+Japan	Yen	JPY	整数	1	x 1，全位整数
+Kenya	Kenyan Shilling	KES	2位小数	0.1	x100
+Kyrgyz Republic	Som	KGS	2位小数	0.1	x100
+Cambodia	Riel	KHR	2位小数	0.1	x100
+Comoros	Comoro Franc	KMF	整数	1	x 1，全位整数
+North Korea	North Korean Won	KPW	2位小数	0.1	x100
+South Korea	Won	KRW	整数	1	x 1，全位整数
+Kuwait	Kuwaiti Dinar	KWD	3位小数	0.1	x 1000，且最后一位必须为零
+Cayman Islands	Cayman Islands Dollar	KYD	2位小数	0.1	x100
+Kazakhstan	Tenge	KZT	2位小数	0.1	x100
+Laos	Kip	LAK	2位小数	0.1	x100
+Lebanon	Lebanese Pound	LBP	2位小数	0.1	x100
+Sri Lanka	Sri Lanka Rupee	LKR	2位小数	0.1	x100
+Liberia	Liberian Dollar	LRD	2位小数	0.1	x100
+Lesotho	Loti	LSL	2位小数	0.1	x100
+Lithuania	Lithuanian Litas	LTL	2位小数	0.1	x100
+Latvia	Latvian Lats	LVL	2位小数	0.1	x100
+Libya	Libyan Dinar	LYD	3位小数	0.1	x 1000，且最后一位必须为零
+Morocco	Moroccan Dirham	MAD	2位小数	0.1	x100
+Moldova	Moldovan Leu	MDL	2位小数	0.1	x100
+Madagascar	Malagasy Ariary	MGA	2位小数	0.1	x100
+North Macedonia	Denar	MKD	2位小数	0.1	x100
+Myanmar	Kyat	MMK	2位小数	0.1	x100
+Mongolia	Tugrik	MNT	2位小数	0.1	x100
+Macau	Pataca	MOP	2位小数	0.1	x100
+Mauritania	Ouguiya	MRU	2位小数	0.1	x100
+Mauritius	Mauritius Rupee	MUR	2位小数	0.1	x100
+Maldives	Rufiyaa	MVR	2位小数	0.1	x100
+Malawi	Kwacha	MWK	2位小数	0.1	x100
+Mexico	Mexican Peso	MXN	2位小数	0.1	x100
+Mexico	Mexican Unidad de Inversion	MXV	2位小数	0.1	x100
+Malaysia	Malaysian Ringgit	MYR	2位小数	0.1	x100
+Mozambique	Metical	MZN	2位小数	0.1	x100
+Namibia	Namibia Dollar	NAD	2位小数	0.1	x100
+Nigeria	Naira	NGN	2位小数	0.1	x100
+Nicaragua	Cordoba Oro	NIO	2位小数	0.1	x100
+Norway	Norwegian Krone	NOK	2位小数	0.1	x100
+Nepal	Nepalese Rupee	NPR	2位小数	0.1	x100
+New Zealand	New Zealand Dollar	NZD	2位小数	0.1	x100
+Oman	Rial Omani	OMR	3位小数	0.1	x 1000，且最后一位必须为零
+Panama	Balboa	PAB	2位小数	0.1	x100
+Peru	Nuevo Sol	PEN	2位小数	0.1	x100
+Papua New Guinea	Kina	PGK	2位小数	0.1	x100
+Philippines	Philippine Peso	PHP	2位小数	0.1	x100
+Pakistan	Pakistan Rupee	PKR	2位小数	0.1	x100
+Poland	Zloty	PLN	2位小数	0.1	x100
+Paraguay	Guarani	PYG	整数	1	x 1，全位整数
+State of Qatar	Qatari Rial	QAR	2位小数	0.1	x100
+Romania	New Ley	RON	2位小数	0.1	x100
+Serbia	New Serbian Dinar	RSD	2位小数	0.1	x100
+Russia	Russian Ruble	RUB	2位小数	0.1	x100
+Rwanda	Rwanda Franc	RWF	整数	1	x 1，全位整数
+Saudi Arabia	Saudi Riyal	SAR	2位小数	0.1	x100
+Solomon Islands	Solomon Islans Dollar	SBD	2位小数	0.1	x100
+Seychelles	Seychelles Rupee	SCR	2位小数	0.1	x100
+Republic of the Sudan	New Sudanese Pound	SDG	2位小数	0.1	x100
+Republic of South Sudan	South Sudanese pound	SSP	2位小数	0.1	x100
+Sweden	Swedish Krona	SEK	2位小数	0.1	x100
+Singapore	Singapore Dollar	SGD	2位小数	0.1	x100
+Saint Helena and Ascension	Saint Helena Pound	SHP	2位小数	0.1	x100
+Sierra Leone	Leone	SLL	2位小数	0.1	x100
+Somalia	Somali Shilling	SOS	2位小数	0.1	x100
+Suriname	Surinamese Dollar	SRD	2位小数	0.1	x100
+São Tomé and Príncipe	Dobra	STN	2位小数	0.1	x100
+El Salvador	El Salvador Colon	SVC	2位小数	0.1	x100
+Syria	Syrian Pound	SYP	2位小数	0.1	x100
+Eswatini	Lilangeni	SZL	2位小数	0.1	x100
+Thailand	Baht	THB	2位小数	0.1	x100
+Tajikistan	Somoni	TJS	2位小数	0.1	x100
+Turkmenistan	Manat	TMT	2位小数	0.1	x100
+Tunisia	Tunisian Dinar	TND	3位小数	0.1	x 1000，且最后一位必须为零
+Tonga	Paanga	TOP	2位小数	0.1	x100
+Turkey	Turkish Lira	TRY	2位小数	0.1	x100
+Trinidad and Tobago	Trinidad and Tobago Dollar	TTD	2位小数	0.1	x100
+Republic of China (Taiwan)	New Taiwan Dollar	TWD	2位小数	0.1	x100
+Tanzania	Tanzanian Shilling	TZS	2位小数	0.1	x100
+Ukraine	Hryvnia	UAH	2位小数	0.1	x100
+Uganda	Uganda Shilling	UGX	整数	1	x 1，全位整数
+United States	US Dollar	USD	2位小数	0.1	x100
+Uruguay	Peso Uruguayo	UYU	2位小数	0.1	x100
+Uzbekistan	Uzbekistan Sum	UZS	2位小数	0.1	x100
+Bolivar	Bolivar Fuerte	VES	2位小数	0.1	x100
+Bolivar	Venezuela Bolivar Fuerte	VEF	2位小数	0.1	x100
+Vietnam	Dong	VND	整数	1	x 1，全位整数
+Vanuatu	Vatu	VUV	整数	1	x 1，全位整数
+Samoa	Tala	WST	2位小数	0.1	x100
+Cameroon, Central African Republic, Chad, Republic of the Congo, Equatorial Guinea, Gabon	CFA Franc BEAC	XAF	整数	1	x 1，全位整数
+East Caribbean	East Caribbean Dollar	XCD	2位小数	0.1	x100
+Benin, Burkina Faso, Guinea-Bissau, Ivory Coast, Mali, Niger, Senegal, Togo	CFA Franc BCEAO	XOF	整数	1	x 1，全位整数
+French Polynesia, New Caledonia, Wallis and Futuna	CFP Franc	XPF	整数	1	x 1，全位整数
+Yemen	Yemeni Rial	YER	2位小数	0.1	x100
+South Africa	Rand	ZAR	2位小数	0.1	x100
+Zambia	Zambian Kwacha	ZMW	2位小数	0.1	x100
+Zimbabwe	Zimbabwe Dollar	ZWL	2位小数	0.1	x100
